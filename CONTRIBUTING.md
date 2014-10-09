@@ -17,8 +17,8 @@ Source
 
 The Paho .Net client is stored in a git repository. The URLs to access it are:
 
-ssh://<username>@git.eclipse.org:29418/paho/org.eclipse.paho.mqtt.m2mqtt
-https://<username>@git.eclipse.org/r/paho/org.eclipse.paho.mqtt.m2mqtt
+- ssh://<username>@git.eclipse.org:29418/paho/org.eclipse.paho.mqtt.m2mqtt
+- https://<username>@git.eclipse.org/r/paho/org.eclipse.paho.mqtt.m2mqtt
 
 A [web browsable repository](http://git.eclipse.org/c/paho/org.eclipse.paho.mqtt.m2mqtt.git) is available.
 
