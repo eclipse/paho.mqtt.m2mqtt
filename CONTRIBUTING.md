@@ -15,7 +15,7 @@ Paho reflects the inherent physical and cost constraints of device connectivity.
 Source
 ------
 
-The Paho .Net client is stored in a git repository. The URLs to access it are:
+The Paho .Net & WinRT client is stored in a git repository. The URLs to access it are:
 
 - ssh://<username>@git.eclipse.org:29418/paho/org.eclipse.paho.mqtt.m2mqtt
 - https://<username>@git.eclipse.org/r/paho/org.eclipse.paho.mqtt.m2mqtt

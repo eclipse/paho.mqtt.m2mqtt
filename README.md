@@ -1,4 +1,4 @@
-# Eclipse Paho .Net MQTT client library - M2Mqtt
+# Eclipse Paho .Net & WinRT MQTT client library - M2Mqtt
 
 
 ## Reporting bugs
