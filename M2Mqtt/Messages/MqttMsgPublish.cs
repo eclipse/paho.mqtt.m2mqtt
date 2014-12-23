@@ -45,24 +45,13 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             set { this.message = value; }
         }
 
-        /// <summary>
-        /// Message identifier
-        /// </summary>
-        public ushort MessageId
-        {
-            get { return this.messageId; }
-            set { this.messageId = value; }
-        }
-
         #endregion
 
         // message topic
         private string topic;
         // message data
         private byte[] message;
-        // message identifier
-        ushort messageId;
-
+        
         /// <summary>
         /// Constructor
         /// </summary>
@@ -105,7 +94,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             this.messageId = 0;
         }
 
-        public override byte[] GetBytes()
+        public override byte[] GetBytes(byte protocolVersion)
         {
             int fixedHeaderSize = 0;
             int varHeaderSize = 0;
@@ -121,6 +110,10 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             // check topic length
             if ((this.topic.Length < MIN_TOPIC_LENGTH) || (this.topic.Length > MAX_TOPIC_LENGTH))
                 throw new MqttClientException(MqttClientErrorCode.TopicLength);
+
+            // check wrong QoS level (both bits can't be set 1)
+            if (this.qosLevel > QOS_LEVEL_EXACTLY_ONCE)
+                throw new MqttClientException(MqttClientErrorCode.QosNotAllowed);
 
             byte[] topicUtf8 = Encoding.UTF8.GetBytes(this.topic);
 
@@ -198,9 +191,10 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// Parse bytes for a PUBLISH message
         /// </summary>
         /// <param name="fixedHeaderFirstByte">First fixed header byte</param>
+        /// <param name="protocolVersion">Protocol Version</param>
         /// <param name="channel">Channel connected to the broker</param>
         /// <returns>PUBLISH message instance</returns>
-        public static MqttMsgPublish Parse(byte fixedHeaderFirstByte, IMqttNetworkChannel channel)
+        public static MqttMsgPublish Parse(byte fixedHeaderFirstByte, byte protocolVersion, IMqttNetworkChannel channel)
         {
             byte[] buffer;
             int index = 0;
@@ -225,6 +219,9 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
 
             // read QoS level from fixed header
             msg.qosLevel = (byte)((fixedHeaderFirstByte & QOS_LEVEL_MASK) >> QOS_LEVEL_OFFSET);
+            // check wrong QoS level (both bits can't be set 1)
+            if (msg.qosLevel > QOS_LEVEL_EXACTLY_ONCE)
+                throw new MqttClientException(MqttClientErrorCode.QosNotAllowed);
             // read DUP flag from fixed header
             msg.dupFlag = (((fixedHeaderFirstByte & DUP_FLAG_MASK) >> DUP_FLAG_OFFSET) == 0x01);
             // read retain flag from fixed header

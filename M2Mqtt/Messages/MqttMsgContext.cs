@@ -126,6 +126,18 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// </summary>
         SendPuback,
 
+        // [v3.1.1] SUBSCRIBE isn't "officially" QOS = 1
+        /// <summary>
+        /// Send SUBSCRIBE message
+        /// </summary>
+        SendSubscribe,
+
+        // [v3.1.1] UNSUBSCRIBE isn't "officially" QOS = 1
+        /// <summary>
+        /// Send UNSUBSCRIBE message
+        /// </summary>
+        SendUnsubscribe,
+
         /// <summary>
         /// (QOS = 1), SUBSCRIBE sent, wait for SUBACK
         /// </summary>

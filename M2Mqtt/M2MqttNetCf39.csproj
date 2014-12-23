@@ -71,12 +71,15 @@
     <Compile Include="Messages\MqttMsgUnsubscribedEventArgs.cs" />
     <Compile Include="Messages\MqttMsgUnsubscribeEventArgs.cs" />
     <Compile Include="MqttClient.cs" />
-    <Compile Include="MqttSettings.cs" />
     <Compile Include="Net\Fx.cs" />
     <Compile Include="Net\MqttNetworkChannel.cs" />
+    <Compile Include="MqttSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utility\QueueExtension.cs" />
+    <Compile Include="Session\MqttBrokerSession.cs" />
+    <Compile Include="Session\MqttClientSession.cs" />
+    <Compile Include="Session\MqttSession.cs" />
     <Compile Include="Utility\Trace.cs" />
+    <Compile Include="Utility\QueueExtension.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkTargetsVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

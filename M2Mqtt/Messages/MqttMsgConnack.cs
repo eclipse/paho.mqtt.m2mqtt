@@ -15,6 +15,7 @@ Contributors:
 */
 
 using System;
+using uPLibrary.Networking.M2Mqtt.Exceptions;
 
 namespace uPLibrary.Networking.M2Mqtt.Messages
 {
@@ -35,12 +36,29 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
 
         private const byte TOPIC_NAME_COMP_RESP_BYTE_OFFSET = 0;
         private const byte TOPIC_NAME_COMP_RESP_BYTE_SIZE = 1;
+        // [v3.1.1] connect acknowledge flags replace "old" topic name compression respone (not used in 3.1)
+        private const byte CONN_ACK_FLAGS_BYTE_OFFSET = 0;
+        private const byte CONN_ACK_FLAGS_BYTE_SIZE = 1;
+        // [v3.1.1] session present flag
+        private const byte SESSION_PRESENT_FLAG_MASK = 0x01;
+        private const byte SESSION_PRESENT_FLAG_OFFSET = 0x00;
+        private const byte SESSION_PRESENT_FLAG_SIZE = 0x01;
         private const byte CONN_RETURN_CODE_BYTE_OFFSET = 1;
         private const byte CONN_RETURN_CODE_BYTE_SIZE = 1;
 
         #endregion
 
         #region Properties...
+
+        // [v3.1.1] session present flag
+        /// <summary>
+        /// Session present flag
+        /// </summary>
+        public bool SessionPresent
+        {
+            get { return this.sessionPresent; }
+            set { this.sessionPresent = value; }
+        }
 
         /// <summary>
         /// Return Code
@@ -52,6 +70,9 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         }
 
         #endregion
+
+        // [v3.1.1] session present flag
+        private bool sessionPresent;
 
         // return code for CONNACK message
         private byte returnCode;
@@ -68,12 +89,20 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// Parse bytes for a CONNACK message
         /// </summary>
         /// <param name="fixedHeaderFirstByte">First fixed header byte</param>
+        /// <param name="protocolVersion">Protocol Version</param>
         /// <param name="channel">Channel connected to the broker</param>
         /// <returns>CONNACK message instance</returns>
-        public static MqttMsgConnack Parse(byte fixedHeaderFirstByte, IMqttNetworkChannel channel)
+        public static MqttMsgConnack Parse(byte fixedHeaderFirstByte, byte protocolVersion, IMqttNetworkChannel channel)
         {
             byte[] buffer;
             MqttMsgConnack msg = new MqttMsgConnack();
+
+            if (protocolVersion == MqttMsgConnect.PROTOCOL_VERSION_V3_1_1)
+            {
+                // [v3.1.1] check flag bits
+                if ((fixedHeaderFirstByte & MSG_FLAG_BITS_MASK) != MQTT_MSG_CONNACK_FLAG_BITS)
+                    throw new MqttClientException(MqttClientErrorCode.InvalidFlagBits);
+            }
 
             // get remaining length and allocate buffer
             int remainingLength = MqttMsgBase.decodeRemainingLength(channel);
@@ -81,13 +110,18 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
 
             // read bytes from socket...
             channel.Receive(buffer);
+            if (protocolVersion == MqttMsgConnect.PROTOCOL_VERSION_V3_1_1)
+            {
+                // [v3.1.1] ... set session present flag ...
+                msg.sessionPresent = (buffer[CONN_ACK_FLAGS_BYTE_OFFSET] & SESSION_PRESENT_FLAG_MASK) != 0x00;
+            }
             // ...and set return code from broker
             msg.returnCode = buffer[CONN_RETURN_CODE_BYTE_OFFSET];
 
             return msg;
         }
 
-        public override byte[] GetBytes()
+        public override byte[] GetBytes(byte ProtocolVersion)
         {
             int fixedHeaderSize = 0;
             int varHeaderSize = 0;
@@ -96,8 +130,12 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             byte[] buffer;
             int index = 0;
 
-            // topic name compression response and connect return code
-            varHeaderSize += (TOPIC_NAME_COMP_RESP_BYTE_SIZE + CONN_RETURN_CODE_BYTE_SIZE);
+            if (ProtocolVersion == MqttMsgConnect.PROTOCOL_VERSION_V3_1_1)
+                // flags byte and connect return code
+                varHeaderSize += (CONN_ACK_FLAGS_BYTE_SIZE + CONN_RETURN_CODE_BYTE_SIZE);
+            else
+                // topic name compression response and connect return code
+                varHeaderSize += (TOPIC_NAME_COMP_RESP_BYTE_SIZE + CONN_RETURN_CODE_BYTE_SIZE);
 
             remainingLength += (varHeaderSize + payloadSize);
 
@@ -117,14 +155,20 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             buffer = new byte[fixedHeaderSize + varHeaderSize + payloadSize];
 
             // first fixed header byte
-            buffer[index] = (byte)(MQTT_MSG_CONNACK_TYPE << MSG_TYPE_OFFSET);
-            index++;
-
+            if (ProtocolVersion == MqttMsgConnect.PROTOCOL_VERSION_V3_1_1)
+                buffer[index++] = (MQTT_MSG_CONNACK_TYPE << MSG_TYPE_OFFSET) | MQTT_MSG_CONNACK_FLAG_BITS; // [v.3.1.1]
+            else
+                buffer[index++] = (byte)(MQTT_MSG_CONNACK_TYPE << MSG_TYPE_OFFSET);
+            
             // encode remaining length
             index = this.encodeRemainingLength(remainingLength, buffer, index);
 
-            // topic name compression response (reserved values. not used);
-            buffer[index++] = 0x00;
+            if (ProtocolVersion == MqttMsgConnect.PROTOCOL_VERSION_V3_1_1)
+                // [v3.1.1] session present flag
+                buffer[index++] = this.sessionPresent ? (byte)(1 << SESSION_PRESENT_FLAG_OFFSET) : (byte)0x00;
+            else
+                // topic name compression response (reserved values. not used);
+                buffer[index++] = 0x00;
             
             // connect return code
             buffer[index++] = this.returnCode;

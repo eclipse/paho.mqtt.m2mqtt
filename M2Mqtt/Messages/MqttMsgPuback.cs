@@ -14,6 +14,8 @@ Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
 */
 
+using uPLibrary.Networking.M2Mqtt.Exceptions;
+
 namespace uPLibrary.Networking.M2Mqtt.Messages
 {
     /// <summary>
@@ -21,23 +23,6 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
     /// </summary>
     public class MqttMsgPuback : MqttMsgBase
     {
-        #region Properties...
-
-        /// <summary>
-        /// Message identifier for the publish message
-        /// that is acknowledged
-        /// </summary>
-        public ushort MessageId
-        {
-            get { return this.messageId; }
-            set { this.messageId = value; }
-        }
-
-        #endregion
-
-        // message identifier
-        private ushort messageId;
-        
         /// <summary>
         /// Constructor
         /// </summary>
@@ -46,7 +31,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             this.type = MQTT_MSG_PUBACK_TYPE;
         }
 
-        public override byte[] GetBytes()
+        public override byte[] GetBytes(byte protocolVersion)
         {
             int fixedHeaderSize = 0;
             int varHeaderSize = 0;
@@ -76,7 +61,10 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             buffer = new byte[fixedHeaderSize + varHeaderSize + payloadSize];
 
             // first fixed header byte
-            buffer[index++] = (MQTT_MSG_PUBACK_TYPE << MSG_TYPE_OFFSET);
+            if (protocolVersion == MqttMsgConnect.PROTOCOL_VERSION_V3_1_1)
+                buffer[index++] = (MQTT_MSG_PUBACK_TYPE << MSG_TYPE_OFFSET) | MQTT_MSG_PUBACK_FLAG_BITS; // [v.3.1.1]
+            else
+                buffer[index++] = (MQTT_MSG_PUBACK_TYPE << MSG_TYPE_OFFSET);
                               
             // encode remaining length
             index = this.encodeRemainingLength(remainingLength, buffer, index);
@@ -92,13 +80,21 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// Parse bytes for a PUBACK message
         /// </summary>
         /// <param name="fixedHeaderFirstByte">First fixed header byte</param>
+        /// <param name="protocolVersion">Protocol Version</param>
         /// <param name="channel">Channel connected to the broker</param>
         /// <returns>PUBACK message instance</returns>
-        public static MqttMsgPuback Parse(byte fixedHeaderFirstByte, IMqttNetworkChannel channel)
+        public static MqttMsgPuback Parse(byte fixedHeaderFirstByte, byte protocolVersion, IMqttNetworkChannel channel)
         {
             byte[] buffer;
             int index = 0;
             MqttMsgPuback msg = new MqttMsgPuback();
+
+            if (protocolVersion == MqttMsgConnect.PROTOCOL_VERSION_V3_1_1)
+            {
+                // [v3.1.1] check flag bits
+                if ((fixedHeaderFirstByte & MSG_FLAG_BITS_MASK) != MQTT_MSG_PUBACK_FLAG_BITS)
+                    throw new MqttClientException(MqttClientErrorCode.InvalidFlagBits);
+            }
 
             // get remaining length and allocate buffer
             int remainingLength = MqttMsgBase.decodeRemainingLength(channel);

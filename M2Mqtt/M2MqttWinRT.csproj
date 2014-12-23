@@ -72,10 +72,14 @@
     <Compile Include="MqttClient.cs" />
     <Compile Include="MqttSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Session\MqttBrokerSession.cs" />
+    <Compile Include="Session\MqttClientSession.cs" />
+    <Compile Include="Session\MqttSession.cs" />
     <Compile Include="Utility\QueueExtension.cs" />
     <Compile Include="Utility\Trace.cs" />
     <Compile Include="WinRT\Fx.cs" />
     <Compile Include="WinRT\MqttNetworkChannel.cs" />
+    <Compile Include="WinRT\Hashtable.cs" />
     <Compile Include="WinRT\Queue.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

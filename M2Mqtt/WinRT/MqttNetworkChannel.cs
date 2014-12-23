@@ -23,6 +23,7 @@ using Windows.Networking;
 using Windows.Networking.Sockets;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Storage.Streams;
+using System.Threading;
 
 namespace uPLibrary.Networking.M2Mqtt
 {
@@ -73,11 +74,45 @@ namespace uPLibrary.Networking.M2Mqtt
             int idx = 0;
             while (idx < buffer.Length)
             {
+                // fixed scenario with socket closed gracefully by peer/broker and
+                // Read return 0. Avoid infinite loop.
+
                 // read is executed synchronously
                 result = this.socket.InputStream.ReadAsync(buffer.AsBuffer(), (uint)buffer.Length, InputStreamOptions.None).AsTask().Result;
+                if (result.Length == 0)
+                    return 0;
                 idx += (int)result.Length;
             }
             return buffer.Length;
+        }
+
+        public int Receive(byte[] buffer, int timeout)
+        {
+            CancellationTokenSource cts = new CancellationTokenSource(timeout);
+
+            try
+            {
+                IBuffer result;
+
+                // read all data needed (until fill buffer)
+                int idx = 0;
+                while (idx < buffer.Length)
+                {
+                    // fixed scenario with socket closed gracefully by peer/broker and
+                    // Read return 0. Avoid infinite loop.
+
+                    // read is executed synchronously
+                    result = this.socket.InputStream.ReadAsync(buffer.AsBuffer(), (uint)buffer.Length, InputStreamOptions.None).AsTask(cts.Token).Result;
+                    if (result.Length == 0)
+                        return 0;
+                    idx += (int)result.Length;
+                }
+                return buffer.Length;
+            }
+            catch (TaskCanceledException)
+            {
+                return 0;
+            }
         }
 
         public int Send(byte[] buffer)

@@ -51,9 +51,9 @@ namespace uPLibrary.Networking.M2Mqtt.Exceptions
     public enum MqttClientErrorCode
     {
         /// <summary>
-        /// Will topic length error
+        /// Will error (topic, message or QoS level)
         /// </summary>
-        WillTopicWrong = 1,
+        WillWrong = 1,
 
         /// <summary>
         /// Keep alive period too large
@@ -98,6 +98,35 @@ namespace uPLibrary.Networking.M2Mqtt.Exceptions
         /// <summary>
         /// Wrong Message Id
         /// </summary>
-        WrongMessageId
+        WrongMessageId,
+
+        /// <summary>
+        /// Inflight queue is full
+        /// </summary>
+        InflightQueueFull,
+
+        // [v3.1.1]
+        /// <summary>
+        /// Invalid flag bits received 
+        /// </summary>
+        InvalidFlagBits,
+
+        // [v3.1.1]
+        /// <summary>
+        /// Invalid connect flags received
+        /// </summary>
+        InvalidConnectFlags,
+
+        // [v3.1.1]
+        /// <summary>
+        /// Invalid client id
+        /// </summary>
+        InvalidClientId,
+
+        // [v3.1.1]
+        /// <summary>
+        /// Invalid protocol name
+        /// </summary>
+        InvalidProtocolName
     }
 }

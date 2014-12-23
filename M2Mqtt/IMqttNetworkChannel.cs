@@ -37,6 +37,14 @@ namespace uPLibrary.Networking.M2Mqtt
         int Receive(byte[] buffer);
 
         /// <summary>
+        /// Receive data from the network channel with a specified timeout
+        /// </summary>
+        /// <param name="buffer">Data buffer for receiving data</param>
+        /// <param name="timeout">Timeout on receiving (in milliseconds)</param>
+        /// <returns>Number of bytes received</returns>
+        int Receive(byte[] buffer, int timeout);
+
+        /// <summary>
         /// Send data on the network channel to the broker
         /// </summary>
         /// <param name="buffer">Data buffer to send</param>

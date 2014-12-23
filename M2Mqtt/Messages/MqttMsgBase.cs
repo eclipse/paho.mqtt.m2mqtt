@@ -30,6 +30,9 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         internal const byte MSG_TYPE_MASK = 0xF0;
         internal const byte MSG_TYPE_OFFSET = 0x04;
         internal const byte MSG_TYPE_SIZE = 0x04;
+        internal const byte MSG_FLAG_BITS_MASK = 0x0F;      // [v3.1.1]
+        internal const byte MSG_FLAG_BITS_OFFSET = 0x00;    // [v3.1.1]
+        internal const byte MSG_FLAG_BITS_SIZE = 0x04;      // [v3.1.1]
         internal const byte DUP_FLAG_MASK = 0x08;
         internal const byte DUP_FLAG_OFFSET = 0x03;
         internal const byte DUP_FLAG_SIZE = 0x01;
@@ -56,10 +59,29 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         internal const byte MQTT_MSG_PINGRESP_TYPE = 0x0D;
         internal const byte MQTT_MSG_DISCONNECT_TYPE = 0x0E;
 
+        // [v3.1.1] MQTT flag bits
+        internal const byte MQTT_MSG_CONNECT_FLAG_BITS = 0x00;
+        internal const byte MQTT_MSG_CONNACK_FLAG_BITS = 0x00;
+        internal const byte MQTT_MSG_PUBLISH_FLAG_BITS = 0x00; // just defined as 0x00 but depends on publish props (dup, qos, retain) 
+        internal const byte MQTT_MSG_PUBACK_FLAG_BITS = 0x00;
+        internal const byte MQTT_MSG_PUBREC_FLAG_BITS = 0x00;
+        internal const byte MQTT_MSG_PUBREL_FLAG_BITS = 0x02;
+        internal const byte MQTT_MSG_PUBCOMP_FLAG_BITS = 0x00;
+        internal const byte MQTT_MSG_SUBSCRIBE_FLAG_BITS = 0x02;
+        internal const byte MQTT_MSG_SUBACK_FLAG_BITS = 0x00;
+        internal const byte MQTT_MSG_UNSUBSCRIBE_FLAG_BITS = 0x02;
+        internal const byte MQTT_MSG_UNSUBACK_FLAG_BITS = 0x00;
+        internal const byte MQTT_MSG_PINGREQ_FLAG_BITS = 0x00;
+        internal const byte MQTT_MSG_PINGRESP_FLAG_BITS = 0x00;
+        internal const byte MQTT_MSG_DISCONNECT_FLAG_BITS = 0x00;
+
         // QOS levels
         public const byte QOS_LEVEL_AT_MOST_ONCE = 0x00;
         public const byte QOS_LEVEL_AT_LEAST_ONCE = 0x01;
         public const byte QOS_LEVEL_EXACTLY_ONCE = 0x02;
+
+        // SUBSCRIBE QoS level granted failure [v3.1.1]
+        public const byte QOS_LEVEL_GRANTED_FAILURE = 0x80;
 
         internal const ushort MAX_TOPIC_LENGTH = 65535;
         internal const ushort MIN_TOPIC_LENGTH = 1;
@@ -105,6 +127,15 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             set { this.retain = value; }
         }
 
+        /// <summary>
+        /// Message identifier for the message
+        /// </summary>
+        public ushort MessageId
+        {
+            get { return this.messageId; }
+            set { this.messageId = value; }
+        }
+
         #endregion
 
         // message type
@@ -115,12 +146,15 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         protected byte qosLevel;
         // retain flag
         protected bool retain;
+        // message identifier
+        protected ushort messageId;
 
         /// <summary>
         /// Returns message bytes rapresentation
         /// </summary>
+        /// <param name="protocolVersion">Protocol version</param>
         /// <returns>Bytes rapresentation</returns>
-        public abstract byte[] GetBytes();
+        public abstract byte[] GetBytes(byte protocolVersion);
         
         /// <summary>
         /// Encode remaining length and insert it into message buffer

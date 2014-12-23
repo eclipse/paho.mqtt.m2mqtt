@@ -15,6 +15,7 @@ Contributors:
 */
 
 using System;
+using uPLibrary.Networking.M2Mqtt.Exceptions;
 
 namespace uPLibrary.Networking.M2Mqtt.Messages
 {
@@ -24,16 +25,6 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
     public class MqttMsgSuback : MqttMsgBase
     {
         #region Properties...
-
-        /// <summary>
-        /// Message identifier for the subscribe message
-        /// that is acknowledged
-        /// </summary>
-        public ushort MessageId
-        {
-            get { return this.messageId; }
-            set { this.messageId = value; }
-        }
 
         /// <summary>
         /// List of granted QOS Levels
@@ -46,8 +37,6 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
 
         #endregion
 
-        // message identifier
-        private ushort messageId;
         // granted QOS levels
         byte[] grantedQosLevels;
 
@@ -63,13 +52,21 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// Parse bytes for a SUBACK message
         /// </summary>
         /// <param name="fixedHeaderFirstByte">First fixed header byte</param>
+        /// <param name="protocolVersion">Protocol Version</param>
         /// <param name="channel">Channel connected to the broker</param>
         /// <returns>SUBACK message instance</returns>
-        public static MqttMsgSuback Parse(byte fixedHeaderFirstByte, IMqttNetworkChannel channel)
+        public static MqttMsgSuback Parse(byte fixedHeaderFirstByte, byte protocolVersion, IMqttNetworkChannel channel)
         {
             byte[] buffer;
             int index = 0;
             MqttMsgSuback msg = new MqttMsgSuback();
+
+            if (protocolVersion == MqttMsgConnect.PROTOCOL_VERSION_V3_1_1)
+            {
+                // [v3.1.1] check flag bits
+                if ((fixedHeaderFirstByte & MSG_FLAG_BITS_MASK) != MQTT_MSG_SUBACK_FLAG_BITS)
+                    throw new MqttClientException(MqttClientErrorCode.InvalidFlagBits);
+            }
 
             // get remaining length and allocate buffer
             int remainingLength = MqttMsgBase.decodeRemainingLength(channel);
@@ -93,7 +90,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             return msg;
         }
 
-        public override byte[] GetBytes()
+        public override byte[] GetBytes(byte protocolVersion)
         {
             int fixedHeaderSize = 0;
             int varHeaderSize = 0;
@@ -129,9 +126,11 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             buffer = new byte[fixedHeaderSize + varHeaderSize + payloadSize];
 
             // first fixed header byte
-            buffer[index] = (byte)(MQTT_MSG_SUBACK_TYPE << MSG_TYPE_OFFSET);
-            index++;
-
+            if (protocolVersion == MqttMsgConnect.PROTOCOL_VERSION_V3_1_1)
+                buffer[index++] = (MQTT_MSG_SUBACK_TYPE << MSG_TYPE_OFFSET) | MQTT_MSG_SUBACK_FLAG_BITS; // [v.3.1.1]
+            else
+                buffer[index++] = (byte)(MQTT_MSG_SUBACK_TYPE << MSG_TYPE_OFFSET);
+            
             // encode remaining length
             index = this.encodeRemainingLength(remainingLength, buffer, index);
 

@@ -229,6 +229,7 @@ namespace uPLibrary.Networking.M2Mqtt
             if (this.secure)
             {
                 this.sslStream.Write(buffer, 0, buffer.Length);
+                this.sslStream.Flush();
                 return buffer.Length;
             }
             else
@@ -249,32 +250,66 @@ namespace uPLibrary.Networking.M2Mqtt
             if (this.secure)
             {
                 // read all data needed (until fill buffer)
-                int idx = 0;
+                int idx = 0, read = 0;
                 while (idx < buffer.Length)
                 {
-                    idx += this.sslStream.Read(buffer, idx, buffer.Length - idx);
+                    // fixed scenario with socket closed gracefully by peer/broker and
+                    // Read return 0. Avoid infinite loop.
+                    read = this.sslStream.Read(buffer, idx, buffer.Length - idx);
+                    if (read == 0)
+                        return 0;
+                    idx += read;
                 }
                 return buffer.Length;
             }
             else
             {
                 // read all data needed (until fill buffer)
-                int idx = 0;
+                int idx = 0, read = 0;
                 while (idx < buffer.Length)
                 {
-                    idx += this.socket.Receive(buffer, idx, buffer.Length - idx, SocketFlags.None);
+                    // fixed scenario with socket closed gracefully by peer/broker and
+                    // Read return 0. Avoid infinite loop.
+                    read = this.socket.Receive(buffer, idx, buffer.Length - idx, SocketFlags.None);
+                    if (read == 0)
+                        return 0;
+                    idx += read;
                 }
                 return buffer.Length;
             }
 #else
             // read all data needed (until fill buffer)
-            int idx = 0;
+            int idx = 0, read = 0;
             while (idx < buffer.Length)
             {
-                idx += this.socket.Receive(buffer, idx, buffer.Length - idx, SocketFlags.None);
+                // fixed scenario with socket closed gracefully by peer/broker and
+                // Read return 0. Avoid infinite loop.
+                read = this.socket.Receive(buffer, idx, buffer.Length - idx, SocketFlags.None);
+                if (read == 0)
+                    return 0;
+                idx += read;
             }
             return buffer.Length;
 #endif
+        }
+
+        /// <summary>
+        /// Receive data from the network channel with a specified timeout
+        /// </summary>
+        /// <param name="buffer">Data buffer for receiving data</param>
+        /// <param name="timeout">Timeout on receiving (in milliseconds)</param>
+        /// <returns>Number of bytes received</returns>
+        public int Receive(byte[] buffer, int timeout)
+        {
+            // check data availability (timeout is in microseconds)
+            if (this.socket.Poll(timeout * 1000, SelectMode.SelectRead))
+            {
+                return this.Receive(buffer);
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         /// <summary>
