@@ -48,6 +48,14 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// Attempt (for retry)
         /// </summary>
         public int Attempt { get; set; }
+
+        /// <summary>
+        /// Unique key
+        /// </summary>
+        public string Key 
+        {
+            get { return this.Flow + "_" + this.Message.MessageId; }
+        }
     }
 
     /// <summary>

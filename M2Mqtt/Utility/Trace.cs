@@ -27,7 +27,8 @@ namespace uPLibrary.Networking.M2Mqtt.Utility
         Warning = 0x02,
         Information = 0x04,
         Verbose = 0x0F,
-        Frame = 0x10
+        Frame = 0x10,
+        Queuing = 0x20
     }
 
     // delegate for writing trace

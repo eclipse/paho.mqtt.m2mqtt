@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright (c) 2013, 2014 Paolo Patierno
 
 All rights reserved. This program and the accompanying materials
@@ -14,29 +14,16 @@ Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
 */
 
-#if (!MF_FRAMEWORK_VERSION_V4_2 && !MF_FRAMEWORK_VERSION_V4_3)
-using System;
-#else
-using Microsoft.SPOT;
-#endif
+using uPLibrary.Networking.M2Mqtt.Messages;
 
-namespace uPLibrary.Networking.M2Mqtt.Messages
+namespace uPLibrary.Networking.M2Mqtt.Internal
 {
     /// <summary>
-    /// Event Args class for published message
+    /// Internal event for a published message
     /// </summary>
-    public class MqttMsgPublishedEventArgs : EventArgs
+    public class MsgPublishedInternalEvent : MsgInternalEvent
     {
         #region Properties...
-
-        /// <summary>
-        /// Message identifier
-        /// </summary>
-        public ushort MessageId
-        {
-            get { return this.messageId; }
-            internal set { this.messageId = value; }
-        }
 
         /// <summary>
         /// Message published (or failed due to retries)
@@ -49,29 +36,17 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
 
         #endregion
 
-        // message identifier
-        ushort messageId;
-
         // published flag
         bool isPublished;
 
         /// <summary>
-        /// Constructor (published message)
-        /// </summary>
-        /// <param name="messageId">Message identifier published</param>
-        public MqttMsgPublishedEventArgs(ushort messageId) 
-            : this(messageId, true) 
-        { 
-        }
-
-        /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="messageId">Message identifier</param>
+        /// <param name="msg">Message published</param>
         /// <param name="isPublished">Publish flag</param>
-        public MqttMsgPublishedEventArgs(ushort messageId, bool isPublished)
+        public MsgPublishedInternalEvent(MqttMsgBase msg, bool isPublished) 
+            : base(msg)
         {
-            this.messageId = messageId;
             this.isPublished = isPublished;
         }
     }
