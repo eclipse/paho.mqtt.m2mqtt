@@ -1,5 +1,7 @@
 # M2Mqtt
 
+![](images/M2Mqtt_Short_Logo.png)
+
 MQTT Client Library for .Net and WinRT
 
 *Project Description*
