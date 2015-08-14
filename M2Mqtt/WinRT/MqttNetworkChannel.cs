@@ -39,6 +39,9 @@ namespace uPLibrary.Networking.M2Mqtt
         // using SSL
         private bool secure;
 
+        // SSL/TLS protocol version
+        private MqttSslProtocols sslProtocol;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -46,6 +49,7 @@ namespace uPLibrary.Networking.M2Mqtt
         public MqttNetworkChannel(StreamSocket socket)
         {
             this.socket = socket;
+            this.sslProtocol = MqttSslProtocols.None;
         }
 
         /// <summary>
@@ -54,11 +58,16 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="remoteHostName">Remote Host name</param>
         /// <param name="remotePort">Remote port</param>
         /// <param name="secure">Using SSL</param>
-        public MqttNetworkChannel(string remoteHostName, int remotePort, bool secure)
+        /// <param name="sslProtocol">SSL/TLS protocol version</param>
+        public MqttNetworkChannel(string remoteHostName, int remotePort, bool secure, MqttSslProtocols sslProtocol)
         {
             this.remoteHostName = new HostName(remoteHostName);
             this.remotePort = remotePort;
             this.secure = secure;
+            this.sslProtocol = sslProtocol;
+
+            if (secure && (sslProtocol == MqttSslProtocols.None))
+                throw new ArgumentException("For secure connection, an SSL/TLS protocol version is needed");
         }
 
         public bool DataAvailable
@@ -133,9 +142,38 @@ namespace uPLibrary.Networking.M2Mqtt
             // connection is executed synchronously
             this.socket.ConnectAsync(this.remoteHostName,
                 this.remotePort.ToString(),
-                this.secure ? SocketProtectionLevel.Tls12 : SocketProtectionLevel.PlainSocket).AsTask().Wait();
+                MqttSslUtility.ToSslPlatformEnum(this.sslProtocol)).AsTask().Wait();
         }
 
-        
+        public void Accept()
+        {
+            // TODO : SSL support with StreamSocket / StreamSocketListener seems to be NOT supported
+            return;
+        }
+    }
+
+    /// <summary>
+    /// MQTT SSL utility class
+    /// </summary>
+    public static class MqttSslUtility
+    {
+        public static SocketProtectionLevel ToSslPlatformEnum(MqttSslProtocols mqttSslProtocol)
+        {
+            switch (mqttSslProtocol)
+            {
+                case MqttSslProtocols.None:
+                    return SocketProtectionLevel.PlainSocket;
+                case MqttSslProtocols.SSLv3:
+                    return SocketProtectionLevel.SslAllowNullEncryption;
+                case MqttSslProtocols.TLSv1_0:
+                    return SocketProtectionLevel.Tls10;
+                case MqttSslProtocols.TLSv1_1:
+                    return SocketProtectionLevel.Tls11;
+                case MqttSslProtocols.TLSv1_2:
+                    return SocketProtectionLevel.Tls12;
+                default:
+                    throw new ArgumentException("SSL/TLS protocol version not supported");
+            }
+        }
     }
 }

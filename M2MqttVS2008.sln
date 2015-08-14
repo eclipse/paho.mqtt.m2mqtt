@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M2MqttNetCf35", "M2Mqtt\M2MqttNetCf35.csproj", "{194FEA1B-E67F-4FC0-AC47-CD71F7F060CC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M2Mqtt.NetCf35", "M2Mqtt\M2Mqtt.NetCf35.csproj", "{194FEA1B-E67F-4FC0-AC47-CD71F7F060CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
