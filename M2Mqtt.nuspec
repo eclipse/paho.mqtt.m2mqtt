@@ -2,13 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>M2Mqtt</id>
-        <version>4.1.0.1</version>
+        <version>4.2.0.0</version>
         <title>M2Mqtt - MQTT Client Library for .Net and WinRT</title>
         <authors>Paolo Patierno</authors>
         <owners>Paolo Patierno</owners>
-        <licenseUrl>https://m2mqtt.codeplex.com/license</licenseUrl>
-        <projectUrl>https://m2mqtt.codeplex.com/</projectUrl>
-        <iconUrl>https://download-codeplex.sec.s-msft.com/Download?ProjectName=m2mqtt&amp;DownloadId=1473018&amp;Build=21028</iconUrl>
+        <licenseUrl>https://github.com/ppatierno/m2mqtt/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/ppatierno/m2mqtt</projectUrl>
+        <iconUrl>https://raw.githubusercontent.com/ppatierno/m2mqtt/master/images/M2Mqtt_Short_Logo.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>M2Mqtt is a MQTT client available for all .Net platform (.Net Framework, .Net Compact Framework and .Net Micro Framework) and WinRT platform (Windows 8.1 and Windows Phone 8.1) for M2M communication.</description>
         <summary>M2Mqtt is a MQTT client available for all .Net platform (.Net Framework, .Net Compact Framework and .Net Micro Framework) and WinRT platform (Windows 8.1 and Windows Phone 8.1) for M2M communication.</summary>
