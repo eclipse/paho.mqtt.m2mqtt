@@ -100,7 +100,7 @@ client.Connect(clientId);
 string strValue = Convert.ToString(value); 
  
 // publish a message on "/home/temperature" topic with QoS 2 
-client.Publish("/home/temperature", Encoding.UTF8.GetBytes(strValue), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE); 
+client.Publish("/home/temperature", Encoding.UTF8.GetBytes(strValue), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false); 
  
 ...
 ```
