@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>M2Mqtt</id>
-        <version>4.2.0.1</version>
+        <version>4.3.0.0</version>
         <title>M2Mqtt - MQTT Client Library for .Net and WinRT</title>
         <authors>Paolo Patierno</authors>
         <owners>Paolo Patierno</owners>
@@ -12,7 +12,7 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>M2Mqtt is a MQTT client available for all .Net platform (.Net Framework, .Net Compact Framework and .Net Micro Framework) and WinRT platform (Windows 8.1 and Windows Phone 8.1) for M2M communication.</description>
         <summary>M2Mqtt is a MQTT client available for all .Net platform (.Net Framework, .Net Compact Framework and .Net Micro Framework) and WinRT platform (Windows 8.1 and Windows Phone 8.1) for M2M communication.</summary>
-        <releaseNotes>Fixed assemblies reference</releaseNotes>
+        <releaseNotes>Added SSL/TLS client authentication</releaseNotes>
         <copyright>Paolo Patierno Copyright 2015</copyright>
         <tags>m2m mqtt queue messaging internetofthings iot cloud netmf embedded micro netduino micro-framework hardware winrt windows8 windows8.1 windowsphone windowsphone8.1 gadgeteer</tags>
     </metadata>
