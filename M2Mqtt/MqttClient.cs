@@ -50,6 +50,7 @@ using System.Collections;
 // alias needed due to Microsoft.SPOT.Trace in .Net Micro Framework
 // (it's ambiguos with uPLibrary.Networking.M2Mqtt.Utility.Trace)
 using MqttUtility = uPLibrary.Networking.M2Mqtt.Utility;
+using System.IO;
 
 namespace uPLibrary.Networking.M2Mqtt
 {
@@ -1608,7 +1609,7 @@ namespace uPLibrary.Networking.M2Mqtt
                                 (ex.ErrorCode == MqttClientErrorCode.InvalidConnectFlags));
                     }
 #if !(WINDOWS_APP || WINDOWS_PHONE_APP)
-                    else if ((e.GetType() == typeof(SocketException)) || 
+                    else if ((e.GetType() == typeof(IOException)) || (e.GetType() == typeof(SocketException)) ||
                              ((e.InnerException != null) && (e.InnerException.GetType() == typeof(SocketException)))) // added for SSL/TLS incoming connection that use SslStream that wraps SocketException
                     {
                         close = true;
