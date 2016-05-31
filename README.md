@@ -27,7 +27,7 @@ There is also the support for WinRT platforms :
 
 It can be used on Windows O.S, Windows Embedded Compact 7 / 2013 and Linux O.S. (thanks to Mono Project).
 
-The project has an official website here : http://www.m2mqtt.net
+The project has an official website here : https://m2mqtt.wordpress.com/
 
 The binaries for all platforms are also available as package from Nuget web site  https://www.nuget.org/packages/M2Mqtt/
 
