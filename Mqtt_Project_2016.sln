@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A2599C6A-E0A0-422A-9253-896EF2E67A01}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DEDA8892-0782-4E61-B9A2-38D997B72BAA}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MqttProject", "src\MqttProject\MqttProject.xproj", "{6547A56F-33B0-4A3E-8CDC-BA9B480C03D4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7B5E6714-154B-41C9-B71E-4C06EA0CFBC6}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MqttClientConsole", "Tests\MqttClientConsole\MqttClientConsole.xproj", "{DAA85FEC-9AE8-418A-BEFD-CCEC472FF5D8}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MqttServerConsole", "Tests\MqttServerConsole\MqttServerConsole.xproj", "{377AD75F-80D2-4064-BA86-D4898DEA7F2B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6547A56F-33B0-4A3E-8CDC-BA9B480C03D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6547A56F-33B0-4A3E-8CDC-BA9B480C03D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6547A56F-33B0-4A3E-8CDC-BA9B480C03D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6547A56F-33B0-4A3E-8CDC-BA9B480C03D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAA85FEC-9AE8-418A-BEFD-CCEC472FF5D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAA85FEC-9AE8-418A-BEFD-CCEC472FF5D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAA85FEC-9AE8-418A-BEFD-CCEC472FF5D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAA85FEC-9AE8-418A-BEFD-CCEC472FF5D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{377AD75F-80D2-4064-BA86-D4898DEA7F2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{377AD75F-80D2-4064-BA86-D4898DEA7F2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{377AD75F-80D2-4064-BA86-D4898DEA7F2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{377AD75F-80D2-4064-BA86-D4898DEA7F2B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6547A56F-33B0-4A3E-8CDC-BA9B480C03D4} = {A2599C6A-E0A0-422A-9253-896EF2E67A01}
+		{DAA85FEC-9AE8-418A-BEFD-CCEC472FF5D8} = {7B5E6714-154B-41C9-B71E-4C06EA0CFBC6}
+		{377AD75F-80D2-4064-BA86-D4898DEA7F2B} = {7B5E6714-154B-41C9-B71E-4C06EA0CFBC6}
+	EndGlobalSection
+EndGlobal
