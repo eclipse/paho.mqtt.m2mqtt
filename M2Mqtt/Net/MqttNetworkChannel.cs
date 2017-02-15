@@ -16,7 +16,6 @@ Contributors:
 
 #if NETSTANDARD1_6
 #define SSL
-using System.Linq;
 #endif
 
 #if SSL
