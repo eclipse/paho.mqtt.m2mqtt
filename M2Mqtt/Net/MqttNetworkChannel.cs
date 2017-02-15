@@ -14,11 +14,6 @@ Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
 */
 
-#if NETSTANDARD1_6
-#define SSL
-using System.Linq;
-#endif
-
 #if SSL
 #if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3)
 using Microsoft.SPOT.Net.Security;
@@ -198,11 +193,7 @@ namespace uPLibrary.Networking.M2Mqtt
             // in this case the parameter remoteHostName isn't a valid IP address
             if (remoteIpAddress == null)
             {
-#if NETSTANDARD1_6
-                IPHostEntry hostEntry = Dns.GetHostEntryAsync(remoteHostName).Result;
-#else
                 IPHostEntry hostEntry = Dns.GetHostEntry(remoteHostName);
-#endif
                 if ((hostEntry != null) && (hostEntry.AddressList.Length > 0))
                 {
                     // check for the first address not null
@@ -263,18 +254,12 @@ namespace uPLibrary.Networking.M2Mqtt
                 // check if there is a client certificate to add to the collection, otherwise it's null (as empty)
                 if (this.clientCert != null)
                     clientCertificates = new X509CertificateCollection(new X509Certificate[] { this.clientCert });
-#if NETSTANDARD1_6
-                this.sslStream.AuthenticateAsClientAsync(this.remoteHostName,
-                    clientCertificates,
-                    MqttSslUtility.ToSslPlatformEnum(this.sslProtocol),
-                    false).Wait();
-#else
+
                 this.sslStream.AuthenticateAsClient(this.remoteHostName,
                     clientCertificates,
                     MqttSslUtility.ToSslPlatformEnum(this.sslProtocol),
                     false);
-#endif
-
+                
 #endif
             }
 #endif
@@ -383,24 +368,11 @@ namespace uPLibrary.Networking.M2Mqtt
             if (this.secure)
             {
 #if (!MF_FRAMEWORK_VERSION_V4_2 && !MF_FRAMEWORK_VERSION_V4_3)
-#if NETSTANDARD1_6
-                this.netStream.Flush();
-#else
                 this.netStream.Close();
 #endif
-#endif
-#if NETSTANDARD1_6
-                this.sslStream.Flush();
-#else
                 this.sslStream.Close();
-#endif
             }
-#if NETSTANDARD1_6
-            this.socket.Shutdown(SocketShutdown.Both);
-            this.socket.Dispose();
-#else
             this.socket.Close();
-#endif
 #else
             this.socket.Close();
 #endif
@@ -420,11 +392,7 @@ namespace uPLibrary.Networking.M2Mqtt
                 this.netStream = new NetworkStream(this.socket);
                 this.sslStream = new SslStream(this.netStream, false, this.userCertificateValidationCallback, this.userCertificateSelectionCallback);
 
-#if NETSTANDARD1_6
-                this.sslStream.AuthenticateAsServerAsync(this.serverCert, false, MqttSslUtility.ToSslPlatformEnum(this.sslProtocol), false).Wait();
-#else
                 this.sslStream.AuthenticateAsServer(this.serverCert, false, MqttSslUtility.ToSslPlatformEnum(this.sslProtocol), false);
-#endif
 #endif
             }
 

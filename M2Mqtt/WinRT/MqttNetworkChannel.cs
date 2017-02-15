@@ -14,7 +14,6 @@ Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
 */
 
-#if !NETSTANDARD1_6
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -178,4 +177,3 @@ namespace uPLibrary.Networking.M2Mqtt
         }
     }
 }
-#endif
