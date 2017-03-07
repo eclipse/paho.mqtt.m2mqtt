@@ -370,7 +370,6 @@ namespace uPLibrary.Networking.M2Mqtt
         }
 #endif
 
-#if BROKER
         /// <summary>
         /// Constructor
         /// </summary>
@@ -390,6 +389,7 @@ namespace uPLibrary.Networking.M2Mqtt
             this.ClientId = null;
             this.CleanSession = true;
 
+            this.syncEndReceiving = new AutoResetEvent(false);
             this.keepAliveEvent = new AutoResetEvent(false);
 
             // queue for handling inflight messages (publishing and acknowledge)
@@ -404,7 +404,6 @@ namespace uPLibrary.Networking.M2Mqtt
             // session
             this.session = null;
         }
-#endif
 
         /// <summary>
         /// MqttClient initialization
