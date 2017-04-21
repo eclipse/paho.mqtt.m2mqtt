@@ -2,12 +2,12 @@
   "version": "4.3.0.0",
 
   "dependencies": {
-    "NETStandard.Library": "1.6.0",
-    "System.Collections.NonGeneric": "4.0.1",
-    "System.Net.NameResolution": "4.0.0",
-    "System.Net.Security": "4.0.0",
-    "System.Security.Cryptography.X509Certificates": "4.1.0",
-    "System.Threading.Thread": "4.0.0"
+    "NETStandard.Library": "1.6.1",
+    "System.Collections.NonGeneric": "4.3.0",
+    "System.Net.NameResolution": "4.3.0",
+    "System.Net.Security": "4.3.0",
+    "System.Security.Cryptography.X509Certificates": "4.3.0",
+    "System.Threading.Thread": "4.3.0"
   },
 
   "frameworks": {
