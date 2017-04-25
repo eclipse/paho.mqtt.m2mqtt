@@ -60,10 +60,12 @@ namespace uPLibrary.Networking.M2Mqtt
         /// Connect to remote server
         /// </summary>
         void Connect();
-        
+
         /// <summary>
         /// Accept client connection
         /// </summary>
         void Accept();
+
+        System.Threading.Tasks.Task ConnectAsync();
     }
 }
