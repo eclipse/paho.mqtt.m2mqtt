@@ -130,6 +130,16 @@ namespace uPLibrary.Networking.M2Mqtt
             return (int)this.socket.OutputStream.WriteAsync(buffer.AsBuffer()).AsTask().Result;
         }
 
+#if WINDOWS_UWP
+        public async Task<int> SendAsync(byte[] buffer)
+        {
+            DataWriter writer = new DataWriter(this.socket.OutputStream);
+            writer.WriteBytes(buffer);
+            var result = await writer.StoreAsync();
+            return (int)result;
+        }
+#endif
+
         public void Close()
         {
             this.socket.Dispose();
@@ -149,54 +159,15 @@ namespace uPLibrary.Networking.M2Mqtt
         {
             this.socket = new StreamSocket();
 
-            bool shouldRetry = await TryConnectSocketWithRetryAsync(socket, this.remoteHostName, this.remotePort.ToString(), MqttSslUtility.ToSslPlatformEnum(this.sslProtocol));
-            if (shouldRetry)
-            {
-                // Retry if the first attempt failed because of SSL errors.
-                shouldRetry = await TryConnectSocketWithRetryAsync(socket, this.remoteHostName, this.remotePort.ToString(), MqttSslUtility.ToSslPlatformEnum(this.sslProtocol));
-            }
-        }
-
-        private async Task<bool> TryConnectSocketWithRetryAsync(StreamSocket socket, HostName hostName, string serviceName, SocketProtectionLevel level)
-        {
-            try
-            {
-                // Establish a secure connection to the server (by default, the local IIS server).
-                await socket.ConnectAsync(hostName, serviceName, level);
-
-                return false;
-            }
-            catch (Exception exception)
-            {
-                // If this is an unknown status it means that the error is fatal and retry will likely fail.
-                if (SocketError.GetStatus(exception.HResult) == SocketErrorStatus.Unknown)
-                {
-                    throw;
-                }
-
-                // If the exception was caused by an SSL error that is ignorable we are going to prompt the user
-                // with an enumeration of the errors and ask for permission to ignore.
-                if (socket.Information.ServerCertificateErrorSeverity != SocketSslErrorSeverity.Ignorable)
-                {
-                    return false;
-                }
-            }
-
 #if DEBUG
             // -----------------------------------------------------------------------------------------------
             // WARNING: Only test applications should ignore SSL errors.
             // In real applications, ignoring server certificate errors can lead to Man-In-The-Middle attacks.
             // -----------------------------------------------------------------------------------------------
-            socket.Control.IgnorableServerCertificateErrors.Clear();
-            foreach (var ignorableError in socket.Information.ServerCertificateErrors)
-            {
-                socket.Control.IgnorableServerCertificateErrors.Add(ignorableError);
-            }
-
-            return true;
-#else
-            return false;
+            this.socket.Control.IgnorableServerCertificateErrors.Add(Windows.Security.Cryptography.Certificates.ChainValidationResult.Untrusted);
+            this.socket.Control.IgnorableServerCertificateErrors.Add(Windows.Security.Cryptography.Certificates.ChainValidationResult.InvalidName);
 #endif
+            await socket.ConnectAsync(this.remoteHostName, this.remotePort.ToString(), MqttSslUtility.ToSslPlatformEnum(this.sslProtocol));            
         }
 
         public void Accept()

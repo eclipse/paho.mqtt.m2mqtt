@@ -51,6 +51,10 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <returns>Number of byte sent</returns>
         int Send(byte[] buffer);
 
+#if WINDOWS_UWP
+        System.Threading.Tasks.Task<int> SendAsync(byte[] buffer);
+#endif
+
         /// <summary>
         /// Close the network channel
         /// </summary>

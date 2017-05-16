@@ -1012,7 +1012,12 @@ namespace uPLibrary.Networking.M2Mqtt
             try
             {
                 // send message
+#if WINDOWS_UWP
+                var task = this.channel.SendAsync(msgBytes);
+                task.GetAwaiter().GetResult();
+#else
                 this.channel.Send(msgBytes);
+#endif                
 
 #if !BROKER
                 // update last message sent ticks
@@ -1064,7 +1069,12 @@ namespace uPLibrary.Networking.M2Mqtt
             try
             {
                 // send message
+#if WINDOWS_UWP
+                var task = this.channel.SendAsync(msgBytes);
+                task.GetAwaiter().GetResult();
+#else
                 this.channel.Send(msgBytes);
+#endif
 
                 // update last message sent ticks
                 this.lastCommTime = Environment.TickCount;
