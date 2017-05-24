@@ -30,6 +30,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System;
+using System.Diagnostics;
 
 namespace uPLibrary.Networking.M2Mqtt
 {
@@ -395,7 +396,15 @@ namespace uPLibrary.Networking.M2Mqtt
 #endif
             }
 #if NETSTANDARD1_6
-            this.socket.Shutdown(SocketShutdown.Both);
+            try
+            {
+                this.socket.Shutdown(SocketShutdown.Both);
+            }
+            catch
+            {
+                // An error occurred when attempting to access the socket or socket has been closed
+                // Refer to: https://msdn.microsoft.com/en-us/library/system.net.sockets.socket.shutdown(v=vs.110).aspx
+            }
             this.socket.Dispose();
 #else
             this.socket.Close();
