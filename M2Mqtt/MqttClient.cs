@@ -370,7 +370,6 @@ namespace uPLibrary.Networking.M2Mqtt
         }
 #endif
 
-#if BROKER
         /// <summary>
         /// Constructor
         /// </summary>
@@ -404,7 +403,6 @@ namespace uPLibrary.Networking.M2Mqtt
             // session
             this.session = null;
         }
-#endif
 
         /// <summary>
         /// MqttClient initialization
