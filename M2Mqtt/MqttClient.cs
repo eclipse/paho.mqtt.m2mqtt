@@ -127,6 +127,8 @@ namespace uPLibrary.Networking.M2Mqtt
         // event for raising received message event
         private AutoResetEvent receiveEventWaitHandle;
 
+        private AutoResetEvent closeEventWaitHandle;
+
         // event for starting process inflight queue asynchronously
         private AutoResetEvent inflightWaitHandle;
 
@@ -399,6 +401,7 @@ namespace uPLibrary.Networking.M2Mqtt
 
             // queue for received message
             this.receiveEventWaitHandle = new AutoResetEvent(false);
+            this.closeEventWaitHandle = new AutoResetEvent(false);
             this.eventQueue = new Queue();
             this.internalQueue = new Queue();
 
@@ -456,6 +459,7 @@ namespace uPLibrary.Networking.M2Mqtt
 
             // queue for received message
             this.receiveEventWaitHandle = new AutoResetEvent(false);
+            this.closeEventWaitHandle = new AutoResetEvent(false);
             this.eventQueue = new Queue();
             this.internalQueue = new Queue();
 
@@ -659,6 +663,9 @@ namespace uPLibrary.Networking.M2Mqtt
             // wait end receive event thread
             if (this.receiveEventWaitHandle != null)
                 this.receiveEventWaitHandle.Set();
+
+            if (this.closeEventWaitHandle != null)
+                this.closeEventWaitHandle.Set();
 
             // wait end process inflight thread
             if (this.inflightWaitHandle != null)
@@ -1601,6 +1608,7 @@ namespace uPLibrary.Networking.M2Mqtt
                     {
                         // wake up thread that will notify connection is closing
                         this.OnConnectionClosing();
+                        this.closeEventWaitHandle.WaitOne();
                     }
                 }
                 catch (Exception e)

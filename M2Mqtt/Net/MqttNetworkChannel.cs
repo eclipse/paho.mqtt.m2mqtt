@@ -273,15 +273,15 @@ namespace uPLibrary.Networking.M2Mqtt
                     {
                         throw new Exception("Timeout in SSL Authentication.");
                     }
-                    sslStream.EndAuthenticateAsClient(result);
-                    if (!sslStream.IsAuthenticated || !sslStream.CanRead)
+                    this.sslStream.EndAuthenticateAsClient(result);
+                    if (!this.sslStream.IsAuthenticated || !this.sslStream.CanRead)
                     {
                         throw new Exception("Authentication error.");
                     }
                 }
                 catch (Exception ex)
                 {
-                    if (sslStream.CanRead)
+                    if (this.sslStream.CanRead)
                     {
                         this.sslStream.Close();
                     }
