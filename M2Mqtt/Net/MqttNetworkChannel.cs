@@ -271,7 +271,7 @@ namespace uPLibrary.Networking.M2Mqtt
                     null);
                     if (!result.AsyncWaitHandle.WaitOne(this.connectTimeout))
                     {
-                        throw new Exception("Timeout in SSL Authentication.");
+                        throw new Exception(string.Format("Timeout in SSL Authentication. connectTimeout={0}", connectTimeout));
                     }
                     this.sslStream.EndAuthenticateAsClient(result);
                     if (!this.sslStream.IsAuthenticated || !this.sslStream.CanRead)
@@ -285,6 +285,7 @@ namespace uPLibrary.Networking.M2Mqtt
                     {
                         this.sslStream.Close();
                     }
+                    throw;
                 }
                 finally
                 {
