@@ -18,7 +18,7 @@ This sample is a library contains an MQTT client that you can use to connect to 
 * .Net Compact Framework 3.5 & 3.9 (for Windows Embedded Compact 7 / 2013)
 * .Net Micro Framework 4.2 & 4.3
 * Mono (for Linux O.S.)
-* .Net Core (.Net Standard 1.6)
+* .Net Core (.Net Standard 2.0)
 
 There is also the support for WinRT platforms :
 
