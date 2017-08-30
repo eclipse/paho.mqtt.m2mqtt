@@ -14,7 +14,7 @@ Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
 */
 
-#if !NETSTANDARD1_6
+#if !(NETSTANDARD1_6 || NETSTANDARD2_0)
 using System.Threading;
 using System.Threading.Tasks;
 
