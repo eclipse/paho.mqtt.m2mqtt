@@ -133,9 +133,7 @@ namespace uPLibrary.Networking.M2Mqtt
 #if WINDOWS_UWP
         public async Task<int> SendAsync(byte[] buffer)
         {
-            DataWriter writer = new DataWriter(this.socket.OutputStream);
-            writer.WriteBytes(buffer);
-            var result = await writer.StoreAsync();
+            var result = await this.socket.OutputStream.WriteAsync(buffer.AsBuffer());
             return (int)result;
         }
 #endif
