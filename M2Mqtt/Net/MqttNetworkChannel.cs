@@ -402,11 +402,6 @@ namespace uPLibrary.Networking.M2Mqtt
             return;
 #endif
         }
-
-        public Task ConnectAsync()
-        {
-            throw new NotImplementedException();
-        }
     }
 
     /// <summary>

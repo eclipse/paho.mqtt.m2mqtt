@@ -70,6 +70,8 @@ namespace uPLibrary.Networking.M2Mqtt
         /// </summary>
         void Accept();
 
+#if WINDOWS_UWP
         System.Threading.Tasks.Task ConnectAsync();
+#endif
     }
 }
