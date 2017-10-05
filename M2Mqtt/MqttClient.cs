@@ -598,7 +598,11 @@ namespace uPLibrary.Networking.M2Mqtt
                 Fx.StartThread(this.ProcessInflightThread);
 
                 this.IsConnected = true;
-            }
+            }else
+	    {
+	      Close();
+	    }
+		
             return connack.ReturnCode;
         }
 
