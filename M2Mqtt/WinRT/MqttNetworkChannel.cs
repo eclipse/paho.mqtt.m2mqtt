@@ -130,6 +130,14 @@ namespace uPLibrary.Networking.M2Mqtt
             return (int)this.socket.OutputStream.WriteAsync(buffer.AsBuffer()).AsTask().Result;
         }
 
+#if WINDOWS_UWP
+        public async Task<int> SendAsync(byte[] buffer)
+        {
+            var result = await this.socket.OutputStream.WriteAsync(buffer.AsBuffer());
+            return (int)result;
+        }
+#endif
+
         public void Close()
         {
             this.socket.Dispose();
@@ -143,6 +151,21 @@ namespace uPLibrary.Networking.M2Mqtt
             this.socket.ConnectAsync(this.remoteHostName,
                 this.remotePort.ToString(),
                 MqttSslUtility.ToSslPlatformEnum(this.sslProtocol)).AsTask().Wait();
+        }
+
+        public async Task ConnectAsync()
+        {
+            this.socket = new StreamSocket();
+
+#if DEBUG
+            // -----------------------------------------------------------------------------------------------
+            // WARNING: Only test applications should ignore SSL errors.
+            // In real applications, ignoring server certificate errors can lead to Man-In-The-Middle attacks.
+            // -----------------------------------------------------------------------------------------------
+            this.socket.Control.IgnorableServerCertificateErrors.Add(Windows.Security.Cryptography.Certificates.ChainValidationResult.Untrusted);
+            this.socket.Control.IgnorableServerCertificateErrors.Add(Windows.Security.Cryptography.Certificates.ChainValidationResult.InvalidName);
+#endif
+            await socket.ConnectAsync(this.remoteHostName, this.remotePort.ToString(), MqttSslUtility.ToSslPlatformEnum(this.sslProtocol));            
         }
 
         public void Accept()

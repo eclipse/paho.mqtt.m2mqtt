@@ -42,3 +42,4 @@ using System.Runtime.InteropServices;
 #if !WindowsCE
 [assembly: AssemblyFileVersion("4.3.0.0")]
 #endif
+[assembly: ComVisible(false)]
