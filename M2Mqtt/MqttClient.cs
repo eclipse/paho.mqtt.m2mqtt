@@ -50,7 +50,6 @@ using System.Collections;
 // alias needed due to Microsoft.SPOT.Trace in .Net Micro Framework
 // (it's ambiguos with uPLibrary.Networking.M2Mqtt.Utility.Trace)
 using MqttUtility = uPLibrary.Networking.M2Mqtt.Utility;
-using System.IO;
 
 namespace uPLibrary.Networking.M2Mqtt
 {
@@ -167,7 +166,7 @@ namespace uPLibrary.Networking.M2Mqtt
 
         // event for peer/client disconnection
         public event ConnectionClosedEventHandler ConnectionClosed;
-        
+
         // channel to communicate over the network
         private IMqttNetworkChannel channel;
 
@@ -255,9 +254,20 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="brokerIpAddress">Broker IP address</param>
         [Obsolete("Use this ctor MqttClient(string brokerHostName) insted")]
         public MqttClient(IPAddress brokerIpAddress) :
-            this(brokerIpAddress, MqttSettings.MQTT_BROKER_DEFAULT_PORT, false, null, null, MqttSslProtocols.None)
+            this(brokerIpAddress, MqttSettings.MQTT_BROKER_DEFAULT_PORT, false, null, MqttSslProtocols.None)
         {
         }
+
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="channel">Custom channel to use when connecting to the broker</param>
+        public MqttClient(IMqttNetworkChannel channel)
+        {
+            Init("", 8883, true, null, MqttSslProtocols.None, null, null, channel);
+        }
+
 
         /// <summary>
         /// Constructor
@@ -266,15 +276,14 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="brokerPort">Broker port</param>
         /// <param name="secure">Using secure connection</param>
         /// <param name="caCert">CA certificate for secure connection</param>
-        /// <param name="clientCert">Client certificate</param>
         /// <param name="sslProtocol">SSL/TLS protocol version</param>
         [Obsolete("Use this ctor MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert) insted")]
-        public MqttClient(IPAddress brokerIpAddress, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol)
+        public MqttClient(IPAddress brokerIpAddress, int brokerPort, bool secure, X509Certificate caCert, MqttSslProtocols sslProtocol)
         {
 #if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK)
-            this.Init(brokerIpAddress.ToString(), brokerPort, secure, caCert, clientCert, sslProtocol, null, null);
+            this.Init(brokerIpAddress.ToString(), brokerPort, secure, caCert, sslProtocol, null, null);
 #else
-            this.Init(brokerIpAddress.ToString(), brokerPort, secure, caCert, clientCert, sslProtocol);
+            this.Init(brokerIpAddress.ToString(), brokerPort, secure, caCert, sslProtocol);
 #endif
         }
 #endif
@@ -285,7 +294,7 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="brokerHostName">Broker Host Name or IP Address</param>
         public MqttClient(string brokerHostName) :
 #if !(WINDOWS_APP || WINDOWS_PHONE_APP)
-            this(brokerHostName, MqttSettings.MQTT_BROKER_DEFAULT_PORT, false, null, null, MqttSslProtocols.None)
+            this(brokerHostName, MqttSettings.MQTT_BROKER_DEFAULT_PORT, false, null, MqttSslProtocols.None)
 #else
             this(brokerHostName, MqttSettings.MQTT_BROKER_DEFAULT_PORT, false, MqttSslProtocols.None)
 #endif
@@ -301,18 +310,17 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="sslProtocol">SSL/TLS protocol version</param>
 #if !(WINDOWS_APP || WINDOWS_PHONE_APP)
         /// <param name="caCert">CA certificate for secure connection</param>
-        /// <param name="clientCert">Client certificate</param>
-        public MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol)            
+        public MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, MqttSslProtocols sslProtocol)
 #else
         public MqttClient(string brokerHostName, int brokerPort, bool secure, MqttSslProtocols sslProtocol)            
 #endif
         {
 #if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK || WINDOWS_APP || WINDOWS_PHONE_APP)
-            this.Init(brokerHostName, brokerPort, secure, caCert, clientCert, sslProtocol, null, null);
+            this.Init(brokerHostName, brokerPort, secure, caCert, sslProtocol, null, null);
 #elif (WINDOWS_APP || WINDOWS_PHONE_APP)
             this.Init(brokerHostName, brokerPort, secure, sslProtocol);
 #else
-            this.Init(brokerHostName, brokerPort, secure, caCert, clientCert, sslProtocol);
+            this.Init(brokerHostName, brokerPort, secure, caCert, sslProtocol);
 #endif
         }
 
@@ -326,12 +334,11 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="brokerPort">Broker port</param>
         /// <param name="secure">Using secure connection</param>
         /// <param name="caCert">CA certificate for secure connection</param>
-        /// <param name="clientCert">Client certificate</param>
         /// <param name="sslProtocol">SSL/TLS protocol version</param>
         /// <param name="userCertificateValidationCallback">A RemoteCertificateValidationCallback delegate responsible for validating the certificate supplied by the remote party</param>
-        public MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol,
+        public MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, MqttSslProtocols sslProtocol,
             RemoteCertificateValidationCallback userCertificateValidationCallback)
-            : this(brokerHostName, brokerPort, secure, caCert, clientCert, sslProtocol, userCertificateValidationCallback, null)
+            : this(brokerHostName, brokerPort, secure, caCert, sslProtocol, userCertificateValidationCallback, null)
         {
         }
 
@@ -344,10 +351,10 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="sslProtocol">SSL/TLS protocol version</param>
         /// <param name="userCertificateValidationCallback">A RemoteCertificateValidationCallback delegate responsible for validating the certificate supplied by the remote party</param>
         /// <param name="userCertificateSelectionCallback">A LocalCertificateSelectionCallback delegate responsible for selecting the certificate used for authentication</param>
-        public MqttClient(string brokerHostName, int brokerPort, bool secure, MqttSslProtocols sslProtocol, 
-            RemoteCertificateValidationCallback userCertificateValidationCallback, 
+        public MqttClient(string brokerHostName, int brokerPort, bool secure, MqttSslProtocols sslProtocol,
+            RemoteCertificateValidationCallback userCertificateValidationCallback,
             LocalCertificateSelectionCallback userCertificateSelectionCallback)
-            : this(brokerHostName, brokerPort, secure, null, null, sslProtocol, userCertificateValidationCallback, userCertificateSelectionCallback)
+            : this(brokerHostName, brokerPort, secure, null, sslProtocol, userCertificateValidationCallback, userCertificateSelectionCallback)
         {
         }
 
@@ -358,18 +365,18 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="brokerPort">Broker port</param>
         /// <param name="secure">Using secure connection</param>
         /// <param name="caCert">CA certificate for secure connection</param>
-        /// <param name="clientCert">Client certificate</param>
         /// <param name="sslProtocol">SSL/TLS protocol version</param>
         /// <param name="userCertificateValidationCallback">A RemoteCertificateValidationCallback delegate responsible for validating the certificate supplied by the remote party</param>
         /// <param name="userCertificateSelectionCallback">A LocalCertificateSelectionCallback delegate responsible for selecting the certificate used for authentication</param>
-        public MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol,
+        public MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, MqttSslProtocols sslProtocol,
             RemoteCertificateValidationCallback userCertificateValidationCallback,
             LocalCertificateSelectionCallback userCertificateSelectionCallback)
         {
-            this.Init(brokerHostName, brokerPort, secure, caCert, clientCert, sslProtocol, userCertificateValidationCallback, userCertificateSelectionCallback);
+            this.Init(brokerHostName, brokerPort, secure, caCert, sslProtocol, userCertificateValidationCallback, userCertificateSelectionCallback);
         }
 #endif
 
+#if BROKER
         /// <summary>
         /// Constructor
         /// </summary>
@@ -403,6 +410,8 @@ namespace uPLibrary.Networking.M2Mqtt
             // session
             this.session = null;
         }
+#endif
+
 
         /// <summary>
         /// MqttClient initialization
@@ -411,18 +420,17 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="brokerPort">Broker port</param>
         /// <param name="secure">>Using secure connection</param>
         /// <param name="caCert">CA certificate for secure connection</param>
-        /// <param name="clientCert">Client certificate</param>
         /// <param name="sslProtocol">SSL/TLS protocol version</param>
 #if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK || WINDOWS_APP || WINDOWS_PHONE_APP)
         /// <param name="userCertificateSelectionCallback">A RemoteCertificateValidationCallback delegate responsible for validating the certificate supplied by the remote party</param>
         /// <param name="userCertificateValidationCallback">A LocalCertificateSelectionCallback delegate responsible for selecting the certificate used for authentication</param>
-        private void Init(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol,
+        private void Init(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, MqttSslProtocols sslProtocol,
             RemoteCertificateValidationCallback userCertificateValidationCallback,
-            LocalCertificateSelectionCallback userCertificateSelectionCallback)
+            LocalCertificateSelectionCallback userCertificateSelectionCallback, IMqttNetworkChannel channel = null)
 #elif (WINDOWS_APP || WINDOWS_PHONE_APP)
         private void Init(string brokerHostName, int brokerPort, bool secure, MqttSslProtocols sslProtocol)
 #else
-        private void Init(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol)
+        private void Init(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, MqttSslProtocols sslProtocol)
 #endif
         {
             // set default MQTT protocol version (default is 3.1.1)
@@ -461,11 +469,77 @@ namespace uPLibrary.Networking.M2Mqtt
 
             // create network channel
 #if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK || WINDOWS_APP || WINDOWS_PHONE_APP)
-            this.channel = new MqttNetworkChannel(this.brokerHostName, this.brokerPort, secure, caCert, clientCert, sslProtocol, userCertificateValidationCallback, userCertificateSelectionCallback);
+            this.channel = channel ?? new MqttNetworkChannel(this.brokerHostName, this.brokerPort, secure, caCert, sslProtocol, userCertificateValidationCallback, userCertificateSelectionCallback);
 #elif (WINDOWS_APP || WINDOWS_PHONE_APP)
             this.channel = new MqttNetworkChannel(this.brokerHostName, this.brokerPort, secure, sslProtocol);
 #else
-            this.channel = new MqttNetworkChannel(this.brokerHostName, this.brokerPort, secure, caCert, clientCert, sslProtocol);
+            this.channel = new MqttNetworkChannel(this.brokerHostName, this.brokerPort, secure, caCert, sslProtocol);
+#endif
+        }
+
+
+
+        /// <summary>
+        /// MqttClient initialization
+        /// </summary>
+        /// <param name="brokerHostName">Broker Host Name or IP Address</param>
+        /// <param name="brokerPort">Broker port</param>
+        /// <param name="secure">>Using secure connection</param>
+        /// <param name="caCert">CA certificate for secure connection</param>
+        /// <param name="sslProtocol">SSL/TLS protocol version</param>
+#if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK || WINDOWS_APP || WINDOWS_PHONE_APP)
+        /// <param name="userCertificateSelectionCallback">A RemoteCertificateValidationCallback delegate responsible for validating the certificate supplied by the remote party</param>
+        /// <param name="userCertificateValidationCallback">A LocalCertificateSelectionCallback delegate responsible for selecting the certificate used for authentication</param>
+        private void Init(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, MqttSslProtocols sslProtocol,
+            RemoteCertificateValidationCallback userCertificateValidationCallback,
+            LocalCertificateSelectionCallback userCertificateSelectionCallback)
+#elif (WINDOWS_APP || WINDOWS_PHONE_APP)
+        private void Init(string brokerHostName, int brokerPort, bool secure, MqttSslProtocols sslProtocol)
+#else
+        private void Init(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, MqttSslProtocols sslProtocol)
+#endif
+        {
+            // set default MQTT protocol version (default is 3.1.1)
+            this.ProtocolVersion = MqttProtocolVersion.Version_3_1_1;
+#if !SSL
+            // check security parameters
+            if (secure)
+                throw new ArgumentException("Library compiled without SSL support");
+#endif
+
+            this.brokerHostName = brokerHostName;
+            this.brokerPort = brokerPort;
+
+            // reference to MQTT settings
+            this.settings = MqttSettings.Instance;
+            // set settings port based on secure connection or not
+            if (!secure)
+                this.settings.Port = this.brokerPort;
+            else
+                this.settings.SslPort = this.brokerPort;
+
+            this.syncEndReceiving = new AutoResetEvent(false);
+            this.keepAliveEvent = new AutoResetEvent(false);
+
+            // queue for handling inflight messages (publishing and acknowledge)
+            this.inflightWaitHandle = new AutoResetEvent(false);
+            this.inflightQueue = new Queue();
+
+            // queue for received message
+            this.receiveEventWaitHandle = new AutoResetEvent(false);
+            this.eventQueue = new Queue();
+            this.internalQueue = new Queue();
+
+            // session
+            this.session = null;
+
+            // create network channel
+#if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK || WINDOWS_APP || WINDOWS_PHONE_APP)
+            this.channel = new MqttNetworkChannel(this.brokerHostName, this.brokerPort, secure, caCert, sslProtocol, userCertificateValidationCallback, userCertificateSelectionCallback);
+#elif (WINDOWS_APP || WINDOWS_PHONE_APP)
+            this.channel = new MqttNetworkChannel(this.brokerHostName, this.brokerPort, secure, sslProtocol);
+#else
+            this.channel = new MqttNetworkChannel(this.brokerHostName, this.brokerPort, secure, caCert, sslProtocol);
 #endif
         }
 
@@ -564,7 +638,7 @@ namespace uPLibrary.Networking.M2Mqtt
             this.isConnectionClosing = false;
             // start thread for receiving messages from broker
             Fx.StartThread(this.ReceiveThread);
-            
+
             MqttMsgConnack connack = (MqttMsgConnack)this.SendReceive(connect);
             // if connection accepted, start keep alive timer and 
             if (connack.ReturnCode == MqttMsgConnack.CONN_ACCEPTED)
@@ -591,7 +665,7 @@ namespace uPLibrary.Networking.M2Mqtt
 
                 // start thread for raising received message event from broker
                 Fx.StartThread(this.DispatchEventThread);
-                
+
                 // start thread for handling inflight messages queue to broker asynchronously (publish and acknowledge)
                 Fx.StartThread(this.ProcessInflightThread);
 
@@ -1374,7 +1448,7 @@ namespace uPLibrary.Networking.M2Mqtt
 #else
                                 throw new MqttClientException(MqttClientErrorCode.WrongBrokerMessage);
 #endif
-                                
+
                             // CONNACK message received
                             case MqttMsgBase.MQTT_MSG_CONNACK_TYPE:
 
@@ -1509,7 +1583,7 @@ namespace uPLibrary.Networking.M2Mqtt
                                 this.EnqueueInternal(pubrel);
 
                                 break;
-                                
+
                             // PUBCOMP message received
                             case MqttMsgBase.MQTT_MSG_PUBCOMP_TYPE:
 
@@ -1602,18 +1676,18 @@ namespace uPLibrary.Networking.M2Mqtt
                     {
                         // [v3.1.1] scenarios the receiver MUST close the network connection
                         MqttClientException ex = e as MqttClientException;
-                        close = ((ex.ErrorCode == MqttClientErrorCode.InvalidFlagBits) || 
+                        close = ((ex.ErrorCode == MqttClientErrorCode.InvalidFlagBits) ||
                                 (ex.ErrorCode == MqttClientErrorCode.InvalidProtocolName) ||
                                 (ex.ErrorCode == MqttClientErrorCode.InvalidConnectFlags));
                     }
 #if !(WINDOWS_APP || WINDOWS_PHONE_APP)
-                    else if ((e.GetType() == typeof(IOException)) || (e.GetType() == typeof(SocketException)) ||
+                    else if ((e.GetType() == typeof(SocketException)) ||
                              ((e.InnerException != null) && (e.InnerException.GetType() == typeof(SocketException)))) // added for SSL/TLS incoming connection that use SslStream that wraps SocketException
                     {
                         close = true;
                     }
 #endif
-                    
+
                     if (close)
                     {
                         // wake up thread that will notify connection is closing
@@ -1630,7 +1704,7 @@ namespace uPLibrary.Networking.M2Mqtt
         {
             int delta = 0;
             int wait = this.keepAlivePeriod;
-            
+
             // create event to signal that current thread is end
             this.keepAliveEventEnd = new AutoResetEvent(false);
 
@@ -1656,8 +1730,8 @@ namespace uPLibrary.Networking.M2Mqtt
                         this.OnConnectionClosing();
 #else
                         // ... send keep alive
-						this.Ping();
-						wait = this.keepAlivePeriod;
+                        this.Ping();
+                        wait = this.keepAlivePeriod;
 #endif
                     }
                     else
@@ -1825,7 +1899,7 @@ namespace uPLibrary.Networking.M2Mqtt
                             }
                         }
                     }
-                    
+
                     // all events for received messages dispatched, check if there is closing connection
                     if ((this.eventQueue.Count == 0) && this.isConnectionClosing)
                     {
@@ -2369,7 +2443,7 @@ namespace uPLibrary.Networking.M2Mqtt
                                             // current message not acknowledged
                                             if (!acknowledge)
                                             {
-                                                delta = Environment.TickCount - msgContext.Timestamp; 
+                                                delta = Environment.TickCount - msgContext.Timestamp;
                                                 // check timeout for receiving PUBCOMP since PUBREL was sent
                                                 if (delta >= this.settings.DelayOnRetry)
                                                 {
@@ -2438,7 +2512,7 @@ namespace uPLibrary.Networking.M2Mqtt
                                                 if (msgContext.Attempt > 1)
                                                     pubrel.DupFlag = true;
                                             }
-                                            
+
                                             this.Send(pubrel);
 
                                             // update timeout : minimum between delay (based on current message sent) or current timeout
