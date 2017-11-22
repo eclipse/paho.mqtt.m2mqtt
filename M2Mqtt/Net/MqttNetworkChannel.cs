@@ -17,15 +17,14 @@ Contributors:
 #if SSL
 #if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3)
 using Microsoft.SPOT.Net.Security;
-#else
-using System.Net.Security;
-using System.Security.Authentication;
 #endif
 #endif
 using System.Net.Sockets;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System;
+using System.Security.Authentication;
+using System.Net.Security;
 
 namespace uPLibrary.Networking.M2Mqtt
 {
@@ -50,10 +49,8 @@ namespace uPLibrary.Networking.M2Mqtt
 
         // CA certificate (on client)
         private X509Certificate caCert;
-        // Server certificate (on broker)
+        // Server certificate(on broker)
         private X509Certificate serverCert;
-        // client certificate (on client)
-        private X509Certificate clientCert;
 
         // SSL/TLS protocol version
         private MqttSslProtocols sslProtocol;
@@ -119,7 +116,7 @@ namespace uPLibrary.Networking.M2Mqtt
         {
 
         }
-        
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -154,9 +151,9 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="remotePort">Remote port</param>
         public MqttNetworkChannel(string remoteHostName, int remotePort)
 #if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK)
-            : this(remoteHostName, remotePort, false, null, null, MqttSslProtocols.None, null, null)
+            : this(remoteHostName, remotePort, false, null, MqttSslProtocols.None, null, null)
 #else
-            : this(remoteHostName, remotePort, false, null, null, MqttSslProtocols.None)
+            : this(remoteHostName, remotePort, false, null, MqttSslProtocols.None)
 #endif
         {
         }
@@ -168,16 +165,15 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="remotePort">Remote port</param>
         /// <param name="secure">Using SSL</param>
         /// <param name="caCert">CA certificate</param>
-        /// <param name="clientCert">Client certificate</param>
         /// <param name="sslProtocol">SSL/TLS protocol version</param>
 #if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK)
         /// <param name="userCertificateSelectionCallback">A RemoteCertificateValidationCallback delegate responsible for validating the certificate supplied by the remote party</param>
         /// <param name="userCertificateValidationCallback">A LocalCertificateSelectionCallback delegate responsible for selecting the certificate used for authentication</param>
-        public MqttNetworkChannel(string remoteHostName, int remotePort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol,
+        public MqttNetworkChannel(string remoteHostName, int remotePort, bool secure, X509Certificate caCert, MqttSslProtocols sslProtocol,
             RemoteCertificateValidationCallback userCertificateValidationCallback,
             LocalCertificateSelectionCallback userCertificateSelectionCallback)
 #else
-        public MqttNetworkChannel(string remoteHostName, int remotePort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol)
+        public MqttNetworkChannel(string remoteHostName, int remotePort, bool secure, X509Certificate caCert, MqttSslProtocols sslProtocol)
 #endif
         {
             IPAddress remoteIpAddress = null;
@@ -213,7 +209,6 @@ namespace uPLibrary.Networking.M2Mqtt
             this.remotePort = remotePort;
             this.secure = secure;
             this.caCert = caCert;
-            this.clientCert = clientCert;
             this.sslProtocol = sslProtocol;
 #if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK)
             this.userCertificateValidationCallback = userCertificateValidationCallback;
@@ -245,21 +240,16 @@ namespace uPLibrary.Networking.M2Mqtt
                 // server authentication (SSL/TLS handshake)
 #if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3)
                 this.sslStream.AuthenticateAsClient(this.remoteHostName,
-                    this.clientCert,
+                    null,
                     new X509Certificate[] { this.caCert },
                     SslVerification.CertificateRequired,
                     MqttSslUtility.ToSslPlatformEnum(this.sslProtocol));
 #else
-                X509CertificateCollection clientCertificates = null;
-                // check if there is a client certificate to add to the collection, otherwise it's null (as empty)
-                if (this.clientCert != null)
-                    clientCertificates = new X509CertificateCollection(new X509Certificate[] { this.clientCert });
-
                 this.sslStream.AuthenticateAsClient(this.remoteHostName,
-                    clientCertificates,
+                    null,
                     MqttSslUtility.ToSslPlatformEnum(this.sslProtocol),
                     false);
-                
+
 #endif
             }
 #endif
