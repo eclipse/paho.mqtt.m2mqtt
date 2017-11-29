@@ -1,0 +1,9 @@
+{
+  "framework": {
+    "net451": {
+      "dependencies": {
+        "System.Collections.Immutable": "1.3.1"
+      }
+    }
+  }
+}
