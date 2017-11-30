@@ -24,6 +24,8 @@ using Windows.Networking.Sockets;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Storage.Streams;
 using System.Threading;
+using Windows.Security.Cryptography.Certificates;
+using System.Diagnostics;
 
 namespace uPLibrary.Networking.M2Mqtt
 {
@@ -156,16 +158,46 @@ namespace uPLibrary.Networking.M2Mqtt
         public async Task ConnectAsync()
         {
             this.socket = new StreamSocket();
+            int retryTime = 2;
+            while (retryTime > 0)
+            {
+                try
+                {
+                    await socket.ConnectAsync(this.remoteHostName, this.remotePort.ToString(), MqttSslUtility.ToSslPlatformEnum(this.sslProtocol));
+                    break;
+                }
+                catch (Exception exception)
+                {
+                    // If this is an unknown status it means that the error is fatal and retry will likely fail.
+                    if (SocketError.GetStatus(exception.HResult) == SocketErrorStatus.Unknown)
+                    {
+                        throw;
+                    }
 
+                    // If the exception was caused by an SSL error that is ignorable we are going to prompt the user
+                    // with an enumeration of the errors and ask for permission to ignore.
+                    if (socket.Information.ServerCertificateErrorSeverity != SocketSslErrorSeverity.Ignorable)
+                    {
+                        Debug.WriteLine("Connect failed with error: " + exception.Message);
+                        throw;
+                    }
 #if DEBUG
-            // -----------------------------------------------------------------------------------------------
-            // WARNING: Only test applications should ignore SSL errors.
-            // In real applications, ignoring server certificate errors can lead to Man-In-The-Middle attacks.
-            // -----------------------------------------------------------------------------------------------
-            this.socket.Control.IgnorableServerCertificateErrors.Add(Windows.Security.Cryptography.Certificates.ChainValidationResult.Untrusted);
-            this.socket.Control.IgnorableServerCertificateErrors.Add(Windows.Security.Cryptography.Certificates.ChainValidationResult.InvalidName);
+                    // -----------------------------------------------------------------------------------------------
+                    // WARNING: Only test applications should ignore SSL errors.
+                    // In real applications, ignoring server certificate errors can lead to Man-In-The-Middle attacks.
+                    // -----------------------------------------------------------------------------------------------
+
+                    socket.Control.IgnorableServerCertificateErrors.Clear();
+
+                    foreach (var ignorableError in socket.Information.ServerCertificateErrors)
+                    {
+                        socket.Control.IgnorableServerCertificateErrors.Add(ignorableError);
+                    }
 #endif
-            await socket.ConnectAsync(this.remoteHostName, this.remotePort.ToString(), MqttSslUtility.ToSslPlatformEnum(this.sslProtocol));            
+                }
+
+                retryTime -= 1;
+            }
         }
 
         public void Accept()
