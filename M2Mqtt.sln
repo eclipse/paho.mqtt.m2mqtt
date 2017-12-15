@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M2Mqtt.NetMf43", "M2Mqtt\M2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M2Mqtt.WinRT", "M2Mqtt\M2Mqtt.WinRT.csproj", "{0238F0E3-A02B-428D-8A3F-410D8F15BB50}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "M2Mqtt.NetCore", "M2Mqtt\M2Mqtt.NetCore.csproj", "{33CD61EC-41B2-4175-A1B4-EC14F6698168}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "M2Mqtt.NetStandard", "M2Mqtt\M2Mqtt.NetStandard.csproj", "{33CD61EC-41B2-4175-A1B4-EC14F6698168}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

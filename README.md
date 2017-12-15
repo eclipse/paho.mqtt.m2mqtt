@@ -14,6 +14,7 @@ MQTT protocol is based on publish/subscribe pattern so that a client can subscri
 
 This sample is a library contains an MQTT client that you can use to connect to any MQTT broker. It is developed in C# language and works on all the following .Net platforms :
 
+* .Net Standard 2.0 (for .NET Core, .NET Framework 4.6.1+)
 * .Net Framework (up to 4.5)
 * .Net Compact Framework 3.5 & 3.9 (for Windows Embedded Compact 7 / 2013)
 * .Net Micro Framework 4.2 & 4.3
