@@ -271,7 +271,7 @@ namespace uPLibrary.Networking.M2Mqtt
         [Obsolete("Use this ctor MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert) insted")]
         public MqttClient(IPAddress brokerIpAddress, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol)
         {
-#if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK)
+#if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK)            
             this.Init(brokerIpAddress.ToString(), brokerPort, secure, caCert, clientCert, sslProtocol, null, null);
 #else
             this.Init(brokerIpAddress.ToString(), brokerPort, secure, caCert, clientCert, sslProtocol);
@@ -566,10 +566,19 @@ namespace uPLibrary.Networking.M2Mqtt
             this.isConnectionClosing = false;
             // start thread for receiving messages from broker
             Fx.StartThread(this.ReceiveThread);
-            
-            MqttMsgConnack connack = (MqttMsgConnack)this.SendReceive(connect);
+
+            MqttMsgConnack connack = null;
+            try
+            {
+                connack = SendReceive(connect) as MqttMsgConnack;
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(TraceLevel.Error, "An exception occurred when trying to connect: " + ex);
+            }
+
             // if connection accepted, start keep alive timer and 
-            if (connack.ReturnCode == MqttMsgConnack.CONN_ACCEPTED)
+            if (connack != null && connack.ReturnCode == MqttMsgConnack.CONN_ACCEPTED)
             {
                 // set all client properties
                 this.ClientId = clientId;
@@ -598,6 +607,11 @@ namespace uPLibrary.Networking.M2Mqtt
                 Fx.StartThread(this.ProcessInflightThread);
 
                 this.IsConnected = true;
+            }
+            else
+            {
+                Trace.WriteLine(TraceLevel.Error, "Connect failed, closing connection");
+                Close();
             }
             return connack.ReturnCode;
         }
@@ -866,11 +880,9 @@ namespace uPLibrary.Networking.M2Mqtt
         /// </summary>
         private void OnConnectionClosing()
         {
-            if (!this.isConnectionClosing)
-            {
-                this.isConnectionClosing = true;
-                this.receiveEventWaitHandle.Set();
-            }
+            this.isConnectionClosing = true;
+            this.receiveEventWaitHandle.Set();
+            this.syncEndReceiving.Set();
         }
 
         /// <summary>
@@ -1632,7 +1644,7 @@ namespace uPLibrary.Networking.M2Mqtt
         {
             int delta = 0;
             int wait = this.keepAlivePeriod;
-            
+
             // create event to signal that current thread is end
             this.keepAliveEventEnd = new AutoResetEvent(false);
 
