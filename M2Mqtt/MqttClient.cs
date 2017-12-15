@@ -51,6 +51,8 @@ using System.Collections;
 // (it's ambiguos with uPLibrary.Networking.M2Mqtt.Utility.Trace)
 using MqttUtility = uPLibrary.Networking.M2Mqtt.Utility;
 using System.IO;
+using System.Threading.Tasks;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace uPLibrary.Networking.M2Mqtt
 {
@@ -117,6 +119,9 @@ namespace uPLibrary.Networking.M2Mqtt
         /// Delegate that defines event handler for cliet/peer disconnection
         /// </summary>
         public delegate void ConnectionClosedEventHandler(object sender, EventArgs e);
+
+        private static int InstanceIdSequenceNumber;
+        public int InstanceId;
 
         // broker hostname (or ip address) and port
         private string brokerHostName;
@@ -271,7 +276,8 @@ namespace uPLibrary.Networking.M2Mqtt
         [Obsolete("Use this ctor MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert) insted")]
         public MqttClient(IPAddress brokerIpAddress, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol)
         {
-#if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK)
+            InstanceId = Interlocked.Increment(ref InstanceIdSequenceNumber);
+#if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK)            
             this.Init(brokerIpAddress.ToString(), brokerPort, secure, caCert, clientCert, sslProtocol, null, null);
 #else
             this.Init(brokerIpAddress.ToString(), brokerPort, secure, caCert, clientCert, sslProtocol);
@@ -307,6 +313,7 @@ namespace uPLibrary.Networking.M2Mqtt
         public MqttClient(string brokerHostName, int brokerPort, bool secure, MqttSslProtocols sslProtocol)            
 #endif
         {
+            InstanceId = Interlocked.Increment(ref InstanceIdSequenceNumber);
 #if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK || WINDOWS_APP || WINDOWS_PHONE_APP)
             this.Init(brokerHostName, brokerPort, secure, caCert, clientCert, sslProtocol, null, null);
 #elif (WINDOWS_APP || WINDOWS_PHONE_APP)
@@ -366,6 +373,7 @@ namespace uPLibrary.Networking.M2Mqtt
             RemoteCertificateValidationCallback userCertificateValidationCallback,
             LocalCertificateSelectionCallback userCertificateSelectionCallback)
         {
+            InstanceId = Interlocked.Increment(ref InstanceIdSequenceNumber);
             this.Init(brokerHostName, brokerPort, secure, caCert, clientCert, sslProtocol, userCertificateValidationCallback, userCertificateSelectionCallback);
         }
 #endif
@@ -550,6 +558,9 @@ namespace uPLibrary.Networking.M2Mqtt
                 cleanSession,
                 keepAlivePeriod,
                 (byte)this.ProtocolVersion);
+//#if !(WINDOWS_APP || WINDOWS_PHONE_APP)
+//            Trace.WriteLine(TraceLevel.Verbose, $"Calling connect: {System.Environment.StackTrace}");
+//#endif
 
             try
             {
@@ -566,10 +577,36 @@ namespace uPLibrary.Networking.M2Mqtt
             this.isConnectionClosing = false;
             // start thread for receiving messages from broker
             Fx.StartThread(this.ReceiveThread);
-            
-            MqttMsgConnack connack = (MqttMsgConnack)this.SendReceive(connect);
+
+            Trace.WriteLine(TraceLevel.Verbose, $"Instance {InstanceId} waiting for CONNACK");
+            var task = Task.Run(() =>
+            {
+                var sw = Stopwatch.StartNew();
+                var result = SendReceive(connect) as MqttMsgConnack;
+                sw.Stop();
+                Trace.WriteLine(TraceLevel.Verbose, $"CONNACK completed in {sw.Elapsed} on instance {InstanceId}");
+                return result;
+            });
+
+            Trace.WriteLine(TraceLevel.Verbose, $"Waiting for CONNACK task on instance {InstanceId}");
+            const int waitTime = 10;
+            if (!task.Wait(TimeSpan.FromSeconds(waitTime)))
+            {
+                Trace.WriteLine(TraceLevel.Verbose, $"CONNACK did not return within {waitTime} seconds for instance {InstanceId}");
+            }
+            Trace.WriteLine(TraceLevel.Verbose, $"Done waiting for CONNACK task on instance {InstanceId}");
+            MqttMsgConnack connack = null;
+            try
+            {
+                connack = task.Result;
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(TraceLevel.Error, "An exception occurred when trying to connect: " + ex);
+            }
+            Trace.WriteLine(TraceLevel.Verbose, $"CONNACK return code for instance {InstanceId}: {(connack == null ? "Nothing" : connack.ReturnCode.ToString())}");
             // if connection accepted, start keep alive timer and 
-            if (connack.ReturnCode == MqttMsgConnack.CONN_ACCEPTED)
+            if (connack != null && connack.ReturnCode == MqttMsgConnack.CONN_ACCEPTED)
             {
                 // set all client properties
                 this.ClientId = clientId;
@@ -598,6 +635,12 @@ namespace uPLibrary.Networking.M2Mqtt
                 Fx.StartThread(this.ProcessInflightThread);
 
                 this.IsConnected = true;
+            }
+            else
+            {
+                Trace.WriteLine(TraceLevel.Verbose, $"Connect failed, closing connection for instance {InstanceId}");
+                Close();
+                Trace.WriteLine(TraceLevel.Verbose, $"Connect failed, connection closed for instance {InstanceId}");
             }
             return connack.ReturnCode;
         }
@@ -642,6 +685,8 @@ namespace uPLibrary.Networking.M2Mqtt
         private void Close()
 #endif
         {
+            Trace.WriteLine(TraceLevel.Verbose, $"Closing connection for instance {InstanceId}");
+
             // stop receiving thread
             this.isRunning = false;
 
@@ -673,6 +718,8 @@ namespace uPLibrary.Networking.M2Mqtt
             this.channel.Close();
 
             this.IsConnected = false;
+
+            Trace.WriteLine(TraceLevel.Verbose, $"Connection closed for instance {InstanceId}");
         }
 
         /// <summary>
@@ -866,11 +913,14 @@ namespace uPLibrary.Networking.M2Mqtt
         /// </summary>
         private void OnConnectionClosing()
         {
-            if (!this.isConnectionClosing)
-            {
+            Trace.WriteLine(TraceLevel.Verbose, $"OnConnectionClosing called on instance {InstanceId}");
+            //if (!this.isConnectionClosing)
+            //{
                 this.isConnectionClosing = true;
                 this.receiveEventWaitHandle.Set();
-            }
+                this.syncEndReceiving.Set();
+                Trace.WriteLine(TraceLevel.Verbose, $"OnConnectionClosing: receiveEventWaitHandle set on instance {InstanceId}");
+            //}
         }
 
         /// <summary>
@@ -1079,9 +1129,11 @@ namespace uPLibrary.Networking.M2Mqtt
             if (this.syncEndReceiving.WaitOne(timeout, false))
 #else
             // wait for answer from broker
+            Trace.WriteLine(TraceLevel.Verbose, $"Instance {InstanceId} waiting for response from broker");
             if (this.syncEndReceiving.WaitOne(timeout))
 #endif
             {
+                Trace.WriteLine(TraceLevel.Verbose, $"Instance {InstanceId} received response from broker");
                 // message received without exception
                 if (this.exReceiving == null)
                     return this.msgReceived;
@@ -1091,6 +1143,7 @@ namespace uPLibrary.Networking.M2Mqtt
             }
             else
             {
+                Trace.WriteLine(TraceLevel.Verbose, $"Instance {InstanceId} timed out waiting for repsonse from broker");
                 // throw timeout exception
                 throw new MqttCommunicationException();
             }
@@ -1342,13 +1395,16 @@ namespace uPLibrary.Networking.M2Mqtt
             byte[] fixedHeaderFirstByte = new byte[1];
             byte msgType;
 
+#if !(WINDOWS_APP || WINDOWS_PHONE_APP)
+            Trace.WriteLine(TraceLevel.Verbose, $"ReceiveThread {Thread.CurrentThread.ManagedThreadId} starting in instance {InstanceId}");
+#endif
             while (this.isRunning)
             {
                 try
                 {
                     // read first byte (fixed header)
                     readBytes = this.channel.Receive(fixedHeaderFirstByte);
-
+                    Trace.WriteLine(TraceLevel.Verbose, $"Read {readBytes} bytes on instance {InstanceId}");
                     if (readBytes > 0)
                     {
 #if BROKER
@@ -1358,6 +1414,10 @@ namespace uPLibrary.Networking.M2Mqtt
 
                         // extract message type from received byte
                         msgType = (byte)((fixedHeaderFirstByte[0] & MqttMsgBase.MSG_TYPE_MASK) >> MqttMsgBase.MSG_TYPE_OFFSET);
+
+#if !(WINDOWS_APP || WINDOWS_PHONE_APP)
+                        Trace.WriteLine(TraceLevel.Verbose, $"ReceiveThread {Thread.CurrentThread.ManagedThreadId} in instance {InstanceId} got message type {msgType}");
+#endif
 
                         switch (msgType)
                         {
@@ -1589,6 +1649,7 @@ namespace uPLibrary.Networking.M2Mqtt
                     else
                     {
                         // wake up thread that will notify connection is closing
+                        Trace.WriteLine(TraceLevel.Verbose, $"Calling OnConnectionClosing on instance {InstanceId}");
                         this.OnConnectionClosing();
                     }
                 }
@@ -1619,10 +1680,14 @@ namespace uPLibrary.Networking.M2Mqtt
                     if (close)
                     {
                         // wake up thread that will notify connection is closing
+                        Trace.WriteLine(TraceLevel.Verbose, $"Calling OnConnectionClosing on instance {InstanceId}");
                         this.OnConnectionClosing();
                     }
                 }
             }
+#if !(WINDOWS_APP || WINDOWS_PHONE_APP)
+            Trace.WriteLine(TraceLevel.Verbose, $"ReceiveThread {Thread.CurrentThread.ManagedThreadId} exiting for instance {InstanceId}");
+#endif
         }
 
         /// <summary>
@@ -1632,7 +1697,11 @@ namespace uPLibrary.Networking.M2Mqtt
         {
             int delta = 0;
             int wait = this.keepAlivePeriod;
-            
+
+#if !(WINDOWS_APP || WINDOWS_PHONE_APP)
+            Trace.WriteLine(TraceLevel.Verbose, $"KeepAliveThread {Thread.CurrentThread.ManagedThreadId} starting in instance {InstanceId}");
+#endif
+
             // create event to signal that current thread is end
             this.keepAliveEventEnd = new AutoResetEvent(false);
 
@@ -1672,6 +1741,10 @@ namespace uPLibrary.Networking.M2Mqtt
 
             // signal thread end
             this.keepAliveEventEnd.Set();
+
+#if !(WINDOWS_APP || WINDOWS_PHONE_APP)
+            Trace.WriteLine(TraceLevel.Verbose, $"KeepAliveThread {Thread.CurrentThread.ManagedThreadId} exiting in instance {InstanceId}");
+#endif
         }
 
         /// <summary>
@@ -1679,6 +1752,9 @@ namespace uPLibrary.Networking.M2Mqtt
         /// </summary>
         private void DispatchEventThread()
         {
+#if !(WINDOWS_APP || WINDOWS_PHONE_APP)
+            Trace.WriteLine(TraceLevel.Verbose, $"DipatchEventThread {Thread.CurrentThread.ManagedThreadId} starting for instance {InstanceId}");
+#endif
             while (this.isRunning)
             {
 #if BROKER
@@ -1706,10 +1782,14 @@ namespace uPLibrary.Networking.M2Mqtt
                 }
 #else
                 if ((this.eventQueue.Count == 0) && !this.isConnectionClosing)
+                {
+                    Trace.WriteLine(TraceLevel.Verbose, $"DispatchEventThread waiting on receiveEventWaitHandle in instance {InstanceId}");
                     // wait on receiving message from client
                     this.receiveEventWaitHandle.WaitOne();
+                }
 #endif
 
+                Trace.WriteLine(TraceLevel.Verbose, $"isRunning: {isRunning}; Instance: {InstanceId}");
                 // check if it is running or we are closing client
                 if (this.isRunning)
                 {
@@ -1725,6 +1805,7 @@ namespace uPLibrary.Networking.M2Mqtt
                     if (internalEvent != null)
                     {
                         MqttMsgBase msg = ((MsgInternalEvent)internalEvent).Message;
+                        Trace.WriteLine(TraceLevel.Verbose, $"Got message of type {msg.Type} on instance {InstanceId}");
 
                         if (msg != null)
                         {
@@ -1831,6 +1912,8 @@ namespace uPLibrary.Networking.M2Mqtt
                     // all events for received messages dispatched, check if there is closing connection
                     if ((this.eventQueue.Count == 0) && this.isConnectionClosing)
                     {
+                        Trace.WriteLine(TraceLevel.Verbose, $"Closing connection on Instance {InstanceId}");
+
                         // client must close connection
                         this.Close();
 
@@ -1839,6 +1922,9 @@ namespace uPLibrary.Networking.M2Mqtt
                     }
                 }
             }
+#if !(WINDOWS_APP || WINDOWS_PHONE_APP)
+            Trace.WriteLine(TraceLevel.Verbose, $"DipatchEventThread {Thread.CurrentThread.ManagedThreadId} exiting for instance {InstanceId}");
+#endif
         }
 
         /// <summary>
@@ -1854,6 +1940,10 @@ namespace uPLibrary.Networking.M2Mqtt
             int timeout = Timeout.Infinite;
             int delta;
             bool msgReceivedProcessed = false;
+
+#if !(WINDOWS_APP || WINDOWS_PHONE_APP)
+            Trace.WriteLine(TraceLevel.Verbose, $"ProcessInflightThread {Thread.CurrentThread.ManagedThreadId} starting in instance {InstanceId}");
+#endif
 
             try
             {
@@ -2493,6 +2583,10 @@ namespace uPLibrary.Networking.M2Mqtt
                 // raise disconnection client event
                 this.OnConnectionClosing();
             }
+
+#if !(WINDOWS_APP || WINDOWS_PHONE_APP)
+            Trace.WriteLine(TraceLevel.Verbose, $"ProcessInflightThread {Thread.CurrentThread.ManagedThreadId} exiting in instance {InstanceId}");
+#endif
         }
 
         /// <summary>
