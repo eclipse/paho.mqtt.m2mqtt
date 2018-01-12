@@ -35,7 +35,7 @@ using Microsoft.SPOT.Net.Security;
 // else other frameworks (.Net, .Net Compact, Mono, Windows Phone) 
 #else
 using System.Collections.Generic;
-#if (SSL && !(WINDOWS_APP || WINDOWS_PHONE_APP))
+#if (SSL && !(WINDOWS_APP || WINDOWS_PHONE_APP||COMPACT_FRAMEWORK))
 using System.Security.Authentication;
 using System.Net.Security;
 #endif
