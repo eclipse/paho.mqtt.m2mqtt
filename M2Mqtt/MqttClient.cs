@@ -611,9 +611,16 @@ namespace uPLibrary.Networking.M2Mqtt
             else
             {
                 Trace.WriteLine(TraceLevel.Error, "Connect failed, closing connection");
-                Close();
+
+                // In a reconnect scenario, where the connection is accepted but the broker isn't responding,
+                // the keepAliveEnd reset event will have been created, but the thread will have shut down, 
+                // so don't wait for it to exit.
+                Close(false);
             }
-            return connack.ReturnCode;
+
+            var returnCode = connack?.ReturnCode ?? MqttMsgConnack.CONN_REFUSED_SERVER_UNAVAILABLE;
+
+            return returnCode;
         }
 
         /// <summary>
@@ -653,7 +660,7 @@ namespace uPLibrary.Networking.M2Mqtt
 #if BROKER
         public void Close()
 #else
-        private void Close()
+        private void Close(bool waitForKeepAlive = true)
 #endif
         {
             // stop receiving thread
@@ -674,7 +681,7 @@ namespace uPLibrary.Networking.M2Mqtt
             // unlock keep alive thread and wait
             this.keepAliveEvent.Set();
 
-            if (this.keepAliveEventEnd != null)
+            if (this.keepAliveEventEnd != null && waitForKeepAlive)
                 this.keepAliveEventEnd.WaitOne();
 #endif
 
