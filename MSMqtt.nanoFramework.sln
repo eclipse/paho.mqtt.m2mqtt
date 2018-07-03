@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2037
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "MSMqtt.nanoFramework", "M2Mqtt\MSMqtt.nanoFramework.nfproj", "{35948E70-4CE5-45B4-B305-B66B20AB67AD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{35948E70-4CE5-45B4-B305-B66B20AB67AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35948E70-4CE5-45B4-B305-B66B20AB67AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35948E70-4CE5-45B4-B305-B66B20AB67AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35948E70-4CE5-45B4-B305-B66B20AB67AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35948E70-4CE5-45B4-B305-B66B20AB67AD}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {948C5FD0-4516-4178-9C68-A50CDCA75456}
+	EndGlobalSection
+EndGlobal
