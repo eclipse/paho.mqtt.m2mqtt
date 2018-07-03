@@ -18,6 +18,7 @@ This sample is a library contains an MQTT client that you can use to connect to 
 * .Net Compact Framework 3.5 & 3.9 (for Windows Embedded Compact 7 / 2013)
 * .Net Micro Framework 4.2 & 4.3
 * Mono (for Linux O.S.)
+* Nanoframework
 
 There is also the support for WinRT platforms :
 
@@ -42,9 +43,13 @@ The library is available for the following solution and project files :
 * M2Mqtt.sln : solution for Visual Studio that contains projects file for .Net Framework, .Net Compact Framework 3.9, .Net Micro Framework 4.2, .Net Micro Framework 4.3 and WinRT (a portable class library) for Windows 8.1, Window Phone 8.1 and Windows 10 applications
 * M2MqttVS2008.sln : solution for Visual Studio 2008 that contains project file for .Net Compact Framework 3.5;
 
+*  M2Mqtt.nanoframework.sln : Visual studio 2017 solution for nanoframework.
+
 To build sample based on .Net Micro Framework (4.2 and 4.3) you need to download .Net Micro Framework SDK from the official CodePlex web site : https://netmf.codeplex.com/
 
 To build sample based on .Net Compact Framework 3.9 you need to download Application Builder for Windows Embedded Compact 2013 from here : http://www.microsoft.com/en-us/download/details.aspx?id=38819
+
+To build sample based of nanoframework you will need Visual Studio 2017 and nanoframework extension
 
 *SSL/TLS support*
 
