@@ -23,30 +23,28 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.CoreLibrary.1.0.0-preview050\lib\mscorlib.dll</HintPath>
+      <HintPath>..\..\Lib-Net-Test\packages\nanoFramework.CoreLibrary.1.0.0-preview054\lib\mscorlib.dll</HintPath>
       <Private>True</Private>
       <SpecificVersion>True</SpecificVersion>
+    </Reference>
+    <Reference Include="MSMqtt.nanoFramework">
+      <HintPath>..\M2Mqtt\bin\Debug\MSMqtt.nanoFramework.dll</HintPath>
     </Reference>
     <Reference Include="nanoFramework.Runtime.Events, Version=1.0.0.0, Culture=neutral, PublicKeyToken=72027bbd7f714be2">
-      <HintPath>..\packages\nanoFramework.Runtime.Events.1.0.0-preview176\lib\nanoFramework.Runtime.Events.dll</HintPath>
+      <HintPath>..\..\Lib-Net-Test\packages\nanoFramework.Runtime.Events.1.0.0-preview178\lib\nanoFramework.Runtime.Events.dll</HintPath>
       <Private>True</Private>
       <SpecificVersion>True</SpecificVersion>
     </Reference>
-    <Reference Include="nanoFramework.Runtime.Native, Version=1.0.0.0, Culture=neutral, PublicKeyToken=72027bbd7f714be2">
-      <HintPath>..\packages\nanoFramework.Runtime.Native.1.0.0-preview178\lib\nanoFramework.Runtime.Native.dll</HintPath>
+    <Reference Include="System.Net, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6df87852110734f7">
+      <HintPath>..\..\Lib-Net-Test\packages\nanoFramework.System.Net.1.0.0-preview029\lib\System.Net.dll</HintPath>
       <Private>True</Private>
       <SpecificVersion>True</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Net">
-      <HintPath>..\..\lib-System.Net\source\bin\Debug\System.Net.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\M2Mqtt\MSMqtt.nanoFramework.nfproj" />
-  </ItemGroup>
+  <Import Project="..\..\Net-tests\NetHelper\NetHelper.projitems" Label="Shared" />
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets')" />
   <ProjectExtensions>
     <ProjectCapabilities>
