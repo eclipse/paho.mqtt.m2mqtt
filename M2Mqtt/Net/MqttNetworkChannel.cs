@@ -237,7 +237,7 @@ namespace uPLibrary.Networking.M2Mqtt
         {
             this.socket = new Socket(this.remoteIpAddress.GetAddressFamily(), SocketType.Stream, ProtocolType.Tcp);
             // try connection to the broker
-            this.socket.Connect(new IPEndPoint(this.remoteIpAddress, this.remotePort));
+            this.socket.Connect(this.remoteHostName, this.remotePort);
 
 #if SSL
             // secure channel requested
