@@ -253,7 +253,7 @@ namespace uPLibrary.Networking.M2Mqtt
         /// Constructor
         /// </summary>
         /// <param name="brokerIpAddress">Broker IP address</param>
-        [Obsolete("Use this ctor MqttClient(string brokerHostName) insted")]
+        [Obsolete("Use this ctor MqttClient(string brokerHostName) instead")]
         public MqttClient(IPAddress brokerIpAddress) :
             this(brokerIpAddress, MqttSettings.MQTT_BROKER_DEFAULT_PORT, false, null, null, MqttSslProtocols.None)
         {
@@ -268,7 +268,7 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="caCert">CA certificate for secure connection</param>
         /// <param name="clientCert">Client certificate</param>
         /// <param name="sslProtocol">SSL/TLS protocol version</param>
-        [Obsolete("Use this ctor MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert) insted")]
+        [Obsolete("Use this ctor MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert) instead")]
         public MqttClient(IPAddress brokerIpAddress, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol)
         {
 #if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK)
