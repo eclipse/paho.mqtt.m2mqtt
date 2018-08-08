@@ -1,4 +1,4 @@
-﻿using System;
+﻿#if (NANOFRAMEWORK_V1_0)
 
 namespace System
 {
@@ -6,7 +6,9 @@ namespace System
     {
         public static int TickCount
         {
-            get { return (int)new DateTime().Ticks; }
+            get { return (int)DateTime.UtcNow.Ticks; }
         }
     }
 }
+
+#endif
