@@ -15,20 +15,11 @@
     <AssemblyName>MSMqtt.nanoFramework</AssemblyName>
     <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-  </PropertyGroup>
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <DefineConstants>DEBUG;TRACE;NANOFRAMEWORK;SSL</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
-    <DefineConstants>TRACE;NANOFRAMEWORK;SSL</DefineConstants>
+    <DefineConstants>SSL</DefineConstants>
   </PropertyGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
-    <Compile Include="Nanoframework\Auth.cs" />
     <Compile Include="Nanoframework\Environment.cs" />
-    <Compile Include="Nanoframework\EventArgs.cs" />
     <Compile Include="Exceptions\MqttClientException.cs" />
     <Compile Include="Exceptions\MqttCommunicationException.cs" />
     <Compile Include="Exceptions\MqttConnectionException.cs" />
@@ -74,17 +65,22 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\..\Lib-Net-Test\packages\nanoFramework.CoreLibrary.1.0.0-preview054\lib\mscorlib.dll</HintPath>
+      <HintPath>..\TestMqtt\packages\nanoFramework.CoreLibrary.1.0.0-preview062\lib\mscorlib.dll</HintPath>
       <Private>True</Private>
       <SpecificVersion>True</SpecificVersion>
     </Reference>
     <Reference Include="nanoFramework.Runtime.Events, Version=1.0.0.0, Culture=neutral, PublicKeyToken=72027bbd7f714be2">
-      <HintPath>..\..\Lib-Net-Test\packages\nanoFramework.Runtime.Events.1.0.0-preview178\lib\nanoFramework.Runtime.Events.dll</HintPath>
+      <HintPath>..\TestMqtt\packages\nanoFramework.Runtime.Events.1.0.0-preview180\lib\nanoFramework.Runtime.Events.dll</HintPath>
+      <Private>True</Private>
+      <SpecificVersion>True</SpecificVersion>
+    </Reference>
+    <Reference Include="nanoFramework.Runtime.Native, Version=1.0.0.0, Culture=neutral, PublicKeyToken=72027bbd7f714be2">
+      <HintPath>..\TestMqtt\packages\nanoFramework.Runtime.Native.1.0.0-preview187\lib\nanoFramework.Runtime.Native.dll</HintPath>
       <Private>True</Private>
       <SpecificVersion>True</SpecificVersion>
     </Reference>
     <Reference Include="System.Net, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6df87852110734f7">
-      <HintPath>..\..\Lib-Net-Test\packages\nanoFramework.System.Net.1.0.0-preview029\lib\System.Net.dll</HintPath>
+      <HintPath>..\TestMqtt\packages\nanoFramework.System.Net.1.0.0-preview031\lib\System.Net.dll</HintPath>
       <Private>True</Private>
       <SpecificVersion>True</SpecificVersion>
     </Reference>

@@ -16,7 +16,7 @@ Contributors:
 
 using System;
 // if NOT .Net Micro Framework
-#if (!MF_FRAMEWORK_VERSION_V4_2 && !MF_FRAMEWORK_VERSION_V4_3 && !NANOFRAMEWORK)
+#if (!MF_FRAMEWORK_VERSION_V4_2 && !MF_FRAMEWORK_VERSION_V4_3 && !NANOFRAMEWORK_V1_0)
 using System.Collections.Generic;
 #endif
 using System.Collections;
@@ -130,7 +130,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             // NOTE : before, I don't know how many topics will be in the payload (so use List)
 
             // if .Net Micro Framework
-#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || NANOFRAMEWORK)
+#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || NANOFRAMEWORK_V1_0)
             IList tmpTopics = new ArrayList();
             IList tmpQosLevels = new ArrayList();
 // else other frameworks (.Net, .Net Compact, Mono, Windows Phone) 
