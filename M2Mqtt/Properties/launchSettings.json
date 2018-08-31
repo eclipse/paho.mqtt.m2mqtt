@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "M2Mqtt.Core": {
+      "commandName": "Project",
+      "commandLineArgs": "TestMode"
+    }
+  }
+}
