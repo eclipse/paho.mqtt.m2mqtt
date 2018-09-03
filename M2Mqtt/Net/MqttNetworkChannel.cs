@@ -14,19 +14,17 @@ Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
 */
 
-#if SSL
 #if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3)
 using Microsoft.SPOT.Net.Security;
-#else
-using System.Net.Security;
-using System.Security.Authentication;
 #endif
-#endif
+
 using System.Net.Sockets;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System;
-
+using System.Security.Authentication;
+using System.Net.Security;
+using System.Security.Authentication;
 namespace uPLibrary.Networking.M2Mqtt
 {
     /// <summary>

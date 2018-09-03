@@ -16,6 +16,7 @@ Contributors:
 
 using System;
 using System.Net;
+using System.Net.Security;
 #if !(WINDOWS_APP || WINDOWS_PHONE_APP)
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
