@@ -89,10 +89,10 @@ namespace TestMqtt
             string topic  = e.Topic;
             byte[] bmes = e.Message;
 
-            //string message = Encoding.UTF8.GetString(e.message);
+            string message = Encoding.UTF8.GetString(e.Message,0,e.Message.Length);
 
 
-            Log.WriteLine("Publish Received Topic:" + topic + " Message:" + bmes[0].ToString() );
+            Log.WriteLine("Publish Received Topic:" + topic + " Message:" + message);
 
         }
     }

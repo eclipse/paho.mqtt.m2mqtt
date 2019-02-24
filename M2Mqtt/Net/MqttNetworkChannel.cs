@@ -242,13 +242,14 @@ namespace uPLibrary.Networking.M2Mqtt
 #endif
 
                 // server authentication (SSL/TLS handshake)
-#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || NANOFRAMEWORK_V1_0 )
+#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 )
 
                 if (clientCert != null)
                 {
                     // we have client certificate, use it for SSL authentication
                     this.sslStream.AuthenticateAsClient(this.remoteHostName,
                         this.clientCert,
+                        this.caCert,
                         new X509Certificate[] { this.caCert },
                         SslVerification.CertificateRequired,
                         MqttSslUtility.ToSslPlatformEnum(this.sslProtocol));
@@ -258,6 +259,22 @@ namespace uPLibrary.Networking.M2Mqtt
                     this.sslStream.AuthenticateAsClient(this.remoteHostName,
                         this.caCert,
                         SslVerification.NoVerification,
+                        MqttSslUtility.ToSslPlatformEnum(this.sslProtocol));
+
+                }
+#elif ( NANOFRAMEWORK_V1_0 )
+                if (clientCert != null)
+                {
+                    // we have client certificate, use it for SSL authentication
+                    this.sslStream.AuthenticateAsClient(this.remoteHostName,
+                        this.clientCert,
+                        this.caCert,
+                        MqttSslUtility.ToSslPlatformEnum(this.sslProtocol));
+                }
+                else
+                {
+                    this.sslStream.AuthenticateAsClient(this.remoteHostName,
+                        this.caCert,
                         MqttSslUtility.ToSslPlatformEnum(this.sslProtocol));
 
                 }

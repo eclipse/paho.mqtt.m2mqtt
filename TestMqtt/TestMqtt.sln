@@ -14,12 +14,12 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{C75F31E1-259C-41C5-88D6-0E8960CDCE3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C75F31E1-259C-41C5-88D6-0E8960CDCE3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C75F31E1-259C-41C5-88D6-0E8960CDCE3A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{C75F31E1-259C-41C5-88D6-0E8960CDCE3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C75F31E1-259C-41C5-88D6-0E8960CDCE3A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C75F31E1-259C-41C5-88D6-0E8960CDCE3A}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{83AD9887-ACB4-4160-BD59-D30E7973C8C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{83AD9887-ACB4-4160-BD59-D30E7973C8C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{83AD9887-ACB4-4160-BD59-D30E7973C8C0}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{83AD9887-ACB4-4160-BD59-D30E7973C8C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83AD9887-ACB4-4160-BD59-D30E7973C8C0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{83AD9887-ACB4-4160-BD59-D30E7973C8C0}.Release|Any CPU.Deploy.0 = Release|Any CPU
