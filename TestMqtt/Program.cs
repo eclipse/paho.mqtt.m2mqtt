@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Threading;
 using System.Text;
+using System.Net.NetworkInformation;
 using System.Security.Cryptography.X509Certificates;
+
 using uPLibrary.Networking.M2Mqtt;
 using uPLibrary.Networking.M2Mqtt.Messages;
-using NetHelper;
 
 namespace TestMqtt
 {
     public class Program
     {
+        private const string c_SSID = "myssid";
+        private const string c_AP_PASSWORD = "mypassword";
+
         public static void Main()
         {
  
@@ -18,7 +22,7 @@ namespace TestMqtt
             bool running = true;
 
             // Wait for Wifi/network to connect (temp)
-            Net.SetupAndConnectNetwork();
+            SetupAndConnectNetwork();
 
             // Loop forever
             while (true)
@@ -28,23 +32,19 @@ namespace TestMqtt
                     string BrokerAddress = "192.168.2.129";
                     client = new MqttClient(BrokerAddress);
 
-                    //X509Certificate caCert = new X509Certificate(MyCaCert);
-                    //X509Certificate clCert = new X509Certificate(MyClCert);
-                    //client = new MqttClient(BrokerAddress, 8883, true, caCert, clCert, MqttSslProtocols.TLSv1_2);
-
-
                     // register a callback-function (we have to implement, see below) which is called by the library when a message was received
                     client.MqttMsgPublishReceived += Client_MqttMsgPublishReceived;
                     client.MqttMsgSubscribed += Client_MqttMsgSubscribed;
+
                     // use a unique id as client id, each time we start the application
                     //clientId = Guid.NewGuid().ToString();
                     clientId = new Guid(1, 23, 44, 32, 45, 33, 22, 11, 1, 2, 3).ToString();
 
-                    Log.WriteLine("Connecting MQTT");
+                    Console.WriteLine("Connecting MQTT");
 
                     client.Connect(clientId);
 
-                    Log.WriteLine("Connected MQTT");
+                    Console.WriteLine("Connected MQTT");
                     // Subscribe topics
                     //     client.Subscribe(new string[] { "Test1", "Test2" }, new byte[] { 2, 2 });
 
@@ -56,10 +56,10 @@ namespace TestMqtt
                         "/Automation/Lights/#"
                     };
 
-                    Log.WriteLine("Subscribe /Automation/Lights/#");
+                    Console.WriteLine("Subscribe /Automation/Lights/#");
                     client.Subscribe(SubTopics, new byte[] { 2 });
 
-                    Log.WriteLine("Enter wait loop");
+                    Console.WriteLine("Enter wait loop");
                     while (running)
                     {
                         Thread.Sleep(10000);
@@ -71,7 +71,7 @@ namespace TestMqtt
                 catch (Exception ex)
                 {
                     // Do whatever please you with the exception caught
-                    Log.WriteLine("Main exception " + ex.Message);
+                    Console.WriteLine("Main exception " + ex.Message);
                 }
                     
                 // Wait before retry
@@ -81,19 +81,80 @@ namespace TestMqtt
 
         private static void Client_MqttMsgSubscribed(object sender, MqttMsgSubscribedEventArgs e)
         {
-            Log.WriteLine("Client_MqttMsgSubscribed ");
+            Console.WriteLine("Client_MqttMsgSubscribed ");
         }
 
         private static void Client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
             string topic  = e.Topic;
-            byte[] bmes = e.Message;
 
             string message = Encoding.UTF8.GetString(e.Message,0,e.Message.Length);
 
-
-            Log.WriteLine("Publish Received Topic:" + topic + " Message:" + message);
+            Console.WriteLine("Publish Received Topic:" + topic + " Message:" + message);
 
         }
+        public static void SetupAndConnectNetwork()
+        {
+            NetworkInterface[] nis = NetworkInterface.GetAllNetworkInterfaces();
+            if (nis.Length > 0)
+            {
+                // get the first interface
+                NetworkInterface ni = nis[0];
+
+                if (ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211)
+                {
+                    // network interface is Wi-Fi
+                    Console.WriteLine("Network connection is: Wi-Fi");
+
+                    Wireless80211Configuration wc = Wireless80211Configuration.GetAllWireless80211Configurations()[ni.SpecificConfigId];
+                    if (wc.Ssid != c_SSID && wc.Password != c_AP_PASSWORD)
+                    {
+                        // have to update Wi-Fi configuration
+                        wc.Ssid = c_SSID;
+                        wc.Password = c_AP_PASSWORD;
+                        wc.SaveConfiguration();
+                    }
+                    else
+                    {   // Wi-Fi configuration matches
+                    }
+                }
+                else
+                {
+                    // network interface is Ethernet
+                    Console.WriteLine("Network connection is: Ethernet");
+
+                    ni.EnableDhcp();
+                }
+
+                // wait for DHCP to complete
+                WaitIP();
+            }
+            else
+            {
+                throw new NotSupportedException("ERROR: there is no network interface configured.\r\nOpen the 'Edit Network Configuration' in Device Explorer and configure one.");
+            }
+        }
+
+        static void WaitIP()
+        {
+            Console.WriteLine("Waiting for IP...");
+
+            while (true)
+            {
+                NetworkInterface ni = NetworkInterface.GetAllNetworkInterfaces()[0];
+                if (ni.IPv4Address != null && ni.IPv4Address.Length > 0)
+                {
+                    if (ni.IPv4Address[0] != '0')
+                    {
+                        Console.WriteLine($"We have an IP: {ni.IPv4Address}");
+                        break;
+                    }
+                }
+
+                Thread.Sleep(500);
+            }
+        }
+
+
     }
 }
