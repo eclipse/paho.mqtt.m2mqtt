@@ -481,6 +481,18 @@ namespace uPLibrary.Networking.M2Mqtt
             return this.Connect(clientId, null, null, false, MqttMsgConnect.QOS_LEVEL_AT_MOST_ONCE, false, null, null, true, MqttMsgConnect.KEEP_ALIVE_PERIOD_DEFAULT);
         }
 
+	/// <summary>
+        /// Connect to broker
+        /// </summary>
+        /// <param name="clientId">Client identifier</param>
+        /// <param name="cleanSession">Clean sessione flag</param>
+        /// <returns>Return code of CONNACK message from broker</returns>
+        public byte Connect(string clientId,
+            bool cleanSession)
+        {
+            return this.Connect(clientId, null, null, false, MqttMsgConnect.QOS_LEVEL_AT_MOST_ONCE, false, null, null, cleanSession, MqttMsgConnect.KEEP_ALIVE_PERIOD_DEFAULT);
+        }
+	    
         /// <summary>
         /// Connect to broker
         /// </summary>
