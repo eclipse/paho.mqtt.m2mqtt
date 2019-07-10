@@ -1,4 +1,4 @@
-﻿#if (NANOFRAMEWORK_V1_0)
+﻿#if (NANOFRAMEWORK_1_0)
 
 namespace System
 {

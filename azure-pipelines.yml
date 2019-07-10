@@ -1,0 +1,247 @@
+trigger:
+  branches:
+    include:
+    - master
+    - nanoframework
+    - release-/*
+    - refs/tags/*
+  paths:
+    exclude:
+    - CHANGELOG.md
+    - /*.md
+    - .gitignore
+    - appveyor.yml
+  # waiting for feature to become available
+  # tags:
+  #   include:
+  #   - v/*
+
+pr:
+  branches:
+    include:
+    - master
+    - nanoframework
+    - release/*
+  autoCancel: true
+
+# add nf-tools repo to resources (for Azure Pipelines templates)
+resources:
+  repositories:
+    - repository: templates
+      type: github
+      name: nanoframework/nf-tools
+      endpoint: nanoframework
+
+jobs:
+
+#######################################
+# build
+- job: Build_M2Mqtt
+
+  pool:
+    vmImage: 'VS2017-Win2016'
+
+  variables:
+    solution: 'M2Mqtt.nanoFramework.sln'
+    buildPlatform: 'Any CPU'
+    buildConfiguration: 'Release'
+
+  steps:
+
+  - checkout: self
+
+  - script: |
+      git config --global user.email "nanoframework@outlook.com"
+      git config --global user.name "nfbot"
+      git config --global core.autocrlf true
+    displayName: Setup git identity
+
+  - task: SonarCloudPrepare@1
+    inputs:
+      SonarCloud: 'sonarcloud'
+      organization: 'nanoframework'
+      scannerMode: 'MSBuild'
+      projectKey: 'nanoframework_paho.mqtt.m2mqtt'
+    displayName: 'Prepare analysis on SonarCloud'
+
+  - task: NuGetToolInstaller@0
+    inputs:
+      versionSpec: '4.9.3'
+    displayName: 'Install specifc version of NuGet'
+
+  - task: NuGetCommand@2
+    inputs:
+      restoreSolution: '$(solution)'
+      feedsToUse: config
+      nugetConfigPath: 'M2Mqtt/NuGet.Config'
+    condition: succeeded()
+    displayName: NuGet restore
+
+  - task: InstallnFBuildComponents@1
+    displayName: Install nanoFramework MSBuild components
+
+  - task: VSBuild@1
+    inputs:
+      solution: '$(solution)'
+      platform: '$(buildPlatform)'
+      msbuildArgs: '/p:PublicRelease=true'
+      configuration: '$(buildConfiguration)'
+
+  - task: SonarCloudAnalyze@1
+    displayName: 'Run Code Analysis'
+
+  - task: SonarCloudPublish@1
+    inputs:
+      pollingTimeoutSec: '300'
+    displayName: 'Publish Quality Gate Result'
+
+  - task: PowerShell@2
+    inputs:
+        targetType: 'inline'
+        script: |
+            $MyNuGetVersion = $env:NBGV_NuGetPackageVersion -replace "\-g$env:NBGV_GitCommitIdShort", ""
+
+            # replace preview with alpha if this is a PR build
+            if($env:Build_Reason -eq 'PullRequest')
+            {
+              $MyNuGetVersion = $MyNuGetVersion -replace "preview", "alpha"
+            }
+
+            Write-Host "NuGet build number is $MyNuGetVersion"
+
+            Write-Host "$("##vso[task.setvariable variable=MY_NUGET_VERSION]")$MyNuGetVersion"
+    condition: succeeded()
+    displayName: Get NuGet build number
+
+  - task: PowerShell@2
+    inputs:
+        targetType: 'inline'
+        script: Write-Host "$("##vso[build.updatebuildnumber]")$env:NBGV_NuGetPackageVersion"
+    condition: and( succeeded(), ne(variables['system.pullrequest.isfork'], true) )
+    displayName: Update cloud build number
+
+  - task: NuGetCommand@2
+    inputs:
+      command: 'custom' 
+      arguments: 'pack M2Mqtt\nanoFramework.M2Mqtt.nuspec  -Version $(MY_NUGET_VERSION) -properties commit="$(Build.SourceVersion)"'
+    displayName: Pack NuGet
+
+  - task: CopyFiles@1
+    inputs:
+      sourceFolder: $(Build.SourcesDirectory)
+      Contents: |
+        **\nanoFramework.M2Mqtt*.nupkg
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+      flattenFolders: true
+    condition: succeeded()
+    displayName: Collecting deployable artifacts
+
+  # publish artifacts (only possible if this is not a PR originated on a fork)
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: deployables
+      ArtifactType: Container
+    condition: and( succeeded(), ne(variables['system.pullrequest.isfork'], true) )
+    displayName: Publish deployables artifacts
+
+  # push NuGet packages to MyGet feed (always happens except on PR builds)
+  - task: NuGetCommand@2
+    inputs:
+      command: push
+      nuGetFeedType: external
+      packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+      publishFeedCredentials: 'MyGet'
+    condition: succeeded()
+    displayName: Push NuGet packages to MyGet
+
+  # push NuGet class lib package to NuGet (happens on tag builds for any branch)
+  - task: NuGetCommand@2
+    inputs:
+      command: push
+      nuGetFeedType: external
+      allowPackageConflicts: true
+      packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+      publishFeedCredentials: 'NuGet'
+    condition: and( succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v') )
+    continueOnError: true
+    displayName: Push NuGet packages to NuGet
+
+  # create or update GitHub release
+  - task: GitHubReleasePublish@1
+    inputs:
+      githubEndpoint: 'nanoframework'
+      githubOwner: 'nanoframework'
+      githubRepositoryName: 'paho.mqtt.m2mqtt'
+      githubTag: v$(MY_NUGET_VERSION)
+      githubReleaseTitle: 'nanoframework.M2Mqtt Library v$(MY_NUGET_VERSION)'
+      githubReleaseNotes: 'Check the [changelog]($(Build.Repository.Uri)/blob/$(Build.SourceBranchName)/CHANGELOG.md).<br><br><h4>Install from nanoFramework MyGet development feed</h4><br>The following NuGet packages are available for download from this release:<br>:package: [.NET](https://www.myget.org/feed/nanoframework-dev/package/nuget/nanoframework.M2Mqtt/$(MY_NUGET_VERSION)) v$(MY_NUGET_VERSION).'
+      githubTargetCommitsh: $(Build.SourceVersion)
+      githubReleaseDraft: true
+      githubReleasePrerelease: true
+      githubReuseDraftOnly: true
+      githubReuseRelease: true
+      githubEditRelease: true
+      githubReleaseAsset: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    condition: and( succeeded(), not( startsWith(variables['Build.SourceBranch'], 'refs/pull') ), not( startsWith(variables['Build.SourceBranch'], 'refs/tags/v') ) )
+    displayName: Create/Update GitHub release
+
+  # create or update GitHub release ON tags from release or master branches
+  - task: GitHubReleasePublish@1
+    inputs:
+      githubEndpoint: 'nanoframework'
+      githubOwner: 'nanoframework'
+      githubRepositoryName: 'paho.mqtt.m2mqtt'
+      githubTag: v$(MY_NUGET_VERSION)
+      githubReleaseTitle: 'nanoframework.M2Mqtt Library v$(MY_NUGET_VERSION)'
+      githubReleaseNotes: 'Check the [changelog]($(Build.Repository.Uri)/blob/$(Build.SourceBranchName)/CHANGELOG.md).<br><br><h4>Install from NuGet</h4><br>The following NuGet packages are available for download from this release:<br>:package: [.NET](https://www.nuget.org/packages/nanoframework.M2Mqtt/$(MY_NUGET_VERSION)) v$(MY_NUGET_VERSION).'
+      githubTargetCommitsh: $(Build.SourceVersion)
+      githubReleaseDraft: false
+      githubReleasePrerelease: true
+      githubReuseDraftOnly: false
+      githubReuseRelease: true
+      githubEditRelease: true
+      githubReleaseAsset: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    condition: and( succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v'), contains(variables['Build.SourceBranch'], 'preview') )
+    displayName: Create/Update GitHub PREVIEW release 
+
+  # create or update GitHub release ON tags from release or master branches
+  - task: GitHubReleasePublish@1
+    inputs:
+      githubEndpoint: 'nanoframework'
+      githubOwner: 'nanoframework'
+      githubRepositoryName: 'paho.mqtt.m2mqtt'
+      githubTag: v$(MY_NUGET_VERSION)
+      githubReleaseTitle: 'nanoframework.M2Mqtt Library v$(MY_NUGET_VERSION)'
+      githubReleaseNotes: 'Check the [changelog]($(Build.Repository.Uri)/blob/$(Build.SourceBranchName)/CHANGELOG.md).<br><br><h4>Install from NuGet</h4><br>The following NuGet packages are available for download from this release:<br>:package: [.NET](https://www.nuget.org/packages/nanoframework.M2Mqtt/$(MY_NUGET_VERSION)) v$(MY_NUGET_VERSION).'
+      githubTargetCommitsh: $(Build.SourceVersion)
+      githubReleaseDraft: false
+      githubReleasePrerelease: false
+      githubReuseDraftOnly: false
+      githubReuseRelease: true
+      githubEditRelease: true
+      githubReleaseAsset: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    condition: and( succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v'), not(contains(variables['Build.SourceBranch'], 'preview') ) )
+    displayName: Create/Update GitHub stable release
+
+##################################
+# report build failure to Discord
+- job: Report_Build_Failure
+  dependsOn:
+  - Build_M2Mqtt
+  condition: failed('Build_M2Mqtt')
+
+  pool:
+    vmImage: 'VS2017-Win2016'
+
+  steps:
+
+  - checkout: self
+    fetchDepth: 1
+
+  # step from template @ nf-tools repo
+  - template: azure-pipelines-templates/discord-webhook.yml@templates  
+    parameters:
+      status: 'failure'
+      webhookUrl: '$(DiscordWebhook)'
+      message: ''

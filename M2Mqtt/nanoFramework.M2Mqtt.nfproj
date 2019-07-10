@@ -11,15 +11,16 @@
     <ProjectGuid>35948e70-4ce5-45b4-b305-b66b20ab67ad</ProjectGuid>
     <OutputType>Library</OutputType>
     <FileAlignment>512</FileAlignment>
-    <RootNamespace>MSMqtt.nanoFramework</RootNamespace>
-    <AssemblyName>MSMqtt.nanoFramework</AssemblyName>
+    <RootNamespace>M2Mqtt.nanoFramework</RootNamespace>
+    <AssemblyName>nanoFramework.M2Mqtt</AssemblyName>
     <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <DefineConstants>SSL</DefineConstants>
+    <DocumentationFile>bin\$(Configuration)\nanoFramework.M2Mqtt.xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
-    <Compile Include="Nanoframework\Environment.cs" />
+    <Compile Include="nanoFramework\Environment.cs" />
     <Compile Include="Exceptions\MqttClientException.cs" />
     <Compile Include="Exceptions\MqttCommunicationException.cs" />
     <Compile Include="Exceptions\MqttConnectionException.cs" />
@@ -64,23 +65,21 @@
     <Compile Include="Utility\Trace.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="mscorlib, Version=1.1.1.7, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.CoreLibrary.1.1.1\lib\mscorlib.dll</HintPath>
+    <Reference Include="mscorlib">
+      <HintPath>..\packages\nanoFramework.CoreLibrary.1.2.6-preview.7\lib\mscorlib.dll</HintPath>
+    </Reference>
+    <Reference Include="nanoFramework.Runtime.Events, Version=1.0.8.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\packages\nanoFramework.Runtime.Events.1.0.8-preview.14\lib\nanoFramework.Runtime.Events.dll</HintPath>
       <Private>True</Private>
       <SpecificVersion>True</SpecificVersion>
     </Reference>
-    <Reference Include="nanoFramework.Runtime.Events, Version=1.0.4.3, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.Runtime.Events.1.0.4\lib\nanoFramework.Runtime.Events.dll</HintPath>
+    <Reference Include="nanoFramework.Runtime.Native, Version=1.0.7.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\packages\nanoFramework.Runtime.Native.1.0.7-preview.17\lib\nanoFramework.Runtime.Native.dll</HintPath>
       <Private>True</Private>
       <SpecificVersion>True</SpecificVersion>
     </Reference>
-    <Reference Include="nanoFramework.Runtime.Native, Version=1.0.3.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.Runtime.Native.1.0.3-preview-003\lib\nanoFramework.Runtime.Native.dll</HintPath>
-      <Private>True</Private>
-      <SpecificVersion>True</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Net, Version=1.0.4.3, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.System.Net.1.0.4\lib\System.Net.dll</HintPath>
+    <Reference Include="System.Net, Version=1.1.1.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\packages\nanoFramework.System.Net.1.1.1-preview.18\lib\System.Net.dll</HintPath>
       <Private>True</Private>
       <SpecificVersion>True</SpecificVersion>
     </Reference>
@@ -94,4 +93,8 @@
       <ProjectConfigurationsDeclaredAsItems />
     </ProjectCapabilities>
   </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <Error Condition="!Exists('..\packages\Nerdbank.GitVersioning.3.0.19-beta\build\Nerdbank.GitVersioning.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Nerdbank.GitVersioning.3.0.19-beta\build\Nerdbank.GitVersioning.targets'))" />
+  </Target>
+  <Import Project="..\packages\Nerdbank.GitVersioning.3.0.19-beta\build\Nerdbank.GitVersioning.targets" Condition="Exists('..\packages\Nerdbank.GitVersioning.3.0.19-beta\build\Nerdbank.GitVersioning.targets')" />
 </Project>

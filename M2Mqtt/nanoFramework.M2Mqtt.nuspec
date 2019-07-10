@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>nanoFramework.M2Mqtt</id>
+        <version>$version$</version>
+        <title>M2Mqtt - MQTT Client Library for nanoFramework</title>
+        <authors>nanoFramework project contributors</authors>
+        <owners>nanoFramework project contributors</owners>
+        <licenseUrl>https://github.com/nanoframework/paho.mqtt.m2mqtt/blob/nanoframework/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/nanoframework/paho.mqtt.m2mqtt</projectUrl>
+        <iconUrl>https://secure.gravatar.com/avatar/97d0e092247f0716db6d4b47b7d1d1ad</iconUrl>
+        <repository type="git" url="https://github.com/nanoframework/paho.mqtt.m2mqtt" commit="$commit$" />
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>M2Mqtt is a MQTT client available for .NET nanoFramework for M2M communication.</description>
+        <summary>M2Mqtt is a MQTT client available for .NET nanoFramework for M2M communication.</summary>
+        <releaseNotes></releaseNotes>
+        <copyright>Copyright (c) 2019 Paolo Patierno and the nanoFramework project contributors</copyright>
+        <tags>m2m mqtt queue messaging internetofthings iot cloud netmf embedded micro netduino micro-framework hardware gadgeteer</tags>
+        <dependencies>
+        <dependency id="nanoFramework.CoreLibrary" version="1.2.6-preview.1" />
+        <dependency id="nanoFramework.Runtime.Events" version="1.0.8-preview.8" />
+        <dependency id="nanoFramework.Runtime.Native" version="1.0.3-preview-003" />
+        <dependency id="nanoFramework.System.Net" version="1.0.4" />
+        </dependencies>        
+    </metadata>
+    <files>
+        <file src="bin\Release\nanoFramework.M2Mqtt.dll" target="lib\nanoFramework.M2Mqtt.dll" />
+        <file src="bin\Release\nanoFramework.M2Mqtt.pdb" target="lib\nanoFramework.M2Mqtt.pdb" />
+        <file src="bin\Release\nanoFramework.M2Mqtt.pdbx" target="lib\nanoFramework.M2Mqtt.pdbx" />
+        <file src="bin\Release\nanoFramework.M2Mqtt.pe" target="lib\nanoFramework.M2Mqtt.pe" />
+        <file src="bin\Release\nanoFramework.M2Mqtt.xml" target="lib\nanoFramework.M2Mqtt.xml" />
+
+        <!-- readme -->
+        <file src="readme.txt" target="readme.txt" />
+	</files>
+</package>

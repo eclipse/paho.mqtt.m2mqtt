@@ -22,21 +22,24 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="mscorlib, Version=1.1.1.7, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.CoreLibrary.1.1.1\lib\mscorlib.dll</HintPath>
+    <Reference Include="mscorlib">
+      <HintPath>..\packages\nanoFramework.CoreLibrary.1.2.6-preview.7\lib\mscorlib.dll</HintPath>
+    </Reference>
+    <Reference Include="nanoFramework.M2Mqtt">
+      <HintPath>..\..\M2Mqtt\bin\Debug\nanoFramework.M2Mqtt.dll</HintPath>
+    </Reference>
+    <Reference Include="nanoFramework.Runtime.Events, Version=1.0.8.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\packages\nanoFramework.Runtime.Events.1.0.8-preview.14\lib\nanoFramework.Runtime.Events.dll</HintPath>
       <Private>True</Private>
       <SpecificVersion>True</SpecificVersion>
     </Reference>
-    <Reference Include="MSMqtt.nanoFramework">
-      <HintPath>..\..\M2Mqtt\bin\Debug\MSMqtt.nanoFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="nanoFramework.Runtime.Events, Version=1.0.4.3, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.Runtime.Events.1.0.4\lib\nanoFramework.Runtime.Events.dll</HintPath>
+    <Reference Include="nanoFramework.Runtime.Native, Version=1.0.7.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\packages\nanoFramework.Runtime.Native.1.0.7-alpha.16\lib\nanoFramework.Runtime.Native.dll</HintPath>
       <Private>True</Private>
       <SpecificVersion>True</SpecificVersion>
     </Reference>
-    <Reference Include="System.Net, Version=1.0.4.3, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.System.Net.1.0.4\lib\System.Net.dll</HintPath>
+    <Reference Include="System.Net, Version=1.1.1.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\packages\nanoFramework.System.Net.1.1.1-preview.18\lib\System.Net.dll</HintPath>
       <Private>True</Private>
       <SpecificVersion>True</SpecificVersion>
     </Reference>
