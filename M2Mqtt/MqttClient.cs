@@ -260,7 +260,7 @@ namespace uPLibrary.Networking.M2Mqtt
         /// Constructor
         /// </summary>
         /// <param name="brokerIpAddress">Broker IP address</param>
-        [Obsolete("Use this ctor MqttClient(string brokerHostName) insted")]
+        [Obsolete("Use this ctor MqttClient(string brokerHostName) instead")]
         public MqttClient(IPAddress brokerIpAddress) :
             this(brokerIpAddress, MqttSettings.MQTT_BROKER_DEFAULT_PORT, false, null, null, MqttSslProtocols.None)
         {
@@ -275,7 +275,7 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="caCert">CA certificate for secure connection</param>
         /// <param name="clientCert">Client certificate</param>
         /// <param name="sslProtocol">SSL/TLS protocol version</param>
-        [Obsolete("Use this ctor MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert) insted")]
+        [Obsolete("Use this ctor MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert) instead")]
         public MqttClient(IPAddress brokerIpAddress, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol)
         {
 #if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK || NANOFRAMEWORK_V1_0 )
@@ -488,6 +488,18 @@ namespace uPLibrary.Networking.M2Mqtt
             return this.Connect(clientId, null, null, false, MqttMsgConnect.QOS_LEVEL_AT_MOST_ONCE, false, null, null, true, MqttMsgConnect.KEEP_ALIVE_PERIOD_DEFAULT);
         }
 
+	/// <summary>
+        /// Connect to broker
+        /// </summary>
+        /// <param name="clientId">Client identifier</param>
+        /// <param name="cleanSession">Clean sessione flag</param>
+        /// <returns>Return code of CONNACK message from broker</returns>
+        public byte Connect(string clientId,
+            bool cleanSession)
+        {
+            return this.Connect(clientId, null, null, false, MqttMsgConnect.QOS_LEVEL_AT_MOST_ONCE, false, null, null, cleanSession, MqttMsgConnect.KEEP_ALIVE_PERIOD_DEFAULT);
+        }
+	    
         /// <summary>
         /// Connect to broker
         /// </summary>
