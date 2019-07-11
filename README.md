@@ -19,7 +19,7 @@ MQTT protocol is based on publish/subscribe pattern so that a client can subscri
 
 This library contains an sample MQTT client that you can use to connect to any MQTT broker.
 
-The binaries for all platforms are also available as package from Nuget web site  https://www.nuget.org/packages/M2Mqtt/
+The binaries are available as a [NuGet package](https://www.nuget.org/packages/nanoframework.M2Mqtt).
 
 For all information about MQTT protocol, please visit official web site  http://mqtt.org/.
 
