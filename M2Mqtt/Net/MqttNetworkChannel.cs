@@ -179,7 +179,11 @@ namespace uPLibrary.Networking.M2Mqtt
         public MqttNetworkChannel(string remoteHostName, int remotePort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol)
 #endif
         {
-            IPAddress remoteIpAddress = null;
+
+            IPAddress hostIpAddress = null;
+
+#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3)
+
             try
             {
                 // check if remoteHostName is a valid IP address and get it
@@ -199,16 +203,31 @@ namespace uPLibrary.Networking.M2Mqtt
                     // it seems that with .Net Micro Framework, the IPV6 addresses aren't supported and return "null"
                     int i = 0;
                     while (hostEntry.AddressList[i] == null) i++;
-                    remoteIpAddress = hostEntry.AddressList[i];
+                    hostIpAddress = hostEntry.AddressList[i];
                 }
                 else
                 {
                     throw new Exception("No address found for the remote host name");
                 }
             }
+#else
+            IPHostEntry hostEntry = Dns.GetHostEntry(remoteHostName);
+            if ((hostEntry != null) && (hostEntry.AddressList.Length > 0))
+            {
+                // check for the first address not null
+                // it seems that with .Net Micro Framework, the IPV6 addresses aren't supported and return "null"
+                int i = 0;
+                while (hostEntry.AddressList[i] == null) i++;
+                hostIpAddress = hostEntry.AddressList[i];
+            }
+            else
+            {
+                throw new Exception("No address found for the remote host name");
+            }
+#endif
 
             this.remoteHostName = remoteHostName;
-            this.remoteIpAddress = remoteIpAddress;
+            this.remoteIpAddress = hostIpAddress;
             this.remotePort = remotePort;
             this.secure = secure;
             this.caCert = caCert;
@@ -234,7 +253,7 @@ namespace uPLibrary.Networking.M2Mqtt
             if (secure)
             {
                 // create SSL stream
-#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || NANOFRAMEWORK_1_0 )
+#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || NANOFRAMEWORK_1_0)
                 this.sslStream = new SslStream(this.socket);
 #else
                 this.netStream = new NetworkStream(this.socket);
@@ -242,14 +261,13 @@ namespace uPLibrary.Networking.M2Mqtt
 #endif
 
                 // server authentication (SSL/TLS handshake)
-#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 )
+#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3)
 
                 if (clientCert != null)
                 {
                     // we have client certificate, use it for SSL authentication
                     this.sslStream.AuthenticateAsClient(this.remoteHostName,
                         this.clientCert,
-                        this.caCert,
                         new X509Certificate[] { this.caCert },
                         SslVerification.CertificateRequired,
                         MqttSslUtility.ToSslPlatformEnum(this.sslProtocol));
@@ -262,7 +280,7 @@ namespace uPLibrary.Networking.M2Mqtt
                         MqttSslUtility.ToSslPlatformEnum(this.sslProtocol));
 
                 }
-#elif ( NANOFRAMEWORK_1_0 )
+#elif (NANOFRAMEWORK_1_0)
                 if (clientCert != null)
                 {
                     // we have client certificate, use it for SSL authentication
@@ -447,7 +465,7 @@ namespace uPLibrary.Networking.M2Mqtt
 #if (!MF_FRAMEWORK_VERSION_V4_2 && !MF_FRAMEWORK_VERSION_V4_3 && !NANOFRAMEWORK_1_0)
             return ipAddress.AddressFamily;
 #else
-            return (ipAddress.ToString().IndexOf(':') != -1) ? 
+            return (ipAddress.ToString().IndexOf(':') != -1) ?
                 AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork;
 #endif
         }
@@ -501,5 +519,5 @@ namespace uPLibrary.Networking.M2Mqtt
             }
         }
 #endif
-            }
+    }
 }
