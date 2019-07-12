@@ -244,7 +244,8 @@ namespace uPLibrary.Networking.M2Mqtt
         /// </summary>
         public void Connect()
         {
-            this.socket = new Socket(this.remoteIpAddress.GetAddressFamily(), SocketType.Stream, ProtocolType.Tcp);
+            this.socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
             // try connection to the broker
             this.socket.Connect(new IPEndPoint(this.remoteIpAddress, this.remotePort));
 
@@ -281,21 +282,11 @@ namespace uPLibrary.Networking.M2Mqtt
 
                 }
 #elif (NANOFRAMEWORK_1_0)
-                if (clientCert != null)
-                {
-                    // we have client certificate, use it for SSL authentication
-                    this.sslStream.AuthenticateAsClient(this.remoteHostName,
-                        this.clientCert,
-                        this.caCert,
-                        MqttSslUtility.ToSslPlatformEnum(this.sslProtocol));
-                }
-                else
-                {
-                    this.sslStream.AuthenticateAsClient(this.remoteHostName,
-                        this.caCert,
-                        MqttSslUtility.ToSslPlatformEnum(this.sslProtocol));
+                this.sslStream.AuthenticateAsClient(this.remoteHostName,
+                    null,
+                    this.caCert,
+                    MqttSslUtility.ToSslPlatformEnum(this.sslProtocol));
 
-                }
 #else
                 X509CertificateCollection clientCertificates = null;
                 // check if there is a client certificate to add to the collection, otherwise it's null (as empty)
