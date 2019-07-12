@@ -23,6 +23,11 @@ namespace uPLibrary.Networking.M2Mqtt.Exceptions
     /// </summary>
     public class MqttConnectionException : Exception
     {
+        /// <summary>
+        /// Connection to the broker exception
+        /// </summary>
+        /// <param name="message">A friendly message of the exception that occured</param>
+        /// <param name="innerException">Detail on why the exception occured</param>
         public MqttConnectionException(string message, Exception innerException)
             : base(message, innerException)
         {
