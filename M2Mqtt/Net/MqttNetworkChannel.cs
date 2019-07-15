@@ -467,6 +467,12 @@ namespace uPLibrary.Networking.M2Mqtt
     /// </summary>
     public static class MqttSslUtility
     {
+        /// <summary>
+        /// Defines the possible versions of Secure Sockets Layer (SSL).
+        /// </summary>
+        /// <remarks>
+        /// Note: Following the recommendation of the .NET documentation, nanoFramework implementation does not have SSL3 nor Default because those are deprecated and unsecure.
+        /// </remarks>
 #if (!MF_FRAMEWORK_VERSION_V4_2 && !MF_FRAMEWORK_VERSION_V4_3 && !COMPACT_FRAMEWORK)
         public static SslProtocols ToSslPlatformEnum(MqttSslProtocols mqttSslProtocol)
         {
@@ -484,7 +490,10 @@ namespace uPLibrary.Networking.M2Mqtt
                     return SslProtocols.Tls11;
                 case MqttSslProtocols.TLSv1_2:
                     return SslProtocols.Tls12;
-                default:
+#if !(NANOFRAMEWORK_1_0)
+                case MqttSslProtocols.SSLv3:
+#endif
+               default:
                     throw new ArgumentException("SSL/TLS protocol version not supported");
             }
         }
