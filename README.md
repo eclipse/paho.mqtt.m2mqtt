@@ -72,3 +72,9 @@ client.Publish("/home/temperature", Encoding.UTF8.GetBytes(strValue), MqttMsgBas
 
 ...
 ```
+
+## Feedback and documentation
+
+For documentation, providing feedback, issues and finding out how to contribute please refer to the [Home repo](https://github.com/nanoframework/Home).
+
+Join our Discord community [here](https://discord.gg/gCyBu8T).
