@@ -283,7 +283,7 @@ namespace uPLibrary.Networking.M2Mqtt
                 }
 #elif (NANOFRAMEWORK_1_0)
                 this.sslStream.AuthenticateAsClient(this.remoteHostName,
-                    null,
+                    this.clientCert,
                     this.caCert,
                     MqttSslUtility.ToSslPlatformEnum(this.sslProtocol));
 
