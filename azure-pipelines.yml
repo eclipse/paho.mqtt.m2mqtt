@@ -113,6 +113,30 @@ jobs:
     condition: succeeded()
     displayName: Get NuGet build number
 
+  - powershell: |
+      # get subject and commit message for commit
+      $commitMessage = git log --format='%B' -1
+
+      # need to flatten message by removing new lines
+      $commitMessage = $commitMessage -replace "`r`n", " "
+
+      if($commitMessage -like "*PUBLISH_RELEASE*")
+      {
+        # set variable
+        Write-Host "$("##vso[task.setvariable variable=RELEASE_DRAFT;isOutput=true]")False"
+        Write-Host "$("##vso[task.setvariable variable=RELEASE_VERSION;isOutput=true]")True"
+        Write-Host "Release draft: FALSE"
+      }
+      else
+      {
+        # set variable
+        Write-Host "$("##vso[task.setvariable variable=RELEASE_DRAFT;isOutput=true]")True"
+        Write-Host "$("##vso[task.setvariable variable=RELEASE_VERSION;isOutput=true]")False"
+        Write-Host "Release draft: TRUE"
+      }
+    name: SetReleaseDraftVar
+    displayName: Set release draft var
+    
   - task: PowerShell@2
     inputs:
         targetType: 'inline'
@@ -145,13 +169,13 @@ jobs:
     condition: and( succeeded(), ne(variables['system.pullrequest.isfork'], true) )
     displayName: Publish deployables artifacts
 
-  # push NuGet packages to MyGet feed (always happens except on PR builds)
+  # push NuGet packages to Azure Artifacts feed (always happens except on PR builds)
   - task: NuGetCommand@2
     inputs:
       command: push
       nuGetFeedType: external
       packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-      publishFeedCredentials: 'MyGet'
+      publishFeedCredentials: 'AzureArtifacts'
     condition: succeeded()
     displayName: Push NuGet packages to MyGet
 
@@ -175,9 +199,9 @@ jobs:
       githubRepositoryName: 'paho.mqtt.m2mqtt'
       githubTag: v$(MY_NUGET_VERSION)
       githubReleaseTitle: 'nanoframework.M2Mqtt Library v$(MY_NUGET_VERSION)'
-      githubReleaseNotes: 'Check the [changelog]($(Build.Repository.Uri)/blob/$(Build.SourceBranchName)/CHANGELOG.md).<br><br><h4>Install from nanoFramework MyGet development feed</h4><br>The following NuGet packages are available for download from this release:<br>:package: [.NET](https://www.myget.org/feed/nanoframework-dev/package/nuget/nanoframework.M2Mqtt/$(MY_NUGET_VERSION)) v$(MY_NUGET_VERSION).'
+      githubReleaseNotes: 'Check the [changelog]($(Build.Repository.Uri)/blob/$(Build.SourceBranchName)/CHANGELOG.md).<br><br><h4>Install from nanoFramework Azure Pipelines development feed</h4><br>The following NuGet packages are available for download from this release:<br>:package: [.NET](https://dev.azure.com/nanoframework/feed/_packaging?_a=package&feed=sandbox&view=overview&package=nanoframework.M2Mqtt&protocolType=NuGet&version=$(MY_NUGET_VERSION)) v$(MY_NUGET_VERSION).'
       githubTargetCommitsh: $(Build.SourceVersion)
-      githubReleaseDraft: true
+      githubReleaseDraft: $(RELEASE_DRAFT)
       githubReleasePrerelease: true
       githubReuseDraftOnly: true
       githubReuseRelease: true
@@ -196,7 +220,7 @@ jobs:
       githubReleaseTitle: 'nanoframework.M2Mqtt Library v$(MY_NUGET_VERSION)'
       githubReleaseNotes: 'Check the [changelog]($(Build.Repository.Uri)/blob/$(Build.SourceBranchName)/CHANGELOG.md).<br><br><h4>Install from NuGet</h4><br>The following NuGet packages are available for download from this release:<br>:package: [.NET](https://www.nuget.org/packages/nanoframework.M2Mqtt/$(MY_NUGET_VERSION)) v$(MY_NUGET_VERSION).'
       githubTargetCommitsh: $(Build.SourceVersion)
-      githubReleaseDraft: false
+      githubReleaseDraft: $(RELEASE_DRAFT)
       githubReleasePrerelease: true
       githubReuseDraftOnly: false
       githubReuseRelease: true
@@ -215,7 +239,7 @@ jobs:
       githubReleaseTitle: 'nanoframework.M2Mqtt Library v$(MY_NUGET_VERSION)'
       githubReleaseNotes: 'Check the [changelog]($(Build.Repository.Uri)/blob/$(Build.SourceBranchName)/CHANGELOG.md).<br><br><h4>Install from NuGet</h4><br>The following NuGet packages are available for download from this release:<br>:package: [.NET](https://www.nuget.org/packages/nanoframework.M2Mqtt/$(MY_NUGET_VERSION)) v$(MY_NUGET_VERSION).'
       githubTargetCommitsh: $(Build.SourceVersion)
-      githubReleaseDraft: false
+      githubReleaseDraft: $(RELEASE_DRAFT)
       githubReleasePrerelease: false
       githubReuseDraftOnly: false
       githubReuseRelease: true
