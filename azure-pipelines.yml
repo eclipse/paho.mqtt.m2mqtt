@@ -2,7 +2,7 @@ trigger:
   branches:
     include:
     - master
-    - nanoframework
+    - develop
     - release-/*
     - refs/tags/*
   paths:
@@ -20,7 +20,7 @@ pr:
   branches:
     include:
     - master
-    - nanoframework
+    - develop
     - release/*
   autoCancel: true
 
@@ -177,6 +177,7 @@ jobs:
       packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
       publishFeedCredentials: 'AzureArtifacts'
     condition: succeeded()
+    continueOnError: true
     displayName: Push NuGet packages to MyGet
 
   # push NuGet class lib package to NuGet (happens on tag builds for any branch)
