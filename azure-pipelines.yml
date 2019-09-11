@@ -178,7 +178,7 @@ jobs:
       publishFeedCredentials: 'AzureArtifacts'
     condition: succeeded()
     continueOnError: true
-    displayName: Push NuGet packages to MyGet
+    displayName: Push NuGet packages to Azure Artifacts
 
   # push NuGet class lib package to NuGet (happens on tag builds for any branch)
   - task: NuGetCommand@2
