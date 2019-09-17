@@ -513,6 +513,20 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="clientId">Client identifier</param>
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
+        /// <returns>Return code of CONNACK message from broker</returns>
+        public byte Connect(string clientId,
+            string username,
+            byte[] password)
+        {
+            return this.Connect(clientId, username, null, false, MqttMsgConnect.QOS_LEVEL_AT_MOST_ONCE, false, null, null, true, MqttMsgConnect.KEEP_ALIVE_PERIOD_DEFAULT, password);
+        }
+
+        /// <summary>
+        /// Connect to broker
+        /// </summary>
+        /// <param name="clientId">Client identifier</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
         /// <param name="cleanSession">Clean sessione flag</param>
         /// <param name="keepAlivePeriod">Keep alive period</param>
         /// <returns>Return code of CONNACK message from broker</returns>
@@ -523,6 +537,24 @@ namespace uPLibrary.Networking.M2Mqtt
             ushort keepAlivePeriod)
         {
             return this.Connect(clientId, username, password, false, MqttMsgConnect.QOS_LEVEL_AT_MOST_ONCE, false, null, null, cleanSession, keepAlivePeriod);
+        }
+
+        /// <summary>
+        /// Connect to broker
+        /// </summary>
+        /// <param name="clientId">Client identifier</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="cleanSession">Clean sessione flag</param>
+        /// <param name="keepAlivePeriod">Keep alive period</param>
+        /// <returns>Return code of CONNACK message from broker</returns>
+        public byte Connect(string clientId,
+            string username,
+            byte[] password,
+            bool cleanSession,
+            ushort keepAlivePeriod)
+        {
+            return this.Connect(clientId, username, null, false, MqttMsgConnect.QOS_LEVEL_AT_MOST_ONCE, false, null, null, cleanSession, keepAlivePeriod, password);
         }
 
         /// <summary>
@@ -548,7 +580,9 @@ namespace uPLibrary.Networking.M2Mqtt
             string willTopic,
             string willMessage,
             bool cleanSession,
-            ushort keepAlivePeriod)
+            ushort keepAlivePeriod,
+            byte[] passwordInBytes = null
+            )
         {
             // create CONNECT message
             MqttMsgConnect connect = new MqttMsgConnect(clientId,
@@ -561,7 +595,8 @@ namespace uPLibrary.Networking.M2Mqtt
                 willMessage,
                 cleanSession,
                 keepAlivePeriod,
-                (byte)this.ProtocolVersion);
+                (byte)this.ProtocolVersion,
+                passwordInBytes);
 
             try
             {
