@@ -205,8 +205,6 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         private string username;
         // password
         private string password;
-        // password in byte format
-        private byte[] passwordInBytes;
         // clean session flag
         private bool cleanSession;
         // keep alive period (in sec)
@@ -253,8 +251,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             string willMessage,
             bool cleanSession,
             ushort keepAlivePeriod,
-            byte protocolVersion,
-            byte[] passwordInBytes = null
+            byte protocolVersion
             )
         {
             this.type = MQTT_MSG_CONNECT_TYPE;
@@ -272,10 +269,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             // [v.3.1.1] added new protocol name and version
             this.protocolVersion = protocolVersion;
             this.protocolName = (this.protocolVersion == PROTOCOL_VERSION_V3_1_1) ? PROTOCOL_NAME_V3_1_1 : PROTOCOL_NAME_V3_1;
-            this.passwordInBytes = passwordInBytes;
         }
-
-        
 
         /// <summary>
         /// Parse bytes for a CONNECT message
@@ -393,8 +387,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
                 passwordUtf8 = new byte[passwordUtf8Length];
                 Array.Copy(buffer, index, passwordUtf8, 0, passwordUtf8Length);
                 index += passwordUtf8Length;
-                msg.password = Convert.ToBase64String(passwordUtf8);
-                
+                msg.password = new String(Encoding.UTF8.GetChars(passwordUtf8));
             }
 
             return msg;
@@ -413,8 +406,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             byte[] willTopicUtf8 = (this.willFlag && (this.willTopic != null)) ? Encoding.UTF8.GetBytes(this.willTopic) : null;
             byte[] willMessageUtf8 = (this.willFlag && (this.willMessage != null)) ? Encoding.UTF8.GetBytes(this.willMessage) : null;
             byte[] usernameUtf8 = ((this.username != null) && (this.username.Length > 0)) ? Encoding.UTF8.GetBytes(this.username) : null;
-            byte[] passwordUtf8 = ((this.password != null) && (this.password.Length > 0)) ? Encoding.UTF8.GetBytes(this.password)
-                : (((this.passwordInBytes != null) && (this.passwordInBytes.Length > 0)) ?  this.passwordInBytes : null);
+            byte[] passwordUtf8 = ((this.password != null) && (this.password.Length > 0)) ? Encoding.UTF8.GetBytes(this.password) : null;
 
             // [v3.1.1]
             if (this.protocolVersion == PROTOCOL_VERSION_V3_1_1)
