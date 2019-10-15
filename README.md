@@ -1,61 +1,36 @@
-# M2Mqtt
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=nanoframework_paho.mqtt.m2mqtt&metric=alert_status)](https://sonarcloud.io/dashboard?id=nanoframework_paho.mqtt.m2mqtt) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=nanoframework_paho.mqtt.m2mqtt&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=nanoframework_paho.mqtt.m2mqtt) [![License](https://img.shields.io/badge/License-EPL-blue.svg)](https://github.com/nanoframework/paho.mqtt.m2mqtt/blob/master/LICENSE) [![NuGet](https://img.shields.io/nuget/dt/nanoFramework.M2Mqtt.svg)](https://www.nuget.org/packages/nanoFramework.M2Mqtt) [![#yourfirstpr](https://img.shields.io/badge/first--timers--only-friendly-blue.svg)](https://github.com/nanoframework/Home/blob/master/CONTRIBUTING.md) [![Discord](https://img.shields.io/discord/478725473862549535.svg)](https://discord.gg/gCyBu8T)
+
+# nanoFramework M2Mqtt
 
 ![](images/M2Mqtt_Short_Logo.png)
 
-MQTT Client Library for .Net and WinRT
+Welcome to the MQTT Client Library for nanoFramework.
 
-*Project Description*
+This is a port of the MQTT Client Library [M2Mqtt](https://github.com/eclipse/paho.mqtt.m2mqtt).
+The orignal project has an official website [here](https://m2mqtt.wordpress.com/).
 
-M2Mqtt is a MQTT client available for all .Net platforms (.Net Framework, .Net Compact Framework and .Net Micro Framework) and WinRT platforms (Windows 8.1, Windows Phone 8.1 and Windows 10) for Internet of Things and M2M communication.
+## Build status
+
+| Component | Build Status | NuGet Package |
+|:-|---|---|
+| nanoFramework.M2Mqtt | [![Build Status](https://dev.azure.com/nanoframework/m2mqtt/_apis/build/status/nanoframework.paho.mqtt.m2mqtt?branchName=master)](https://dev.azure.com/nanoframework/m2mqtt/_build/latest?definitionId=46&branchName=master) | [![NuGet](https://img.shields.io/nuget/v/nanoFramework.M2Mqtt.svg?label=NuGet&style=flat&logo=nuget)](https://www.nuget.org/packages/nanoFramework.M2Mqtt/)  |
+| nanoFramework.M2Mqtt (preview) | [![Build Status](https://dev.azure.com/nanoframework/m2mqtt/_apis/build/status/nanoframework.paho.mqtt.m2mqtt?branchName=develop)](https://dev.azure.com/nanoframework/m2mqtt/_build/latest?definitionId=46&branchName=develop) | [![](https://badgen.net/badge/NuGet/preview/D7B023?icon=https://simpleicons.now.sh/azuredevops/fff)](https://dev.azure.com/nanoframework/feed/_packaging?_a=package&feed=sandbox&package=nanoFramework.M2Mqtt&protocolType=NuGet&view=overview) |
+
+## Project Description
+
+M2Mqtt is a MQTT client for Internet of Things and M2M communication.
 
 MQTT, short for Message Queue Telemetry Transport, is a light weight messaging protocol that enables embedded devices with limited resources to perform asynchronous communication on a constrained network.
 
 MQTT protocol is based on publish/subscribe pattern so that a client can subscribe to one or more topics and receive messages that other clients publish on these topics.
 
-This sample is a library contains an MQTT client that you can use to connect to any MQTT broker. It is developed in C# language and works on all the following .Net platforms :
+This library contains an sample MQTT client that you can use to connect to any MQTT broker.
 
-* .Net Framework (up to 4.5)
-* .Net Compact Framework 3.5 & 3.9 (for Windows Embedded Compact 7 / 2013)
-* .Net Micro Framework 4.2 & 4.3
-* Mono (for Linux O.S.)
-
-There is also the support for WinRT platforms :
-
-* Windows 8.1
-* Windows Phone 8.1
-* Windows 10
-
-It can be used on Windows O.S, Windows Embedded Compact 7 / 2013 and Linux O.S. (thanks to Mono Project).
-
-The project has an official website here : https://m2mqtt.wordpress.com/
-
-The binaries for all platforms are also available as package from Nuget web site  https://www.nuget.org/packages/M2Mqtt/
+The binaries are available as a [NuGet package](https://www.nuget.org/packages/nanoframework.M2Mqtt).
 
 For all information about MQTT protocol, please visit official web site  http://mqtt.org/.
 
-Follow the project on Twitter [@m2mqtt](https://twitter.com/M2Mqtt) and [Facebook](https://www.facebook.com/m2mqtt).
-
-*Building the source code*
-
-The library is available for the following solution and project files :
-
-* M2Mqtt.sln : solution for Visual Studio that contains projects file for .Net Framework, .Net Compact Framework 3.9, .Net Micro Framework 4.2, .Net Micro Framework 4.3 and WinRT (a portable class library) for Windows 8.1, Window Phone 8.1 and Windows 10 applications
-* M2MqttVS2008.sln : solution for Visual Studio 2008 that contains project file for .Net Compact Framework 3.5;
-
-To build sample based on .Net Micro Framework (4.2 and 4.3) you need to download .Net Micro Framework SDK from the official CodePlex web site : https://netmf.codeplex.com/
-
-To build sample based on .Net Compact Framework 3.9 you need to download Application Builder for Windows Embedded Compact 2013 from here : http://www.microsoft.com/en-us/download/details.aspx?id=38819
-
-*SSL/TLS support*
-
-For SSL/TLS feature, the definition of the symbol "SSL" is needed before compile the project.
-On the repository, this symbol is already defined and all assemblies (needed for SSL/TLS) are referenced (for Debug and Release configuration).
-If you want to disable SSL/TLS feature, so that you can reduce memory occupation, you can delete "SSL" symbol and remove all assemblies referenced for SSL/TLS.
-However, you can leave the default project configuration and set "secure" parameter to false and "cacert" to null for MqttClient constructor (these are already default if you don't specify any values).
-
-ATTENTION : .Net Micro Framework supports up to TLSV1
-
-*Example*
+## Example
 
 The M2Mqtt library provides a main class MqttClient that represents the MQTT client to connect to a broker. You can connect to the broker providing its IP address or host name and optionally some parameters related to MQTT protocol.
 
@@ -63,44 +38,50 @@ After connecting to the broker you can use Publish() method to publish a message
 
 Following an example of client subscriber to a topic :
 
-```
-... 
- 
-// create client instance 
-MqttClient client = new MqttClient(IPAddress.Parse(MQTT_BROKER_ADDRESS)); 
- 
-// register to message received 
-client.MqttMsgPublishReceived += client_MqttMsgPublishReceived; 
- 
-string clientId = Guid.NewGuid().ToString(); 
-client.Connect(clientId); 
- 
-// subscribe to the topic "/home/temperature" with QoS 2 
-client.Subscribe(new string[] { "/home/temperature" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE }); 
- 
-... 
- 
-static void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e) 
-{ 
+```csharp
+...
+
+// create client instance
+MqttClient client = new MqttClient(IPAddress.Parse(MQTT_BROKER_ADDRESS));
+
+// register to message received
+client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
+
+string clientId = Guid.NewGuid().ToString();
+client.Connect(clientId);
+
+// subscribe to the topic "/home/temperature" with QoS 2
+client.Subscribe(new string[] { "/home/temperature" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
+
+...
+
+static void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
+{
 // handle message received 
-} 
+}
 ```
 
 Following an example of client publisher to a topic :
 
-```
-... 
- 
-// create client instance 
-MqttClient client = new MqttClient(IPAddress.Parse(MQTT_BROKER_ADDRESS)); 
- 
-string clientId = Guid.NewGuid().ToString(); 
-client.Connect(clientId); 
- 
-string strValue = Convert.ToString(value); 
- 
-// publish a message on "/home/temperature" topic with QoS 2 
-client.Publish("/home/temperature", Encoding.UTF8.GetBytes(strValue), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false); 
- 
+```csharp
+...
+
+// create client instance
+MqttClient client = new MqttClient(IPAddress.Parse(MQTT_BROKER_ADDRESS));
+
+string clientId = Guid.NewGuid().ToString();
+client.Connect(clientId);
+
+string strValue = Convert.ToString(value);
+
+// publish a message on "/home/temperature" topic with QoS 2
+client.Publish("/home/temperature", Encoding.UTF8.GetBytes(strValue), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+
 ...
 ```
+
+## Feedback and documentation
+
+For documentation, providing feedback, issues and finding out how to contribute please refer to the [Home repo](https://github.com/nanoframework/Home).
+
+Join our Discord community [here](https://discord.gg/gCyBu8T).

@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2013, 2014 Paolo Patierno
+Copyright (c) 2019 The nanoFramework project contributorsCopyright (c) 2013, 2014 Paolo Patierno
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
@@ -21,19 +21,37 @@ namespace uPLibrary.Networking.M2Mqtt
     /// </summary>
     public class MqttSettings
     {
-        // default port for MQTT protocol
+        /// <summary>
+        /// Default port for the MQTT protocol
+        /// </summary>
         public const int MQTT_BROKER_DEFAULT_PORT = 1883;
+        /// <summary>
+        /// Default SSL port for the MQTT protocol
+        /// </summary>
         public const int MQTT_BROKER_DEFAULT_SSL_PORT = 8883;
-        // default timeout on receiving from client
+        /// <summary>
+        /// Default timeout on receiving from client
+        /// </summary>
         public const int MQTT_DEFAULT_TIMEOUT = 30000;
-        // max publish, subscribe and unsubscribe retry for QoS Level 1 or 2
+        /// <summary>
+        /// Max publish, subscribe and unsubscribe retry for QoS Level 1 or 2
+        /// </summary>
         public const int MQTT_ATTEMPTS_RETRY = 3;
-        // delay for retry publish, subscribe and unsubscribe for QoS Level 1 or 2
+        /// <summary>
+        /// Delay for retry publish, subscribe and unsubscribe for QoS Level 1 or 2
+        /// </summary>
         public const int MQTT_DELAY_RETRY = 10000;
-        // broker need to receive the first message (CONNECT)
-        // within a reasonable amount of time after TCP/IP connection 
+        /// <summary>
+        /// Connection Timeout
+        /// </summary>
+        /// <remarks>
+        /// The broker needs to receive the first message (CONNECT)
+        /// within a reasonable amount of time after the initial TCP/IP connection 
+        /// </remarks>
         public const int MQTT_CONNECT_TIMEOUT = 30000;
-        // default inflight queue size
+        /// <summary>
+        /// The default inflight queue size
+        /// </summary>
         public const int MQTT_MAX_INFLIGHT_QUEUE_SIZE = int.MaxValue;
 
         /// <summary>

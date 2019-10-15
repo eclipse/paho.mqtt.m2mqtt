@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/AArnott/Nerdbank.GitVersioning/master/src/NerdBank.GitVersioning/version.schema.json",
+  "version": "4.3.1",
+  "assemblyVersion": {
+    "precision": "revision"
+  },
+  "semVer1NumericIdentifierPadding": 3,
+  "nuGetPackageVersion": {
+    "semVer": 2.0
+  },
+  "publicReleaseRefSpec": [
+    "^refs/heads/master$",
+    "^refs/heads/nanoframework$",
+    "^refs/heads/v\\d+(?:\\.\\d+)?$"
+  ],
+  "cloudBuild": {
+    "setAllVariables": true,
+    "buildNumber": null
+  },
+  "release": {
+    "branchName": "release-v{version}",
+    "firstUnstableTag": "preview"
+  }
+}
