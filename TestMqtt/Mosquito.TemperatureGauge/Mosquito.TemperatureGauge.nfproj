@@ -22,25 +22,24 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="mscorlib, Version=1.5.0.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\..\packages\nanoFramework.CoreLibrary.1.5.0-preview.1\lib\mscorlib.dll</HintPath>
+    <Reference Include="mscorlib, Version=1.5.1.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\..\packages\nanoFramework.CoreLibrary.1.5.1-preview.1\lib\mscorlib.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="nanoFramework.M2Mqtt">
       <HintPath>..\..\M2Mqtt\bin\Debug\nanoFramework.M2Mqtt.dll</HintPath>
     </Reference>
     <Reference Include="nanoFramework.Runtime.Events, Version=1.4.1.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\..\packages\nanoFramework.Runtime.Events.1.4.1-preview.2\lib\nanoFramework.Runtime.Events.dll</HintPath>
+      <HintPath>..\..\packages\nanoFramework.Runtime.Events.1.4.1-preview.3\lib\nanoFramework.Runtime.Events.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="nanoFramework.Runtime.Native, Version=1.2.0.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\..\packages\nanoFramework.Runtime.Native.1.2.0-preview.6\lib\nanoFramework.Runtime.Native.dll</HintPath>
+      <HintPath>..\..\packages\nanoFramework.Runtime.Native.1.2.0-preview.7\lib\nanoFramework.Runtime.Native.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="nanoFramework.System.Collections, Version=1.0.0.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.System.Collections.1.0.0-preview.2\lib\nanoFramework.System.Collections.dll</HintPath>
+      <HintPath>..\..\packages\nanoFramework.System.Collections.1.0.0-preview.6\lib\nanoFramework.System.Collections.dll</HintPath>
       <Private>True</Private>
-      <SpecificVersion>True</SpecificVersion>
     </Reference>
     <Reference Include="System.Net, Version=1.4.0.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
       <HintPath>..\..\packages\nanoFramework.System.Net.1.4.0-preview.6\lib\System.Net.dll</HintPath>
