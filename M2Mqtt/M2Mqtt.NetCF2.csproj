@@ -24,7 +24,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;WindowsCE,,COMPACT_FRAMEWORK</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;WindowsCE,,COMPACT_FRAMEWORK,SSL</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -36,7 +36,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;WindowsCE,,COMPACT_FRAMEWORK</DefineConstants>
+    <DefineConstants>TRACE;WindowsCE,,COMPACT_FRAMEWORK,SSL</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>

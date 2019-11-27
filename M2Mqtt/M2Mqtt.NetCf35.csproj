@@ -24,7 +24,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\bin\Debug\M2Mqtt.NetCf35\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;WindowsCE,COMPACT_FRAMEWORK</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;WindowsCE,COMPACT_FRAMEWORK,SSL</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -36,7 +36,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\bin\Release\M2Mqtt.NetCf35\</OutputPath>
-    <DefineConstants>TRACE;WindowsCE,COMPACT_FRAMEWORK</DefineConstants>
+    <DefineConstants>TRACE;WindowsCE,COMPACT_FRAMEWORK,SSL</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -90,6 +90,7 @@
     <Compile Include="Net\Fx.cs" />
     <Compile Include="Net\MqttNetworkChannel.cs" />
     <Compile Include="MqttSettings.cs" />
+    <Compile Include="Net\SslStream.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Session\MqttBrokerSession.cs" />
     <Compile Include="Session\MqttClientSession.cs" />
