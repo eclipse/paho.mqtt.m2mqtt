@@ -15,6 +15,7 @@ MQTT protocol is based on publish/subscribe pattern so that a client can subscri
 This sample is a library contains an MQTT client that you can use to connect to any MQTT broker. It is developed in C# language and works on all the following .Net platforms :
 
 * .Net Framework (up to 4.5)
+* .Net Compact Framework 2.0 & 3.5 (for Windows CE 6.0)
 * .Net Compact Framework 3.5 & 3.9 (for Windows Embedded Compact 7 / 2013)
 * .Net Micro Framework 4.2 & 4.3
 * Mono (for Linux O.S.)
@@ -25,7 +26,7 @@ There is also the support for WinRT platforms :
 * Windows Phone 8.1
 * Windows 10
 
-It can be used on Windows O.S, Windows Embedded Compact 7 / 2013 and Linux O.S. (thanks to Mono Project).
+It can be used on Windows O.S, Windows CE 6.0, Windows Embedded Compact 7 / 2013 and Linux O.S. (thanks to Mono Project).
 
 The project has an official website here : https://m2mqtt.wordpress.com/
 
@@ -46,6 +47,8 @@ To build sample based on .Net Micro Framework (4.2 and 4.3) you need to download
 
 To build sample based on .Net Compact Framework 3.9 you need to download Application Builder for Windows Embedded Compact 2013 from here : http://www.microsoft.com/en-us/download/details.aspx?id=38819
 
+To build sample based on .Net Compact Framework 2.0 you need to download SDK for Windows CE 6.0 from here : https://www.microsoft.com/en-us/download/details.aspx?id=6135
+
 *SSL/TLS support*
 
 For SSL/TLS feature, the definition of the symbol "SSL" is needed before compile the project.
@@ -53,8 +56,7 @@ On the repository, this symbol is already defined and all assemblies (needed for
 If you want to disable SSL/TLS feature, so that you can reduce memory occupation, you can delete "SSL" symbol and remove all assemblies referenced for SSL/TLS.
 However, you can leave the default project configuration and set "secure" parameter to false and "cacert" to null for MqttClient constructor (these are already default if you don't specify any values).
 
-ATTENTION : .Net Micro Framework supports up to TLSV1
-
+ATTENTION : .Net Micro Framework supports up to TLSV1 , in order to upgrade .Net COMPACT Framework 
 *Example*
 
 The M2Mqtt library provides a main class MqttClient that represents the MQTT client to connect to a broker. You can connect to the broker providing its IP address or host name and optionally some parameters related to MQTT protocol.
