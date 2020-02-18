@@ -14,7 +14,7 @@ Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
 */
 
-#if (NETSTANDARD1_6 || NETSTANDARD2_0)
+#if (NETSTANDARD1_6 || NETSTANDARD2_0 || NETCOREAPP3_1)
 #define SSL
 using System.Linq;
 #endif
@@ -1158,7 +1158,7 @@ namespace uPLibrary.Networking.M2Mqtt
                     // NOTE : I need to find on message id and flow because the broker could be publish/received
                     //        to/from client and message id could be the same (one tracked by broker and the other by client)
                     MqttMsgContextFinder msgCtxFinder = new MqttMsgContextFinder(msg.MessageId, MqttMsgFlow.ToAcknowledge);
-#if (NETSTANDARD1_6 || NETSTANDARD2_0)
+#if (NETSTANDARD1_6 || NETSTANDARD2_0  || NETCOREAPP3_1)
                     MqttMsgContext msgCtx = (MqttMsgContext)this.inflightQueue.ToArray().FirstOrDefault(msgCtxFinder.Find);
 #else
                     MqttMsgContext msgCtx = (MqttMsgContext)this.inflightQueue.Get(msgCtxFinder.Find);
