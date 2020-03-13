@@ -147,7 +147,7 @@ jobs:
     inputs:
       restoreSolution: '$(solution)'
       feedsToUse: config
-      nugetConfigPath: 'M2Mqtt/NuGet.Config'
+      nugetConfigPath: 'NuGet.Config'
     condition: succeeded()
     displayName: NuGet restore
 
