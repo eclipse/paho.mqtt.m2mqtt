@@ -132,7 +132,7 @@ jobs:
 
   - task: SonarCloudPrepare@1
     inputs:
-      SonarCloud: 'sonarcloud'
+      SonarCloud: 'sonarcloud-m2mqtt'
       organization: 'nanoframework'
       scannerMode: 'MSBuild'
       projectKey: 'nanoframework_paho.mqtt.m2mqtt'
@@ -250,7 +250,7 @@ jobs:
       nuGetFeedType: external
       allowPackageConflicts: true
       packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-      publishFeedCredentials: 'AzureArtifacts'
+      publishFeedCredentials: 'AzureArtifacts-m2mqtt'
     condition: succeeded()
     continueOnError: true
     displayName: Push NuGet packages to Azure Artifacts
@@ -262,7 +262,7 @@ jobs:
       nuGetFeedType: external
       allowPackageConflicts: true
       packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-      publishFeedCredentials: 'NuGet'
+      publishFeedCredentials: 'NuGet-m2mqtt'
     condition: and( succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v') )
     continueOnError: true
     displayName: Push NuGet packages to NuGet
