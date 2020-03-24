@@ -1,7 +1,7 @@
 ![.NET Core](https://github.com/mohaqeq/paho.mqtt.m2mqtt/workflows/.NET%20Core/badge.svg)
 # M2Mqtt
 
-![](images/M2Mqtt_Short_Logo.png)
+![](images/m2mqtt6.png)
 
 MQTT Client Library for .Net and WinRT
 
