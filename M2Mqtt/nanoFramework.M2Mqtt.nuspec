@@ -19,10 +19,10 @@
     <tags>m2m mqtt queue messaging internetofthings iot cloud netmf embedded micro netduino micro-framework hardware gadgeteer</tags>
     <dependencies>
       <dependency id="nanoFramework.CoreLibrary" version="1.7.0-preview.12" />
-      <dependency id="nanoFramework.Runtime.Events" version="1.4.1-preview.9" />
-      <dependency id="nanoFramework.System.Collections" version="1.0.0-preview.12" />
+      <dependency id="nanoFramework.Runtime.Events" version="1.4.2-preview.1" />
+      <dependency id="nanoFramework.System.Collections" version="1.0.1-preview.1" />
       <dependency id="nanoFramework.Runtime.Native" version="1.2.0-preview.12" />
-      <dependency id="nanoFramework.System.Net" version="1.4.1-preview.8" />
+      <dependency id="nanoFramework.System.Net" version="1.4.1-preview.12" />
       <dependency id="nanoFramework.System.Text" version="1.0.0-preview.8" />
     </dependencies>
   </metadata>
