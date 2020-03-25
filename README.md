@@ -1,4 +1,4 @@
-![.NET Core](https://github.com/mohaqeq/paho.mqtt.m2mqtt/workflows/.NET%20Core/badge.svg)
+![.NET Core Build](https://github.com/mohaqeq/paho.mqtt.m2mqtt/workflows/.NET%20Core/badge.svg)
 # M2Mqtt
 
 ![](images/m2mqtt6.png)
