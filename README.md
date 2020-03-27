@@ -57,6 +57,18 @@ However, you can leave the default project configuration and set "secure" parame
 
 ATTENTION : .Net Micro Framework supports up to TLSV1
 
+*ALPN support*
+
+This library supports ALPN. You can connect to broker that provide ALPN connection like AWS IoT Core.
+If you connect to broker with ALPN, set a protocol name to "ALPNProtocols" paramerter. For example, you need to set "x-amzn-mqtt-ca" as a protocol name when you connect to AWS IoT Core with ALPN.
+
+note: ALPNProtocols parameter is list of string for protocol names.
+
+About ALPN: https://tools.ietf.org/html/rfc7301
+
+About AWS IoT Core ALPN:
+https://aws.amazon.com/jp/blogs/iot/mqtt-with-tls-client-authentication-on-port-443-why-it-is-useful-and-how-it-works/
+
 *Example*
 
 The M2Mqtt library provides a main class MqttClient that represents the MQTT client to connect to a broker. You can connect to the broker providing its IP address or host name and optionally some parameters related to MQTT protocol.
