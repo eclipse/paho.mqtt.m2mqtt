@@ -130,7 +130,7 @@ namespace uPLibrary.Networking.M2Mqtt
         {
 
         }
-        
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -506,8 +506,9 @@ namespace uPLibrary.Networking.M2Mqtt
             {
                 case MqttSslProtocols.None:
                     return SslProtocols.None;
+                // CS0618: 'SslProtocols.Ssl3' is obsolete: 'This value has been deprecated.  It is no longer supported. https://go.microsoft.com/fwlink/?linkid=14202'
                 case MqttSslProtocols.SSLv3:
-                    return SslProtocols.Ssl3;
+                    throw new ArgumentException("Ssl3 is obsolete. It is no longer supported. https://go.microsoft.com/fwlink/?linkid=14202");
                 case MqttSslProtocols.TLSv1_0:
                     return SslProtocols.Tls;
                 case MqttSslProtocols.TLSv1_1:

@@ -582,7 +582,7 @@ namespace uPLibrary.Networking.M2Mqtt
             {
                 connack = (MqttMsgConnack)this.SendReceive(connect);
             }
-            catch (MqttCommunicationException e)
+            catch (MqttCommunicationException)
             {
                 this.isRunning = false;
                 throw;
