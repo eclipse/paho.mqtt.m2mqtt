@@ -23,7 +23,7 @@
       <dependency id="nanoFramework.System.Collections" version="1.0.1-preview.2" />
       <dependency id="nanoFramework.Runtime.Native" version="1.2.0-preview.13" />
       <dependency id="nanoFramework.System.Net" version="1.4.1-preview.12" />
-      <dependency id="nanoFramework.System.Text" version="1.0.0-preview.8" />
+      <dependency id="nanoFramework.System.Text" version="1.0.0-preview.11" />
     </dependencies>
   </metadata>
   <files>
