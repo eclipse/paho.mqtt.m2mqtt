@@ -21,6 +21,7 @@ using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 #endif
 using System.Threading;
+using System.Threading.Tasks;
 using uPLibrary.Networking.M2Mqtt.Exceptions;
 using uPLibrary.Networking.M2Mqtt.Messages;
 using uPLibrary.Networking.M2Mqtt.Session;
@@ -885,7 +886,7 @@ namespace uPLibrary.Networking.M2Mqtt
             }
         }
 
-        /// <summary>
+	/// <summary>
         /// Wrapper method for raising PUBLISH message received event
         /// </summary>
         /// <param name="publish">PUBLISH message received</param>
@@ -893,8 +894,9 @@ namespace uPLibrary.Networking.M2Mqtt
         {
             if (this.MqttMsgPublishReceived != null)
             {
-                this.MqttMsgPublishReceived(this,
-                    new MqttMsgPublishEventArgs(publish.Topic, publish.Message, publish.DupFlag, publish.QosLevel, publish.Retain));
+                Task.Run(() => this.MqttMsgPublishReceived(this,
+                    new MqttMsgPublishEventArgs(publish.Topic, publish.Message, publish.DupFlag, publish.QosLevel, publish.Retain)));
+                
             }
         }
 
