@@ -18,10 +18,10 @@
     <copyright>Copyright (c) 2019 Paolo Patierno and the nanoFramework project contributors</copyright>
     <tags>m2m mqtt queue messaging internetofthings iot cloud netmf embedded micro netduino micro-framework hardware gadgeteer</tags>
     <dependencies>
-      <dependency id="nanoFramework.CoreLibrary" version="1.7.2-preview.7" />
-      <dependency id="nanoFramework.Runtime.Events" version="1.4.2-preview.7" />
-      <dependency id="nanoFramework.System.Collections" version="1.0.1-preview.6" />
-      <dependency id="nanoFramework.Runtime.Native" version="1.2.0-preview.17" />
+      <dependency id="nanoFramework.CoreLibrary" version="1.7.3-preview.4" />
+      <dependency id="nanoFramework.Runtime.Events" version="1.4.2-preview.8" />
+      <dependency id="nanoFramework.System.Collections" version="1.0.1-preview.7" />
+      <dependency id="nanoFramework.Runtime.Native" version="1.3.0-preview.2" />
       <dependency id="nanoFramework.System.Net" version="1.4.1-preview.19" />
       <dependency id="nanoFramework.System.Text" version="1.0.0-preview.16" />
     </dependencies>
