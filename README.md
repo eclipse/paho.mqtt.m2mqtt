@@ -63,8 +63,7 @@ After connecting to the broker you can use Publish() method to publish a message
 
 Following an example of client subscriber to a topic :
 
-```
-... 
+```csharp
  
 // create client instance 
 MqttClient client = new MqttClient(IPAddress.Parse(MQTT_BROKER_ADDRESS)); 
@@ -78,7 +77,6 @@ client.Connect(clientId);
 // subscribe to the topic "/home/temperature" with QoS 2 
 client.Subscribe(new string[] { "/home/temperature" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE }); 
  
-... 
  
 static void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e) 
 { 
@@ -88,9 +86,7 @@ static void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs
 
 Following an example of client publisher to a topic :
 
-```
-... 
- 
+```csharp
 // create client instance 
 MqttClient client = new MqttClient(IPAddress.Parse(MQTT_BROKER_ADDRESS)); 
  
@@ -102,5 +98,4 @@ string strValue = Convert.ToString(value);
 // publish a message on "/home/temperature" topic with QoS 2 
 client.Publish("/home/temperature", Encoding.UTF8.GetBytes(strValue), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false); 
  
-...
 ```
