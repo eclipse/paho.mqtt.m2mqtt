@@ -45,8 +45,8 @@
       <HintPath>..\..\packages\nanoFramework.System.Text.1.0.0-preview.22\lib\nanoFramework.System.Text.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Net, Version=1.4.1.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\..\packages\nanoFramework.System.Net.1.4.1-preview.21\lib\System.Net.dll</HintPath>
+    <Reference Include="System.Net, Version=1.5.0.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\..\packages\nanoFramework.System.Net.1.5.0-preview.1\lib\System.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
