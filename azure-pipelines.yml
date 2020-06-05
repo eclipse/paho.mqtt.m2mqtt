@@ -255,7 +255,7 @@ jobs:
     continueOnError: true
     displayName: Push NuGet packages to Azure Artifacts
 
-  # push NuGet class lib package to NuGet (happens on tag builds for any branch)
+  # push NuGet class lib package to NuGet (happens on every build except PRs)
   - task: NuGetCommand@2
     inputs:
       command: push
@@ -263,30 +263,11 @@ jobs:
       allowPackageConflicts: true
       packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
       publishFeedCredentials: 'NuGet-m2mqtt'
-    condition: and( succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v') )
+    condition: and( succeeded(), not( startsWith(variables['Build.SourceBranch'], 'refs/pull') ) )
     continueOnError: true
     displayName: Push NuGet packages to NuGet
 
   # create or update GitHub release
-  - task: GitHubReleasePublish@1
-    inputs:
-      githubEndpoint: 'nanoframework'
-      githubOwner: 'nanoframework'
-      githubRepositoryName: 'paho.mqtt.m2mqtt'
-      githubTag: v$(MY_NUGET_VERSION)
-      githubReleaseTitle: 'nanoframework.M2Mqtt Library v$(MY_NUGET_VERSION)'
-      githubReleaseNotes: 'Check the [changelog]($(Build.Repository.Uri)/blob/$(Build.SourceBranchName)/CHANGELOG.md).<br><br><h4>Install from nanoFramework Azure Pipelines development feed</h4><br>The following NuGet packages are available for download from this release:<br>:package: [.NET](https://dev.azure.com/nanoframework/feed/_packaging?_a=package&feed=sandbox&view=overview&package=nanoframework.M2Mqtt&protocolType=NuGet&version=$(MY_NUGET_VERSION)) v$(MY_NUGET_VERSION).'
-      githubTargetCommitsh: $(Build.SourceVersion)
-      githubReleaseDraft: $(RELEASE_DRAFT)
-      githubReleasePrerelease: true
-      githubReuseDraftOnly: true
-      githubReuseRelease: true
-      githubEditRelease: true
-      githubReleaseAsset: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-    condition: and( succeeded(), not( startsWith(variables['Build.SourceBranch'], 'refs/pull') ), not( startsWith(variables['Build.SourceBranch'], 'refs/tags/v') ) )
-    displayName: Create/Update GitHub release
-
-  # create or update GitHub release ON tags from release or master branches
   - task: GitHubReleasePublish@1
     inputs:
       githubEndpoint: 'nanoframework'
@@ -301,8 +282,9 @@ jobs:
       githubReuseDraftOnly: false
       githubReuseRelease: true
       githubEditRelease: true
+      githubDeleteEmptyTag: true
       githubReleaseAsset: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-    condition: and( succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v'), contains(variables['Build.SourceBranch'], 'preview') )
+    condition: and( succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/pull'), not( startsWith(variables['Build.SourceBranch'], 'refs/tags/v') ) )
     displayName: Create/Update GitHub PREVIEW release 
 
   # create or update GitHub release ON tags from release or master branches
