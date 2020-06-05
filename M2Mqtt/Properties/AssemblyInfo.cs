@@ -1,4 +1,5 @@
 ﻿/*
+Copyright (c) 2019 The nanoFramework project contributors
 Copyright (c) 2013, 2014 Paolo Patierno
 
 All rights reserved. This program and the accompanying materials
@@ -29,6 +30,13 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © Paolo Patierno 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+
+#if (NANOFRAMEWORK_1_0)
+///////////////////////////////////////////////////
+// this class doesn't have native implementation //
+[assembly: AssemblyNativeVersion("0.0.0.0")]
+///////////////////////////////////////////////////
+#endif
 
 // Version information for an assembly consists of the following four values:
 //

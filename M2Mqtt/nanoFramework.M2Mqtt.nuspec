@@ -9,6 +9,7 @@
     <licenseUrl>https://github.com/nanoframework/paho.mqtt.m2mqtt/blob/nanoframework/LICENSE</licenseUrl>
     <projectUrl>https://github.com/nanoframework/paho.mqtt.m2mqtt</projectUrl>
     <iconUrl>https://secure.gravatar.com/avatar/97d0e092247f0716db6d4b47b7d1d1ad</iconUrl>
+    <icon>images\nf-logo.png</icon>
     <repository type="git" url="https://github.com/nanoframework/paho.mqtt.m2mqtt" commit="$commit$" />
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>M2Mqtt is a MQTT client available for .NET nanoFramework for M2M communication.</description>
@@ -34,5 +35,7 @@
     <file src="bin\Release\nanoFramework.M2Mqtt.xml" target="lib\nanoFramework.M2Mqtt.xml" />
     <!-- readme -->
     <file src="readme.txt" target="readme.txt" />
+    <!-- logo -->
+    <file src="nf-logo.png" target="images\" />
   </files>
 </package>

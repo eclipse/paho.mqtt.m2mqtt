@@ -140,7 +140,7 @@ jobs:
 
   - task: NuGetToolInstaller@0
     inputs:
-      versionSpec: '4.9.3'
+      versionSpec: '5.4.0'
     displayName: 'Install specifc version of NuGet'
 
   - task: NuGetCommand@2
