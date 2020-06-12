@@ -263,7 +263,7 @@ jobs:
       allowPackageConflicts: true
       packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
       publishFeedCredentials: 'NuGet-m2mqtt'
-    condition: and( succeeded(), not( startsWith(variables['Build.SourceBranch'], 'refs/pull') ) )
+    condition: and( succeeded(), ne(variables['Build.Reason'], 'PullRequest') )
     continueOnError: true
     displayName: Push NuGet packages to NuGet
 
@@ -284,7 +284,7 @@ jobs:
       githubEditRelease: true
       githubDeleteEmptyTag: true
       githubReleaseAsset: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-    condition: and( succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/pull'), not( startsWith(variables['Build.SourceBranch'], 'refs/tags/v') ) )
+    condition: and( succeeded(), ne(variables['Build.Reason'], 'PullRequest'), not( startsWith(variables['Build.SourceBranch'], 'refs/tags/v') ) )
     displayName: Create/Update GitHub PREVIEW release 
 
   # create or update GitHub release ON tags from release or master branches
