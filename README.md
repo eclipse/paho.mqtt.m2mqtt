@@ -13,8 +13,8 @@ The orignal project has an official website [here](https://m2mqtt.wordpress.com/
 
 | Component | Build Status | NuGet Package |
 |:-|---|---|
-| nanoFramework.M2Mqtt | [![Build Status](https://dev.azure.com/nanoframework/m2mqtt/_apis/build/status/nanoframework.paho.mqtt.m2mqtt?branchName=master)](https://dev.azure.com/nanoframework/m2mqtt/_build/latest?definitionId=56&branchName=master) | [![NuGet](https://img.shields.io/nuget/v/nanoFramework.M2Mqtt.svg?label=NuGet&style=flat&logo=nuget)](https://www.nuget.org/packages/nanoFramework.M2Mqtt/)  |
-| nanoFramework.M2Mqtt (preview) | [![Build Status](https://dev.azure.com/nanoframework/m2mqtt/_apis/build/status/nanoframework.paho.mqtt.m2mqtt?branchName=develop)](https://dev.azure.com/nanoframework/m2mqtt/_build/latest?definitionId=56&branchName=develop) | [![](https://badgen.net/badge/NuGet/preview/D7B023?icon=https://simpleicons.now.sh/azuredevops/fff)](https://dev.azure.com/nanoframework/feed/_packaging?_a=package&feed=sandbox&package=nanoFramework.M2Mqtt&protocolType=NuGet&view=overview) |
+| nanoFramework.M2Mqtt | [![Build Status](https://dev.azure.com/nanoframework/paho.mqtt.m2mqtt/_apis/build/status/nanoframework.paho.mqtt.m2mqtt?branchName=master)](https://dev.azure.com/nanoframework/paho.mqtt.m2mqtt/_build/latest?definitionId=56&branchName=master) | [![NuGet](https://img.shields.io/nuget/v/nanoFramework.M2Mqtt.svg?label=NuGet&style=flat&logo=nuget)](https://www.nuget.org/packages/nanoFramework.M2Mqtt/)  |
+| nanoFramework.M2Mqtt (preview) | [![Build Status](https://dev.azure.com/nanoframework/paho.mqtt.m2mqtt/_apis/build/status/nanoframework.paho.mqtt.m2mqtt?branchName=develop)](https://dev.azure.com/nanoframework/paho.mqtt.m2mqtt/_build/latest?definitionId=56&branchName=develop) | [![](https://badgen.net/badge/NuGet/preview/D7B023?icon=https://simpleicons.now.sh/azuredevops/fff)](https://dev.azure.com/nanoframework/feed/_packaging?_a=package&feed=sandbox&package=nanoFramework.M2Mqtt&protocolType=NuGet&view=overview) |
 
 ## Project Description
 
