@@ -168,7 +168,7 @@ jobs:
             {
               $MyNuGetVersion = $MyNuGetVersion -replace "preview", "alpha"
             }
-            elseif ($env:Build_SourceBranchName -like '*release*')
+            if ($env:System_PullRequest_SourceBranch -like 'release*')
             {
               $MyNuGetVersion = $MyNuGetVersion + "-rc." + $env:NBGV_VersionHeight
             }
