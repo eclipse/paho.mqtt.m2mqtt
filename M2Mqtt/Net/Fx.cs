@@ -25,7 +25,7 @@ namespace uPLibrary.Networking.M2Mqtt
     {
         public static void StartThread(ThreadStart threadStart)
         {
-            new Thread(threadStart).Start();
+            new Thread(threadStart) { IsBackground = true }.Start();
         }
 
         public static void SleepThread(int millisecondsTimeout)
