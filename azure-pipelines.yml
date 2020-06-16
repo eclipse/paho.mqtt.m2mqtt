@@ -84,7 +84,7 @@ jobs:
       $commitMessage = git log -1 --pretty=%B
 
       # amend commit message to skip build
-      git commit --amend -m "$commitMessage" > $null
+      git commit --amend -m "$commitMessage" -m "***NO_CI***" > $null
 
       # push all changes to github
       git -c http.extraheader="AUTHORIZATION: $auth" push --all origin
@@ -203,7 +203,7 @@ jobs:
     
   - task: PowerShell@2
     inputs:
-        targetType: 'inline'
+      targetType: 'inline'
       script: |
         Write-Host "NuGet version is $("##vso[build.updatebuildnumber]")$env:MY_NUGET_VERSION"
         Write-Host "Build version is $env:NBGV_AssemblyVersion"
