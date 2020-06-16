@@ -1,28 +1,12 @@
 trigger:
   branches:
-    include:
-    - master
-    - develop
-    - release-/*
-    - refs/tags/*
+    include: [master, develop, "release-*" ]
   paths:
-    exclude:
-    - CHANGELOG.md
-    - /*.md
-    - .gitignore
-    - appveyor.yml
-  # waiting for feature to become available
-  # tags:
-  #   include:
-  #   - v/*
+    exclude: ["*.md", .gitignore]
+  tags:
+    include: ["v*"]
 
-pr:
-  branches:
-    include:
-    - master
-    - develop
-    - release/*
-  autoCancel: true
+# PR always trigger build
 
 # add nf-tools repo to resources (for Azure Pipelines templates)
 resources:
@@ -38,6 +22,9 @@ jobs:
 - job: Get_Build_Options
   pool:
     vmImage: 'VS2017-Win2016'
+
+  variables:
+    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
   steps:
   - checkout: self
@@ -97,7 +84,7 @@ jobs:
       $commitMessage = git log -1 --pretty=%B
 
       # amend commit message to skip build
-      git commit --amend -m "$commitMessage" -m "***NO_CI***" > $null
+      git commit --amend -m "$commitMessage" > $null
 
       # push all changes to github
       git -c http.extraheader="AUTHORIZATION: $auth" push --all origin
@@ -116,6 +103,7 @@ jobs:
     vmImage: 'VS2017-Win2016'
 
   variables:
+    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
     solution: 'M2Mqtt.nanoFramework.sln'
     buildPlatform: 'Any CPU'
     buildConfiguration: 'Release'
@@ -180,6 +168,10 @@ jobs:
             {
               $MyNuGetVersion = $MyNuGetVersion -replace "preview", "alpha"
             }
+            elseif ($env:Build_SourceBranchName -like '*release*')
+            {
+              $MyNuGetVersion = $MyNuGetVersion + "-rc." + $env:NBGV_VersionHeight
+            }
 
             Write-Host "NuGet build number is $MyNuGetVersion"
 
@@ -197,14 +189,12 @@ jobs:
       if($commitMessage -like "*PUBLISH_RELEASE*")
       {
         # set variable
-        Write-Host "$("##vso[task.setvariable variable=RELEASE_DRAFT;isOutput=true]")False"
         Write-Host "$("##vso[task.setvariable variable=RELEASE_VERSION;isOutput=true]")True"
         Write-Host "Release draft: FALSE"
       }
       else
       {
         # set variable
-        Write-Host "$("##vso[task.setvariable variable=RELEASE_DRAFT;isOutput=true]")True"
         Write-Host "$("##vso[task.setvariable variable=RELEASE_VERSION;isOutput=true]")False"
         Write-Host "Release draft: TRUE"
       }
@@ -214,7 +204,9 @@ jobs:
   - task: PowerShell@2
     inputs:
         targetType: 'inline'
-        script: Write-Host "$("##vso[build.updatebuildnumber]")$env:NBGV_NuGetPackageVersion"
+      script: |
+        Write-Host "NuGet version is $("##vso[build.updatebuildnumber]")$env:MY_NUGET_VERSION"
+        Write-Host "Build version is $env:NBGV_AssemblyVersion"
     condition: and( succeeded(), ne(variables['system.pullrequest.isfork'], true) )
     displayName: Update cloud build number
 
@@ -277,7 +269,7 @@ jobs:
       githubReleaseTitle: 'nanoframework.M2Mqtt Library v$(MY_NUGET_VERSION)'
       githubReleaseNotes: 'Check the [changelog]($(Build.Repository.Uri)/blob/$(Build.SourceBranchName)/CHANGELOG.md).<br><br><h4>Install from NuGet</h4><br>The following NuGet packages are available for download from this release:<br>:package: [.NET](https://www.nuget.org/packages/nanoframework.M2Mqtt/$(MY_NUGET_VERSION)) v$(MY_NUGET_VERSION).'
       githubTargetCommitsh: $(Build.SourceVersion)
-      githubReleaseDraft: $(RELEASE_DRAFT)
+      githubReleaseDraft: false
       githubReleasePrerelease: true
       githubReuseDraftOnly: false
       githubReuseRelease: true
@@ -297,7 +289,7 @@ jobs:
       githubReleaseTitle: 'nanoframework.M2Mqtt Library v$(MY_NUGET_VERSION)'
       githubReleaseNotes: 'Check the [changelog]($(Build.Repository.Uri)/blob/$(Build.SourceBranchName)/CHANGELOG.md).<br><br><h4>Install from NuGet</h4><br>The following NuGet packages are available for download from this release:<br>:package: [.NET](https://www.nuget.org/packages/nanoframework.M2Mqtt/$(MY_NUGET_VERSION)) v$(MY_NUGET_VERSION).'
       githubTargetCommitsh: $(Build.SourceVersion)
-      githubReleaseDraft: $(RELEASE_DRAFT)
+      githubReleaseDraft: false
       githubReleasePrerelease: false
       githubReuseDraftOnly: false
       githubReuseRelease: true
