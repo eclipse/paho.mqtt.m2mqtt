@@ -50,47 +50,10 @@ jobs:
       }
     name: BuildOptions
     displayName: Get build options
-
-  - task: DotNetCoreCLI@2  
-    inputs:
-      command: custom
-      custom: tool
-      arguments: install -g nbgv
-    condition: eq( variables['StartReleaseCandidate'], true )
-    displayName: Install NBGV tool
-
-  - powershell: |
-
-      # compute authorization header in format "AUTHORIZATION: basic 'encoded token'"
-      # 'encoded token' is the Base64 of the string "nfbot:personal-token"
-      $auth = "basic $([System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("nfbot:$(GitHubToken)"))))"
-
-      cd "$env:Agent_TempDirectory" > $null
-
-      git init "$env:Agent_TempDirectory\repo"
-      cd repo > $null
-      git remote add origin "$env:Build_Repository_Uri"
-      git config --global gc.auto 0
-      git config --global user.name nfbot
-      git config --global user.email nanoframework@outlook.com
-      git config --global core.autocrlf true
-      git -c http.extraheader="AUTHORIZATION: $auth" fetch --progress origin
-      
-      git checkout develop
-
-      nbgv prepare-release
   
-      # get commit message for the merge
-      $commitMessage = git log -1 --pretty=%B
+  - template: azure-pipelines-templates/install-nbgv-tool.yaml
 
-      # amend commit message to skip build
-      git commit --amend -m "$commitMessage" -m "***NO_CI***" > $null
-
-      # push all changes to github
-      git -c http.extraheader="AUTHORIZATION: $auth" push --all origin
-
-    condition: eq( variables['StartReleaseCandidate'], true )
-    displayName: NBGV prepare release
+  - template: azure-pipelines-templates/prepare-release@templates  
 
 #######################################
 # build
