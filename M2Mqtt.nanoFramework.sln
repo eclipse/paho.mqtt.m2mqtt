@@ -3,7 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "M2Mqtt.nanoFramework", "M2Mqtt\nanoFramework.M2Mqtt.nfproj", "{35948E70-4CE5-45B4-B305-B66B20AB67AD}"
+Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "nanoFramework.M2Mqtt", "M2Mqtt\nanoFramework.M2Mqtt.nfproj", "{35948E70-4CE5-45B4-B305-B66B20AB67AD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{06FC0A0E-446E-4173-88DA-535ECD697BE2}"
+	ProjectSection(SolutionItems) = preProject
+		M2Mqtt\nanoFramework.M2Mqtt.nuspec = M2Mqtt\nanoFramework.M2Mqtt.nuspec
+		NuGet.Config = NuGet.Config
+		version.json = version.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
