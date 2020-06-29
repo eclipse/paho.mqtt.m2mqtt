@@ -38,6 +38,6 @@ jobs:
         with:
           title: 'env.PR_TITLE'
           body: 'env.PR_MESSAGE'
-          labels: 'dependencies'
+          labels: 'Type: dependencies'
           committer: 'nfbot <nanoframework@outlook.com>'
           branch: 'env.BRANCH_NAME'
