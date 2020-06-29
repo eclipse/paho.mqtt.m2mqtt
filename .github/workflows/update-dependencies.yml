@@ -1,0 +1,43 @@
+# Copyright (c) 2020 The nanoFramework project contributors
+# See LICENSE file in the project root for full license information.
+
+# This workflow will periodically check .NET nanoFramework dependencies and updates them in the repository it's running.
+
+name: Daily update dependencies
+
+on:
+  schedule:
+  # At 00:00 UTC every day.
+  - cron:  '0 00 * * *'
+  issue_comment:
+    types: [created]
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  update-dotnet-preview:
+    name: Update .NET nanoFramework dependencies
+    timeout-minutes: 15
+    runs-on: windows-latest
+    if: ${{ github.event_name == '' }} || ( ${{ github.event_name == 'issue_comment' }} && contains( ${{ github.event.payload.comment.body }}, '/ud') )
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Checkout tools repo
+        uses: actions/checkout@v2
+        with:
+          repository: nanoframework/nf-tools
+          path: tools
+      - name: Update dependencies
+        run: ./tools/github-actions/update-nf-dependencies.ps1
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v2
+        if: env.CREATE_PR == 'true'
+        with:
+          title: 'env.PR_TITLE'
+          body: 'env.PR_MESSAGE'
+          labels: 'dependencies'
+          committer: 'nfbot <nanoframework@outlook.com>'
+          branch: 'env.BRANCH_NAME'
