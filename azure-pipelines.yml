@@ -51,9 +51,9 @@ jobs:
     name: BuildOptions
     displayName: Get build options
   
-  - template: azure-pipelines-templates/install-nbgv-tool.yaml
+  - template: azure-pipelines-templates/install-nbgv-tool.yaml@templates
 
-  - template: azure-pipelines-templates/prepare-release@templates  
+  - template: azure-pipelines-templates/prepare-release@templates
 
 #######################################
 # build
@@ -278,7 +278,7 @@ jobs:
     fetchDepth: 1
 
   # step from template @ nf-tools repo
-  - template: azure-pipelines-templates/discord-webhook.yml@templates  
+  - template: azure-pipelines-templates/discord-webhook.yml@templates
     parameters:
       status: 'failure'
       webhookUrl: '$(DiscordWebhook)'
