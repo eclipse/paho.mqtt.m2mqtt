@@ -51,9 +51,9 @@ jobs:
     name: BuildOptions
     displayName: Get build options
   
-  - template: azure-pipelines-templates/install-nbgv-tool.yaml@templates
+  - template: azure-pipelines-templates/install-nbgv-tool.yml@templates
 
-  - template: azure-pipelines-templates/prepare-release@templates
+  - template: azure-pipelines-templates/prepare-release.yml@templates
 
 #######################################
 # build
