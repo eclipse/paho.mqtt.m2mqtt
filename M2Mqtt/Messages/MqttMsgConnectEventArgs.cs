@@ -15,7 +15,7 @@ Contributors:
 */
 
 #if (NANOFRAMEWORK_1_0)
-using nanoFramework.Runtime.Events;
+using System;
 #elif (!MF_FRAMEWORK_VERSION_V4_2 && !MF_FRAMEWORK_VERSION_V4_3)
 using System;
 #else
