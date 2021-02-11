@@ -1,4 +1,4 @@
-# Copyright (c) 2020 The nanoFramework project contributors
+# Copyright (c) .NET Foundation and Contributors
 # See LICENSE file in the project root for full license information.
 
 # This workflow will periodically check .NET nanoFramework dependencies and updates them in the repository it's running.
@@ -35,7 +35,7 @@ jobs:
         run: ./github-actions/update-nf-dependencies.ps1
         working-directory: tools
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v2.8.1
+        uses: peter-evans/create-pull-request@v3
         if: env.CREATE_PR == 'true'
         with:
           title: '${{ env.PR_TITLE }}'
@@ -45,6 +45,8 @@ jobs:
             [version update]
             
             ### :warning: This is an automated update. :warning:
-          committer: 'nfbot <nanoframework@outlook.com>'
+          committer: 'nfbot <dependencybot@nanoframework.net>'
           branch: ${{ env.BRANCH_NAME }}
           path: main
+          labels: |
+            Type: dependencies
