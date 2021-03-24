@@ -198,18 +198,6 @@ jobs:
     condition: and( succeeded(), ne(variables['system.pullrequest.isfork'], true) )
     displayName: Publish deployables artifacts
 
-  # push NuGet packages to Azure Artifacts feed (always happens except on PR builds)
-  - task: NuGetCommand@2
-    inputs:
-      command: push
-      nuGetFeedType: external
-      allowPackageConflicts: true
-      packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-      publishFeedCredentials: 'AzureArtifacts-m2mqtt'
-    condition: succeeded()
-    continueOnError: true
-    displayName: Push NuGet packages to Azure Artifacts
-
   # push NuGet class lib package to NuGet (happens on every build except PRs)
   - task: NuGetCommand@2
     inputs:
@@ -221,6 +209,18 @@ jobs:
     condition: and( succeeded(), ne(variables['Build.Reason'], 'PullRequest') )
     continueOnError: true
     displayName: Push NuGet packages to NuGet
+    
+  # push NuGet packages to Azure Artifacts feed (always happens except on PR builds)
+  - task: NuGetCommand@2
+    inputs:
+      command: push
+      nuGetFeedType: external
+      allowPackageConflicts: true
+      packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+      publishFeedCredentials: 'AzureArtifacts-m2mqtt'
+    condition: succeeded()
+    continueOnError: true
+    displayName: Push NuGet packages to Azure Artifacts
 
   # create or update GitHub release
   - task: GitHubReleasePublish@1
