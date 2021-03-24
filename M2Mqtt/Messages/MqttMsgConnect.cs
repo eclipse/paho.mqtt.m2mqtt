@@ -191,9 +191,13 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         private byte protocolVersion;
         // client identifier
         private string clientId;
-        // will retain flag
+        /// <summary>
+        /// will retain flag
+        /// </summary>
         protected bool willRetain;
-        // will quality of service level
+        /// <summary>
+        /// will quality of service level
+        /// </summary>
         protected byte willQosLevel;
         // will flag
         private bool willFlag;
@@ -393,6 +397,11 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             return msg;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="protocolVersion">MQTT protocol version</param>
+        /// <returns></returns>
         public override byte[] GetBytes(byte protocolVersion)
         {
             int fixedHeaderSize = 0;
@@ -567,6 +576,10 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             return buffer;
         }
 
+        /// <summary>
+        /// Converts the default class string
+        /// </summary>
+        /// <returns>The string</returns>
         public override string ToString()
         {
 #if TRACE

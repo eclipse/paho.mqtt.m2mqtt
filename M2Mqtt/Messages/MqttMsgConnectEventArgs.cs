@@ -37,7 +37,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="msg">CONNECT message received from client</param>
+        /// <param name="connect">CONNECT message received from client</param>
         public MqttMsgConnectEventArgs(MqttMsgConnect connect)
         {
             this.Message = connect;

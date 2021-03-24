@@ -76,11 +76,23 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         internal const byte MQTT_MSG_DISCONNECT_FLAG_BITS = 0x00;
 
         // QOS levels
+        /// <summary>
+        /// QOS At Most Once
+        /// </summary>
         public const byte QOS_LEVEL_AT_MOST_ONCE = 0x00;
+        /// <summary>
+        /// QOS At Least Once
+        /// </summary>
         public const byte QOS_LEVEL_AT_LEAST_ONCE = 0x01;
+        /// <summary>
+        /// QOS Exactly Once
+        /// </summary>
         public const byte QOS_LEVEL_EXACTLY_ONCE = 0x02;
 
         // SUBSCRIBE QoS level granted failure [v3.1.1]
+        /// <summary>
+        /// QOS Granted Failure
+        /// </summary>
         public const byte QOS_LEVEL_GRANTED_FAILURE = 0x80;
 
         internal const ushort MAX_TOPIC_LENGTH = 65535;
@@ -138,16 +150,26 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
 
         #endregion
 
-        // message type
+        /// <summary>
+        /// message type
+        /// </summary>
         protected byte type;
-        // duplicate delivery
-        protected bool dupFlag;
-        // quality of service level
-        protected byte qosLevel;
-        // retain flag
-        protected bool retain;
-        // message identifier
-        protected ushort messageId;
+        /// <summary>
+        /// duplicate delivery
+        /// </summary>
+        internal protected bool dupFlag;
+        /// <summary>
+        /// quality of service level
+        /// </summary>
+        internal protected byte qosLevel;
+        /// <summary>
+        /// retain flag
+        /// </summary>
+        internal protected bool retain;
+        /// <summary>
+        /// message identifier
+        /// </summary>
+        internal protected ushort messageId;
 
         /// <summary>
         /// Returns message bytes rapresentation

@@ -36,7 +36,9 @@ namespace uPLibrary.Networking.M2Mqtt.Internal
 
         #endregion
 
-        // related message
+        /// <summary>
+        /// related message
+        /// </summary>
         protected MqttMsgBase msg;
 
         /// <summary>

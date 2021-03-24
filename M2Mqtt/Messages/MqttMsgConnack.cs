@@ -27,11 +27,29 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         #region Constants...
 
         // return codes for CONNACK message
+        /// <summary>
+        /// Connection Accepted
+        /// </summary>
         public const byte CONN_ACCEPTED = 0x00;
+        /// <summary>
+        /// Connection refused due to protocol version
+        /// </summary>
         public const byte CONN_REFUSED_PROT_VERS = 0x01;
+        /// <summary>
+        /// Connection refused due to identity
+        /// </summary>
         public const byte CONN_REFUSED_IDENT_REJECTED = 0x02;
+        /// <summary>
+        /// Connection refused due to server being unavailable
+        /// </summary>
         public const byte CONN_REFUSED_SERVER_UNAVAILABLE = 0x03;
+        /// <summary>
+        /// Connection refused due to username or password being incorrect
+        /// </summary>
         public const byte CONN_REFUSED_USERNAME_PASSWORD = 0x04;
+        /// <summary>
+        /// Connection refused due to authentication failure
+        /// </summary>
         public const byte CONN_REFUSED_NOT_AUTHORIZED = 0x05;
 
         private const byte TOPIC_NAME_COMP_RESP_BYTE_OFFSET = 0;
@@ -121,6 +139,11 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             return msg;
         }
 
+        /// <summary>
+        /// Gets Bytes
+        /// </summary>
+        /// <param name="ProtocolVersion">MQTT protocol version</param>
+        /// <returns>buffer</returns>
         public override byte[] GetBytes(byte ProtocolVersion)
         {
             int fixedHeaderSize = 0;
@@ -176,6 +199,10 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             return buffer;
         }
 
+        /// <summary>
+        /// Returns the string
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
 #if TRACE

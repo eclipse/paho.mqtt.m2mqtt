@@ -153,13 +153,21 @@ namespace uPLibrary.Networking.M2Mqtt
         // last communication time in ticks
         private int lastCommTime;
 
-        // event for PUBLISH message received
+        /// <summary>
+        /// event for PUBLISH message received
+        /// </summary>
         public event MqttMsgPublishEventHandler MqttMsgPublishReceived;
-        // event for published message
+        /// <summary>
+        /// event for published message
+        /// </summary>
         public event MqttMsgPublishedEventHandler MqttMsgPublished;
-        // event for subscribed topic
+        /// <summary>
+        /// event for subscribed topic
+        /// </summary>
         public event MqttMsgSubscribedEventHandler MqttMsgSubscribed;
-        // event for unsubscribed topic
+        /// <summary>
+        /// event for unsubscribed topic
+        /// </summary>
         public event MqttMsgUnsubscribedEventHandler MqttMsgUnsubscribed;
 #if BROKER
         // event for SUBSCRIBE message received
@@ -172,7 +180,9 @@ namespace uPLibrary.Networking.M2Mqtt
         public event MqttMsgDisconnectEventHandler MqttMsgDisconnected;
 #endif
 
-        // event for peer/client disconnection
+        /// <summary>
+        /// event for peer/client disconnection
+        /// </summary>
         public event ConnectionClosedEventHandler ConnectionClosed;
 
         // channel to communicate over the network
@@ -305,10 +315,11 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="brokerHostName">Broker Host Name or IP Address</param>
         /// <param name="brokerPort">Broker port</param>
         /// <param name="secure">Using secure connection</param>
-        /// <param name="sslProtocol">SSL/TLS protocol version</param>
-#if !(WINDOWS_APP || WINDOWS_PHONE_APP)
         /// <param name="caCert">CA certificate for secure connection</param>
         /// <param name="clientCert">Client certificate</param>
+        /// <param name="sslProtocol">SSL/TLS protocol</param>
+#if !(WINDOWS_APP || WINDOWS_PHONE_APP)
+
         public MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol)
 #else
         public MqttClient(string brokerHostName, int brokerPort, bool secure, MqttSslProtocols sslProtocol)            
@@ -710,12 +721,15 @@ namespace uPLibrary.Networking.M2Mqtt
                 // broker must send PINGRESP within timeout equal to keep alive period
                 return (MqttMsgPingResp)this.SendReceive(pingreq, this.keepAlivePeriod);
             }
+#if TRACE
             catch (Exception e)
             {
-#if TRACE
-                MqttUtility.Trace.WriteLine(TraceLevel.Error, "Exception occurred: {0}", e.ToString());
-#endif
 
+                MqttUtility.Trace.WriteLine(TraceLevel.Error, "Exception occurred: {0}", e.ToString());
+#else
+            catch (Exception)
+            {
+#endif
                 // client must close connection
                 this.OnConnectionClosing();
                 return null;
@@ -2502,7 +2516,7 @@ namespace uPLibrary.Networking.M2Mqtt
                     }
                 }
             }
-            catch (MqttCommunicationException e)
+            catch (MqttCommunicationException)
             {
                 // possible exception on Send, I need to re-enqueue not sent message
                 if (msgContext != null)
@@ -2648,7 +2662,13 @@ namespace uPLibrary.Networking.M2Mqtt
     /// </summary>
     public enum MqttProtocolVersion
     {
+        /// <summary>
+        /// MQTT protocol version 3.1
+        /// </summary>
         Version_3_1 = MqttMsgConnect.PROTOCOL_VERSION_V3_1,
+        /// <summary>
+        /// MQTT protocol version 3.1.1
+        /// </summary>
         Version_3_1_1 = MqttMsgConnect.PROTOCOL_VERSION_V3_1_1
     }
 }

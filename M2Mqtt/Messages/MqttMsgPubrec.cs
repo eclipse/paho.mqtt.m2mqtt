@@ -31,6 +31,11 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             this.type = MQTT_MSG_PUBREC_TYPE;
         }
 
+        /// <summary>
+        /// Gets Bytes
+        /// </summary>
+        /// <param name="protocolVersion">MQTT protocol version</param>
+        /// <returns>buffer</returns>
         public override byte[] GetBytes(byte protocolVersion)
         {
             int fixedHeaderSize = 0;
@@ -110,6 +115,10 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             return msg;
         }
 
+        /// <summary>
+        /// Converts the default class string
+        /// </summary>
+        /// <returns>The string</returns>
         public override string ToString()
         {
 #if TRACE
