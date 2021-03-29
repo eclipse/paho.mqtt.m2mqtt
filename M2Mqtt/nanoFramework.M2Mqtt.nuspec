@@ -3,10 +3,9 @@
   <metadata>
     <id>nanoFramework.M2Mqtt</id>
     <version>$version$</version>
-    <title>M2Mqtt - MQTT Client Library for nanoFramework</title>
-    <authors>nanoFramework project contributors</authors>
-    <owners>nanoFramework project contributors</owners>
-    <licenseUrl>https://github.com/nanoframework/paho.mqtt.m2mqtt/blob/nanoframework/LICENSE</licenseUrl>
+    <title>M2Mqtt - MQTT Client Library for .NET nanoFramework</title>
+    <authors>nanoframework,dotnetfoundation</authors>
+    <license type="file">LICENSE.md</license>
     <projectUrl>https://github.com/nanoframework/paho.mqtt.m2mqtt</projectUrl>
     <iconUrl>https://secure.gravatar.com/avatar/97d0e092247f0716db6d4b47b7d1d1ad</iconUrl>
     <icon>images\nf-logo.png</icon>
@@ -16,7 +15,7 @@
     <summary>M2Mqtt is a MQTT client available for .NET nanoFramework for M2M communication.</summary>
     <releaseNotes>
     </releaseNotes>
-    <copyright>Copyright (c) 2019 Paolo Patierno and the nanoFramework project contributors</copyright>
+    <copyright>Copyright (c) 2019 Paolo Patierno and the .NET nanoFramework project contributors</copyright>
     <tags>m2m mqtt queue messaging internetofthings iot cloud netmf embedded micro netduino micro-framework hardware gadgeteer</tags>
     <dependencies>
       <dependency id="nanoFramework.CoreLibrary" version="1.10.3-preview.7" />
@@ -32,9 +31,9 @@
     <file src="bin\Release\nanoFramework.M2Mqtt.pdbx" target="lib\nanoFramework.M2Mqtt.pdbx" />
     <file src="bin\Release\nanoFramework.M2Mqtt.pe" target="lib\nanoFramework.M2Mqtt.pe" />
     <file src="bin\Release\nanoFramework.M2Mqtt.xml" target="lib\nanoFramework.M2Mqtt.xml" />
-    <!-- readme -->
-    <file src="readme.txt" target="readme.txt" />
-    <!-- logo -->
-    <file src="nf-logo.png" target="images\" />
+    
+    <file src="..\assets\readme.txt" target="" />
+    <file src="..\assets\nf-logo.png" target="images\" />
+    <file src="..\LICENSE.md" target="" />
   </files>
 </package>
