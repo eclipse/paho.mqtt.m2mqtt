@@ -33,6 +33,11 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             this.qosLevel = QOS_LEVEL_AT_LEAST_ONCE;
         }
 
+        /// <summary>
+        /// Returns the bytes that represents the current object.
+        /// </summary>
+        /// <param name="ProtocolVersion">MQTT protocol version</param>
+        /// <returns>An array of bytes that represents the current object.</returns>
         public override byte[] GetBytes(byte protocolVersion)
         {
             int fixedHeaderSize = 0;
@@ -87,7 +92,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// Parse bytes for a PUBREL message
         /// </summary>
         /// <param name="fixedHeaderFirstByte">First fixed header byte</param>
-        /// <param name="protocolVersion">Protocol Version</param>
+        /// <param name="protocolVersion">MQTT Protocol Version</param>
         /// <param name="channel">Channel connected to the broker</param>
         /// <returns>PUBREL message instance</returns>
         public static MqttMsgPubrel Parse(byte fixedHeaderFirstByte, byte protocolVersion, IMqttNetworkChannel channel)
@@ -127,6 +132,10 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             return msg;
         }
 
+        /// <summary>
+        /// Returns a string that represents the current object.
+        /// </summary>
+        /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
 #if TRACE

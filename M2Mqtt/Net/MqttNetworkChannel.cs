@@ -473,14 +473,14 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <remarks>
         /// Note: Following the recommendation of the .NET documentation, nanoFramework implementation does not have SSL3 nor Default because those are deprecated and unsecure.
         /// </remarks>
-#if (!MF_FRAMEWORK_VERSION_V4_2 && !MF_FRAMEWORK_VERSION_V4_3 && !COMPACT_FRAMEWORK)
+#if (!MF_FRAMEWORK_VERSION_V4_2 && !MF_FRAMEWORK_VERSION_V4_3 && !MF_FRAMEWORK_VERSION_V4_4 && !COMPACT_FRAMEWORK)
         public static SslProtocols ToSslPlatformEnum(MqttSslProtocols mqttSslProtocol)
         {
             switch (mqttSslProtocol)
             {
                 case MqttSslProtocols.None:
                     return SslProtocols.None;
-#if !(NANOFRAMEWORK_1_0)
+#if !(NANOFRAMEWORK_1_0) //nanoFramework does not support this obsolete protocol.
                 case MqttSslProtocols.SSLv3:
                     return SslProtocols.Ssl3;
 #endif
@@ -490,14 +490,11 @@ namespace uPLibrary.Networking.M2Mqtt
                     return SslProtocols.Tls11;
                 case MqttSslProtocols.TLSv1_2:
                     return SslProtocols.Tls12;
-#if !(NANOFRAMEWORK_1_0)
-                case MqttSslProtocols.SSLv3:
-#endif
                default:
                     throw new ArgumentException("SSL/TLS protocol version not supported");
             }
         }
-#elif (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3)
+#elif (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || MF_FRAMEWORK_VERSION_V4_4)
         public static SslProtocols ToSslPlatformEnum(MqttSslProtocols mqttSslProtocol)
         {
             switch (mqttSslProtocol)

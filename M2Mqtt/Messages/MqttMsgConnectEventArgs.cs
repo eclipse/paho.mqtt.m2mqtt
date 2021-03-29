@@ -14,12 +14,10 @@ Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
 */
 
-#if (NANOFRAMEWORK_1_0)
-using System;
-#elif (!MF_FRAMEWORK_VERSION_V4_2 && !MF_FRAMEWORK_VERSION_V4_3)
-using System;
-#else
+#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || MF_FRAMEWORK_VERSION_V4_4)
 using Microsoft.SPOT;
+#else
+using System;
 #endif
 
 namespace uPLibrary.Networking.M2Mqtt.Messages
@@ -37,7 +35,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="msg">CONNECT message received from client</param>
+        /// <param name="connect">CONNECT message received from client</param>
         public MqttMsgConnectEventArgs(MqttMsgConnect connect)
         {
             this.Message = connect;

@@ -23,11 +23,19 @@ namespace uPLibrary.Networking.M2Mqtt
     /// </summary>
     public class Fx
     {
+        /// <summary>
+        /// Starts the thead
+        /// </summary>
+        /// <param name="threadStart">Thread to start</param>
         public static void StartThread(ThreadStart threadStart)
         {
             new Thread(threadStart).Start();
         }
 
+        /// <summary>
+        /// Puts the thread to sleep
+        /// </summary>
+        /// <param name="millisecondsTimeout">Timeout in Milliseconds</param>
         public static void SleepThread(int millisecondsTimeout)
         {
             Thread.Sleep(millisecondsTimeout);
