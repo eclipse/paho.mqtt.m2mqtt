@@ -1,5 +1,4 @@
 ﻿/*
-Copyright (c) 2019 The nanoFramework project contributors
 Copyright (c) 2013, 2014 Paolo Patierno
 
 All rights reserved. This program and the accompanying materials
@@ -13,6 +12,7 @@ and the Eclipse Distribution License is available at
 
 Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
+   .NET Foundation and Contributors - nanoFramework support
 */
 
 namespace uPLibrary.Networking.M2Mqtt
@@ -43,7 +43,7 @@ namespace uPLibrary.Networking.M2Mqtt
         /// </summary>
         TLSv1_2,
         /// <summary>
-        /// TLS version 1.3 (currently unsupported)
+        /// TLS version 1.3
         /// </summary>
         TLSv1_3
     }

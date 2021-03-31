@@ -171,7 +171,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             do
             {
                 fixedHeaderSize++;
-                temp = temp / 128;
+                temp /= 128;
             } while (temp > 0);
 
             // allocate buffer for message

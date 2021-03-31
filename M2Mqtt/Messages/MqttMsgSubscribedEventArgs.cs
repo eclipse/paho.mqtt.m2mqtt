@@ -12,9 +12,10 @@ and the Eclipse Distribution License is available at
 
 Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
+   .NET Foundation and Contributors - nanoFramework support
 */
 
-#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || MF_FRAMEWORK_VERSION_V4_4)
+#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || MF_FRAMEWORK_VERSION_V4_4 || MF_FRAMEWORK_VERSION_V4_4)
 using Microsoft.SPOT;
 #else
 using System;

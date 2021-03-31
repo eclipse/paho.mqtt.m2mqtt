@@ -21,7 +21,7 @@ namespace uPLibrary.Networking.M2Mqtt
     /// <summary>
     /// Support methods fos specific framework
     /// </summary>
-    public class Fx
+    public static class Fx
     {
         /// <summary>
         /// Starts the thead

@@ -193,7 +193,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
                 digit = remainingLength % 128;
                 remainingLength /= 128;
                 if (remainingLength > 0)
-                    digit = digit | 0x80;
+                    digit |= 0x80;
                 buffer[index++] = (byte)digit;
             } while (remainingLength > 0);
             return index;

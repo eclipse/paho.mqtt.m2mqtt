@@ -2,7 +2,7 @@
 
 namespace System
 {
-    class Environment
+    static class Environment
     {
         public static int TickCount
         {

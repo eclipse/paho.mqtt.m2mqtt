@@ -36,7 +36,7 @@ namespace uPLibrary.Networking.M2Mqtt.Session
         /// <summary>
         /// Constructor
         /// </summary>
-        public MqttSession()
+        protected MqttSession()
             : this(null)
         {
         }
@@ -45,7 +45,7 @@ namespace uPLibrary.Networking.M2Mqtt.Session
         /// Constructor
         /// </summary>
         /// <param name="clientId">Client Id to create session</param>
-        public MqttSession(string clientId)
+        protected MqttSession(string clientId)
         {
             this.ClientId = clientId;
             this.InflightMessages = new Hashtable();

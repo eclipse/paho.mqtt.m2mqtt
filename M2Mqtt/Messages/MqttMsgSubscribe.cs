@@ -12,11 +12,12 @@ and the Eclipse Distribution License is available at
 
 Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
+   .NET Foundation and Contributors - nanoFramework support
 */
 
 using System;
 // if NOT .Net Micro Framework
-#if (!MF_FRAMEWORK_VERSION_V4_2 && !MF_FRAMEWORK_VERSION_V4_3 && !NANOFRAMEWORK_1_0)
+#if (!MF_FRAMEWORK_VERSION_V4_2 && !MF_FRAMEWORK_VERSION_V4_3 && !MF_FRAMEWORK_VERSION_V4_4 && !NANOFRAMEWORK_1_0)
 using System.Collections.Generic;
 #endif
 using System.Collections;
@@ -130,7 +131,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             // NOTE : before, I don't know how many topics will be in the payload (so use List)
 
             // if .Net Micro Framework
-#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || NANOFRAMEWORK_1_0)
+#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || MF_FRAMEWORK_VERSION_V4_4 || NANOFRAMEWORK_1_0)
             IList tmpTopics = new ArrayList();
             IList tmpQosLevels = new ArrayList();
 // else other frameworks (.Net, .Net Compact, Mono, Windows Phone) 
@@ -168,7 +169,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// <summary>
         /// Returns the bytes that represents the current object.
         /// </summary>
-        /// <param name="ProtocolVersion">MQTT protocol version</param>
+        /// <param name="protocolVersion">MQTT protocol version</param>
         /// <returns>An array of bytes that represents the current object.</returns>
         public override byte[] GetBytes(byte protocolVersion)
         {
@@ -220,7 +221,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             do
             {
                 fixedHeaderSize++;
-                temp = temp / 128;
+                temp /= 128;
             } while (temp > 0);
 
             // allocate buffer for message

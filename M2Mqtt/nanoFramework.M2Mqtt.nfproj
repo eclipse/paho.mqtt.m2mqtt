@@ -15,7 +15,7 @@
     <AssemblyName>nanoFramework.M2Mqtt</AssemblyName>
     <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <DefineConstants>SSL</DefineConstants>
+    <DefineConstants>SSL;TRACE</DefineConstants>
     <DocumentationFile>bin\$(Configuration)\nanoFramework.M2Mqtt.xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />

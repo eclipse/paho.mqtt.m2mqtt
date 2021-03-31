@@ -97,7 +97,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// <summary>
         /// Returns the bytes that represents the current object.
         /// </summary>
-        /// <param name="ProtocolVersion">MQTT protocol version</param>
+        /// <param name="protocolVersion">MQTT protocol version</param>
         /// <returns>An array of bytes that represents the current object.</returns>
         public override byte[] GetBytes(byte protocolVersion)
         {
@@ -148,7 +148,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             do
             {
                 fixedHeaderSize++;
-                temp = temp / 128;
+                temp /= 128;
             } while (temp > 0);
 
             // allocate buffer for message
