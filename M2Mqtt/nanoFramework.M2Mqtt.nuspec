@@ -21,9 +21,9 @@
       <dependency id="nanoFramework.CoreLibrary" version="1.10.3-preview.7" />
       <dependency id="nanoFramework.Runtime.Events" version="1.9.0-preview.16" />
       <dependency id="nanoFramework.Runtime.Native" version="1.5.1-preview.32" />
-      <dependency id="nanoFramework.System.Collections" version="1.2.0-preview.36" />
+      <dependency id="nanoFramework.System.Collections" version="1.2.0-preview.39" />
       <dependency id="nanoFramework.System.Net" version="1.6.5-preview.2" />
-      <dependency id="nanoFramework.System.Text" version="1.1.1-preview.35" />
+      <dependency id="nanoFramework.System.Text" version="1.1.1-preview.40" />
     </dependencies>
   </metadata>
   <files>
@@ -32,7 +32,6 @@
     <file src="bin\Release\nanoFramework.M2Mqtt.pdbx" target="lib\nanoFramework.M2Mqtt.pdbx" />
     <file src="bin\Release\nanoFramework.M2Mqtt.pe" target="lib\nanoFramework.M2Mqtt.pe" />
     <file src="bin\Release\nanoFramework.M2Mqtt.xml" target="lib\nanoFramework.M2Mqtt.xml" />
-    
     <file src="..\assets\readme.txt" target="" />
     <file src="..\assets\nf-logo.png" target="images\" />
     <file src="..\LICENSE.md" target="" />
