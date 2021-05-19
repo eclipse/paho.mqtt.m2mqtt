@@ -23,18 +23,18 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib, Version=1.10.4.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.CoreLibrary.1.10.4-preview.4\lib\mscorlib.dll</HintPath>
+      <HintPath>..\packages\nanoFramework.CoreLibrary.1.10.4-preview.6\lib\mscorlib.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="nanoFramework.M2Mqtt">
       <HintPath>..\M2Mqtt\bin\Debug\nanoFramework.M2Mqtt.dll</HintPath>
     </Reference>
     <Reference Include="nanoFramework.Runtime.Events, Version=1.9.0.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.Runtime.Events.1.9.0-preview.24\lib\nanoFramework.Runtime.Events.dll</HintPath>
+      <HintPath>..\packages\nanoFramework.Runtime.Events.1.9.0-preview.25\lib\nanoFramework.Runtime.Events.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="nanoFramework.Runtime.Native, Version=1.5.1.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.Runtime.Native.1.5.1-preview.39\lib\nanoFramework.Runtime.Native.dll</HintPath>
+      <HintPath>..\packages\nanoFramework.Runtime.Native.1.5.1-preview.40\lib\nanoFramework.Runtime.Native.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="nanoFramework.System.Collections, Version=1.2.0.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
@@ -46,7 +46,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Net, Version=1.6.5.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.System.Net.1.6.5-preview.17\lib\System.Net.dll</HintPath>
+      <HintPath>..\packages\nanoFramework.System.Net.1.6.5-preview.19\lib\System.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
