@@ -22,7 +22,7 @@
       <dependency id="nanoFramework.Runtime.Events" version="1.9.1-preview.5" />
       <dependency id="nanoFramework.Runtime.Native" version="1.5.1-preview.45" />
       <dependency id="nanoFramework.System.Collections" version="1.2.0-preview.67" />
-      <dependency id="nanoFramework.System.Net" version="1.6.5-preview.33" />
+      <dependency id="nanoFramework.System.Net" version="1.6.5-preview.35" />
       <dependency id="nanoFramework.System.Text" version="1.1.1-preview.61" />
     </dependencies>
   </metadata>
