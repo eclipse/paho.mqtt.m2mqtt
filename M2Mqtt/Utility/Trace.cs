@@ -15,7 +15,6 @@ Contributors:
    .NET Foundation and Contributors - nanoFramework support
 */
 
-using System;
 using System.Diagnostics;
 
 namespace nanoFramework.M2Mqtt.Utility

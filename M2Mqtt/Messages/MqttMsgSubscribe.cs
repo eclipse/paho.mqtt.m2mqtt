@@ -58,7 +58,7 @@ namespace nanoFramework.M2Mqtt.Messages
             QoSLevels = qosLevels;
 
             // SUBSCRIBE message uses QoS Level 1 (not "officially" in 3.1.1)
-            QosLevel = (byte)MqttQoSLevel.AtLeastOnce;
+            QosLevel = MqttQoSLevel.AtLeastOnce;
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace nanoFramework.M2Mqtt.Messages
                 // only 3.1.0
 
                 // read QoS level from fixed header
-                msg.QosLevel = (byte)((fixedHeaderFirstByte & QOS_LEVEL_MASK) >> QOS_LEVEL_OFFSET);
+                msg.QosLevel = (MqttQoSLevel)((fixedHeaderFirstByte & QOS_LEVEL_MASK) >> QOS_LEVEL_OFFSET);
                 // read DUP flag from fixed header
                 msg.DupFlag = (((fixedHeaderFirstByte & DUP_FLAG_MASK) >> DUP_FLAG_OFFSET) == 0x01);
                 // retain flag not used
@@ -147,7 +147,7 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <returns>An array of bytes that represents the current object.</returns>
         public override byte[] GetBytes(byte protocolVersion)
         {
-            int fixedHeaderSize = 0;
+            int fixedHeaderSize;
             int varHeaderSize = 0;
             int payloadSize = 0;
             int remainingLength = 0;
@@ -217,7 +217,7 @@ namespace nanoFramework.M2Mqtt.Messages
             else
             {
                 buffer[index] = (byte)((MQTT_MSG_SUBSCRIBE_TYPE << MSG_TYPE_OFFSET) |
-                                   (QosLevel << QOS_LEVEL_OFFSET));
+                                   ((byte)QosLevel << QOS_LEVEL_OFFSET));
                 buffer[index] |= DupFlag ? (byte)(1 << DUP_FLAG_OFFSET) : (byte)0x00;
                 index++;
             }
@@ -255,7 +255,7 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-#if TRACE
+#if DEBUG
             return this.GetTraceString(
                 "SUBSCRIBE",
                 new object[] { "messageId", "topics", "qosLevels" },

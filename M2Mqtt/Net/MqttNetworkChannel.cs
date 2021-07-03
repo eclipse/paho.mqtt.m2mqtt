@@ -187,32 +187,37 @@ namespace nanoFramework.M2Mqtt
         /// <returns>Number of bytes received</returns>
         public int Receive(byte[] buffer)
         {
+            // read all data needed (until fill buffer)
+            int idx = 0;
+            int read;
             if (_secure)
             {
-                // read all data needed (until fill buffer)
-                int idx = 0, read = 0;
                 while (idx < buffer.Length)
                 {
                     // fixed scenario with socket closed gracefully by peer/broker and
                     // Read return 0. Avoid infinite loop.
                     read = _sslStream.Read(buffer, idx, buffer.Length - idx);
                     if (read == 0)
+                    {
                         return 0;
+                    }
+
                     idx += read;
                 }
                 return buffer.Length;
             }
             else
             {
-                // read all data needed (until fill buffer)
-                int idx = 0, read = 0;
                 while (idx < buffer.Length)
                 {
                     // fixed scenario with socket closed gracefully by peer/broker and
                     // Read return 0. Avoid infinite loop.
                     read = _socket.Receive(buffer, idx, buffer.Length - idx, SocketFlags.None);
                     if (read == 0)
+                    {
                         return 0;
+                    }
+
                     idx += read;
                 }
                 return buffer.Length;
@@ -257,7 +262,9 @@ namespace nanoFramework.M2Mqtt
         /// Accept connection from a remote client
         /// </summary>
         public void Accept()
-        { }
+        {
+            // Doesn't do anything as not a broker
+        }
     }
 
     /// <summary>

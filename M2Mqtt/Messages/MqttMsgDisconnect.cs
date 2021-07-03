@@ -53,8 +53,12 @@ namespace nanoFramework.M2Mqtt.Messages
             }
 
             // get remaining length and allocate buffer
-            int remainingLength = MqttMsgBase.DecodeRemainingLength(channel);
+            int remainingLength = DecodeRemainingLength(channel);
             // NOTE : remainingLength must be 0
+            if(remainingLength !=0)
+            {
+                throw new MqttClientException(MqttClientErrorCode.InvalidFlagBits);
+            }
 
             return msg;
         }
@@ -90,7 +94,7 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-#if TRACE
+#if DEBUG
             return this.GetTraceString(
                 "DISCONNECT",
                 null,

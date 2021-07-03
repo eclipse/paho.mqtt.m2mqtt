@@ -73,7 +73,7 @@ namespace nanoFramework.M2Mqtt.Messages
             Topic = topic;
             Message = message;
             DupFlag = dupFlag;
-            QosLevel = (byte)qosLevel;
+            QosLevel = qosLevel;
             Retain = retain;
             MessageId = 0;
         }
@@ -85,7 +85,7 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <returns>An array of bytes that represents the current object.</returns>
         public override byte[] GetBytes(byte protocolVersion)
         {
-            int fixedHeaderSize = 0;
+            int fixedHeaderSize;
             int varHeaderSize = 0;
             int payloadSize = 0;
             int remainingLength = 0;
@@ -105,7 +105,7 @@ namespace nanoFramework.M2Mqtt.Messages
             }
 
             // check wrong QoS level (both bits can't be set 1)
-            if (QosLevel > (byte)MqttQoSLevel.ExactlyOnce)
+            if (QosLevel > MqttQoSLevel.ExactlyOnce)
             {
                 throw new MqttClientException(MqttClientErrorCode.QosNotAllowed);
             }
@@ -116,8 +116,8 @@ namespace nanoFramework.M2Mqtt.Messages
             varHeaderSize += topicUtf8.Length + 2;
 
             // message id is valid only with QOS level 1 or QOS level 2
-            if ((QosLevel == (byte)MqttQoSLevel.AtLeastOnce) || 
-                (QosLevel == (byte)MqttQoSLevel.ExactlyOnce))
+            if ((QosLevel == MqttQoSLevel.AtLeastOnce) || 
+                (QosLevel == MqttQoSLevel.ExactlyOnce))
             {
                 varHeaderSize += MESSAGE_ID_SIZE;
             }
@@ -129,7 +129,7 @@ namespace nanoFramework.M2Mqtt.Messages
                 payloadSize += Message.Length;
             }
 
-            remainingLength += (varHeaderSize + payloadSize);
+            remainingLength += varHeaderSize + payloadSize;
 
             // first byte of fixed header
             fixedHeaderSize = 1;
@@ -148,13 +148,13 @@ namespace nanoFramework.M2Mqtt.Messages
 
             // first fixed header byte
             buffer[index] = (byte)((MQTT_MSG_PUBLISH_TYPE << MSG_TYPE_OFFSET) |
-                                   (QosLevel << QOS_LEVEL_OFFSET));
+                                   ((byte)QosLevel << QOS_LEVEL_OFFSET));
             buffer[index] |= DupFlag ? (byte)(1 << DUP_FLAG_OFFSET) : (byte)0x00;
             buffer[index] |= Retain ? (byte)(1 << RETAIN_FLAG_OFFSET) : (byte)0x00;
             index++;
 
             // encode remaining length
-            index = this.EncodeRemainingLength(remainingLength, buffer, index);
+            index = EncodeRemainingLength(remainingLength, buffer, index);
 
             // topic name
             buffer[index++] = (byte)((topicUtf8.Length >> 8) & 0x00FF); // MSB
@@ -163,12 +163,15 @@ namespace nanoFramework.M2Mqtt.Messages
             index += topicUtf8.Length;
 
             // message id is valid only with QOS level 1 or QOS level 2
-            if ((QosLevel == (byte)MqttQoSLevel.AtLeastOnce) ||
-                (QosLevel == (byte)MqttQoSLevel.ExactlyOnce))
+            if ((QosLevel == MqttQoSLevel.AtLeastOnce) ||
+                (QosLevel == MqttQoSLevel.ExactlyOnce))
             {
                 // check message identifier assigned
                 if (MessageId == 0)
+                {
                     throw new MqttClientException(MqttClientErrorCode.WrongMessageId);
+                }
+
                 buffer[index++] = (byte)((MessageId >> 8) & 0x00FF); // MSB
                 buffer[index++] = (byte)(MessageId & 0x00FF); // LSB
             }
@@ -177,8 +180,7 @@ namespace nanoFramework.M2Mqtt.Messages
             if (Message != null)
             {
                 // message data
-                Array.Copy(Message, 0, buffer, index, Message.Length);
-                index += Message.Length;
+                Array.Copy(Message, 0, buffer, index, Message.Length);                
             }
 
             return buffer;
@@ -215,9 +217,9 @@ namespace nanoFramework.M2Mqtt.Messages
             msg.Topic = new string(Encoding.UTF8.GetChars(topicUtf8));
 
             // read QoS level from fixed header
-            msg.QosLevel = (byte)((fixedHeaderFirstByte & QOS_LEVEL_MASK) >> QOS_LEVEL_OFFSET);
+            msg.QosLevel = (MqttQoSLevel)((fixedHeaderFirstByte & QOS_LEVEL_MASK) >> QOS_LEVEL_OFFSET);
             // check wrong QoS level (both bits can't be set 1)
-            if (msg.QosLevel > (byte)MqttQoSLevel.ExactlyOnce)
+            if (msg.QosLevel > MqttQoSLevel.ExactlyOnce)
             {
                 throw new MqttClientException(MqttClientErrorCode.QosNotAllowed);
             }
@@ -228,12 +230,12 @@ namespace nanoFramework.M2Mqtt.Messages
             msg.Retain = (((fixedHeaderFirstByte & RETAIN_FLAG_MASK) >> RETAIN_FLAG_OFFSET) == 0x01);
             
             // message id is valid only with QOS level 1 or QOS level 2
-            if ((msg.QosLevel == (byte)MqttQoSLevel.AtLeastOnce) ||
-                (msg.QosLevel == (byte)MqttQoSLevel.ExactlyOnce))
+            if ((msg.QosLevel == MqttQoSLevel.AtLeastOnce) ||
+                (msg.QosLevel == MqttQoSLevel.ExactlyOnce))
             {
                 // message id
                 msg.MessageId = (ushort)((buffer[index++] << 8) & 0xFF00);
-                msg.MessageId |= (buffer[index++]);
+                msg.MessageId |= buffer[index++];
             }
 
             // get payload with message data
@@ -246,8 +248,8 @@ namespace nanoFramework.M2Mqtt.Messages
 
             // copy first part of payload data received
             Array.Copy(buffer, index, msg.Message, messageOffset, received - index);
-            remaining -= (received - index);
-            messageOffset += (received - index);
+            remaining -= received - index;
+            messageOffset += received - index;
 
             // if payload isn't finished
             while (remaining > 0)
@@ -268,7 +270,7 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-#if TRACE
+#if DEBUG
             return this.GetTraceString(
                 "PUBLISH",
                 new object[] { "messageId", "topic", "message" },

@@ -91,7 +91,7 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-#if TRACE
+#if DEBUG
             return this.GetTraceString(
                 "PINGRESP",
                 null,

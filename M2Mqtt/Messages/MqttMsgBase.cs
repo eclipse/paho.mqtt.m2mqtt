@@ -95,7 +95,7 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <summary>
         /// Quality of Service level
         /// </summary>
-        public byte QosLevel { get; set; }
+        public MqttQoSLevel QosLevel { get; set; }
 
         /// <summary>
         /// Retain message flag
@@ -157,7 +157,7 @@ namespace nanoFramework.M2Mqtt.Messages
             return value;
         }
 
-#if TRACE
+#if DEBUG
         /// <summary>
         /// Returns a string representation of the message for tracing
         /// </summary>

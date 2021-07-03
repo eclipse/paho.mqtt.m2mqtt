@@ -15,9 +15,6 @@ Contributors:
    .NET Foundation and Contributors - nanoFramework support
 */
 
-using System;
-using System.Text;
-
 namespace nanoFramework.M2Mqtt
 {
     /// <summary>

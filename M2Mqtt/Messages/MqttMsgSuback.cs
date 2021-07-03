@@ -88,7 +88,7 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <returns>An array of bytes that represents the current object.</returns>
         public override byte[] GetBytes(byte protocolVersion)
         {
-            int fixedHeaderSize = 0;
+            int fixedHeaderSize;
             int varHeaderSize = 0;
             int payloadSize = 0;
             int remainingLength = 0;
@@ -153,7 +153,7 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-#if TRACE
+#if DEBUG
             return this.GetTraceString(
                 "SUBACK",
                 new object[] { "messageId", "grantedQosLevels" },

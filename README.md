@@ -11,6 +11,8 @@ The original project has an official website [here](https://m2mqtt.wordpress.com
 
 Since that time, the MQTT Client had some changes and has been adapted to .NET **nanoFramework**.
 
+Since that time, the MQTT Client had some changes and has been adapted to .NET nanoFramework.
+
 ## Build status
 
 | Component | Build Status | NuGet Package |

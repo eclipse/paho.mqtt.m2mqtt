@@ -39,8 +39,7 @@ namespace nanoFramework.M2Mqtt.Session
         /// </summary>
         protected MqttSession()
             : this(null)
-        {
-        }
+        { }
 
         /// <summary>
         /// Constructor

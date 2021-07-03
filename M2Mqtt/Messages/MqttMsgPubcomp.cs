@@ -39,17 +39,17 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <returns>An array of bytes that represents the current object.</returns>
         public override byte[] GetBytes(byte protocolVersion)
         {
-            int fixedHeaderSize = 0;
+            int fixedHeaderSize;
             int varHeaderSize = 0;
             int payloadSize = 0;
             int remainingLength = 0;
             byte[] buffer;
-            int index = 0;
+            int indexPubcomp = 0;
 
             // message identifier
             varHeaderSize += MESSAGE_ID_SIZE;
 
-            remainingLength += (varHeaderSize + payloadSize);
+            remainingLength += varHeaderSize + payloadSize;
 
             // first byte of fixed header
             fixedHeaderSize = 1;
@@ -68,16 +68,20 @@ namespace nanoFramework.M2Mqtt.Messages
 
             // first fixed header byte
             if (protocolVersion == MqttMsgConnect.PROTOCOL_VERSION_V3_1_1)
-                buffer[index++] = (MQTT_MSG_PUBCOMP_TYPE << MSG_TYPE_OFFSET) | MQTT_MSG_PUBCOMP_FLAG_BITS; // [v.3.1.1]
+            {
+                buffer[indexPubcomp++] = (MQTT_MSG_PUBCOMP_TYPE << MSG_TYPE_OFFSET) | MQTT_MSG_PUBCOMP_FLAG_BITS; // [v.3.1.1]
+            }
             else
-                buffer[index++] = (MQTT_MSG_PUBCOMP_TYPE << MSG_TYPE_OFFSET);
+            {
+                buffer[indexPubcomp++] = MQTT_MSG_PUBCOMP_TYPE << MSG_TYPE_OFFSET;
+            }
 
             // encode remaining length
-            index = this.EncodeRemainingLength(remainingLength, buffer, index);
+            indexPubcomp = EncodeRemainingLength(remainingLength, buffer, indexPubcomp);
 
             // get message identifier
-            buffer[index++] = (byte)((MessageId >> 8) & 0x00FF); // MSB
-            buffer[index++] = (byte)(MessageId & 0x00FF); // LSB 
+            buffer[indexPubcomp++] = (byte)((MessageId >> 8) & 0x00FF); // MSB
+            buffer[indexPubcomp] = (byte)(MessageId & 0x00FF); // LSB 
 
             return buffer;
         }
@@ -113,7 +117,7 @@ namespace nanoFramework.M2Mqtt.Messages
 
             // message id
             msg.MessageId = (ushort)((buffer[index++] << 8) & 0xFF00);
-            msg.MessageId |= (buffer[index]);
+            msg.MessageId |= buffer[index];
 
             return msg;
         }
@@ -124,7 +128,7 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-#if TRACE
+#if DEBUG
             return this.GetTraceString(
                 "PUBCOMP",
                 new object[] { "messageId" },

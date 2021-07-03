@@ -168,22 +168,29 @@ namespace nanoFramework.M2Mqtt.Messages
 
             // first fixed header byte
             if (ProtocolVersion == MqttMsgConnect.PROTOCOL_VERSION_V3_1_1)
+            {
                 buffer[index++] = (MQTT_MSG_CONNACK_TYPE << MSG_TYPE_OFFSET) | MQTT_MSG_CONNACK_FLAG_BITS; // [v.3.1.1]
+            }
             else
-                buffer[index++] = (byte)(MQTT_MSG_CONNACK_TYPE << MSG_TYPE_OFFSET);
+            {
+                buffer[index++] = MQTT_MSG_CONNACK_TYPE << MSG_TYPE_OFFSET;
+            }
             
             // encode remaining length
             index = EncodeRemainingLength(remainingLength, buffer, index);
 
             if (ProtocolVersion == MqttMsgConnect.PROTOCOL_VERSION_V3_1_1)
+            {
                 // [v3.1.1] session present flag
                 buffer[index++] = SessionPresent ? (byte)(1 << SESSION_PRESENT_FLAG_OFFSET) : (byte)0x00;
+            }
             else
-                // topic name compression response (reserved values. not used);
+            {    // topic name compression response (reserved values. not used);
                 buffer[index++] = 0x00;
+            }
             
             // connect return code
-            buffer[index++] = ReturnCode;
+            buffer[index] = ReturnCode;
 
             return buffer;
         }
@@ -194,7 +201,7 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-#if TRACE
+#if DEBUG
             return this.GetTraceString(
                 "CONNACK",
                 new object[] { "returnCode" },

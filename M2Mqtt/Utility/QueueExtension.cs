@@ -15,7 +15,6 @@ Contributors:
    .NET Foundation and Contributors - nanoFramework support
 */
 
-using System;
 using System.Collections;
 
 namespace nanoFramework.M2Mqtt.Utility
@@ -43,8 +42,11 @@ namespace nanoFramework.M2Mqtt.Utility
             foreach (var item in queue)
             {
                 if (predicate(item))
+                {
                     return item;
+                }
             }
+
             return null;
         }
     }

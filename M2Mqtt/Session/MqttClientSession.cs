@@ -28,7 +28,6 @@ namespace nanoFramework.M2Mqtt.Session
         /// <param name="clientId">Client Id to create session</param>
         public MqttClientSession(string clientId)
             : base(clientId)
-        {
-        }
+        { }
     }
 }

@@ -55,7 +55,7 @@ namespace nanoFramework.M2Mqtt.Messages
             }
 
             // get remaining length and allocate buffer
-            int remainingLength = MqttMsgBase.DecodeRemainingLength(channel);
+            int remainingLength = DecodeRemainingLength(channel);
             buffer = new byte[remainingLength];
 
             // read bytes from socket...
@@ -75,12 +75,12 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <returns>An array of bytes that represents the current object.</returns>
         public override byte[] GetBytes(byte protocolVersion)
         {
-            int fixedHeaderSize = 0;
+            int fixedHeaderSize;
             int varHeaderSize = 0;
             int payloadSize = 0;
             int remainingLength = 0;
             byte[] buffer;
-            int index = 0;
+            int indexUnback = 0;
 
             // message identifier
             varHeaderSize += MESSAGE_ID_SIZE;
@@ -105,19 +105,19 @@ namespace nanoFramework.M2Mqtt.Messages
             // first fixed header byte
             if (protocolVersion == MqttMsgConnect.PROTOCOL_VERSION_V3_1_1)
             {
-                buffer[index++] = (MQTT_MSG_UNSUBACK_TYPE << MSG_TYPE_OFFSET) | MQTT_MSG_UNSUBACK_FLAG_BITS; // [v.3.1.1]
+                buffer[indexUnback++] = (MQTT_MSG_UNSUBACK_TYPE << MSG_TYPE_OFFSET) | MQTT_MSG_UNSUBACK_FLAG_BITS; // [v.3.1.1]
             }
             else
             {
-                buffer[index++] = (byte)(MQTT_MSG_UNSUBACK_TYPE << MSG_TYPE_OFFSET);
+                buffer[indexUnback++] = MQTT_MSG_UNSUBACK_TYPE << MSG_TYPE_OFFSET;
             }
 
             // encode remaining length
-            index = this.EncodeRemainingLength(remainingLength, buffer, index);
+            indexUnback = EncodeRemainingLength(remainingLength, buffer, indexUnback);
 
             // message id
-            buffer[index++] = (byte)((MessageId >> 8) & 0x00FF); // MSB
-            buffer[index] = (byte)(MessageId & 0x00FF); // LSB
+            buffer[indexUnback++] = (byte)((MessageId >> 8) & 0x00FF); // MSB
+            buffer[indexUnback] = (byte)(MessageId & 0x00FF); // LSB
 
             return buffer;
         }
@@ -128,7 +128,7 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-#if TRACE
+#if DEBUG
             return this.GetTraceString(
                 "UNSUBACK",
                 new object[] { "messageId" },

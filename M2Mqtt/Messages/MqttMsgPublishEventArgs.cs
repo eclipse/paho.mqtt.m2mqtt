@@ -42,7 +42,7 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <summary>
         /// Quality of Service level
         /// </summary>
-        public byte QosLevel { get; internal set; }
+        public MqttQoSLevel QosLevel { get; internal set; }
 
         /// <summary>
         /// Retain message flag
@@ -60,7 +60,7 @@ namespace nanoFramework.M2Mqtt.Messages
         public MqttMsgPublishEventArgs(string topic,
                 byte[] message,
                 bool dupFlag,
-                byte qosLevel,
+                MqttQoSLevel qosLevel,
                 bool retain)
         {
             Topic = topic;

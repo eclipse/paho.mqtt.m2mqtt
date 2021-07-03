@@ -39,12 +39,12 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <returns>An array of bytes that represents the current object.</returns>
         public override byte[] GetBytes(byte protocolVersion)
         {
-            int fixedHeaderSize = 0;
+            int fixedHeaderSize;
             int varHeaderSize = 0;
             int payloadSize = 0;
             int remainingLength = 0;
             byte[] buffer;
-            int index = 0;
+            int indexPuback = 0;
 
             // message identifier
             varHeaderSize += MESSAGE_ID_SIZE;
@@ -68,16 +68,20 @@ namespace nanoFramework.M2Mqtt.Messages
 
             // first fixed header byte
             if (protocolVersion == MqttMsgConnect.PROTOCOL_VERSION_V3_1_1)
-                buffer[index++] = (MQTT_MSG_PUBACK_TYPE << MSG_TYPE_OFFSET) | MQTT_MSG_PUBACK_FLAG_BITS; // [v.3.1.1]
+            {
+                buffer[indexPuback++] = (MQTT_MSG_PUBACK_TYPE << MSG_TYPE_OFFSET) | MQTT_MSG_PUBACK_FLAG_BITS; // [v.3.1.1]
+            }
             else
-                buffer[index++] = (MQTT_MSG_PUBACK_TYPE << MSG_TYPE_OFFSET);
+            {
+                buffer[indexPuback++] = MQTT_MSG_PUBACK_TYPE << MSG_TYPE_OFFSET;
+            }
                               
             // encode remaining length
-            index = this.EncodeRemainingLength(remainingLength, buffer, index);
+            indexPuback = EncodeRemainingLength(remainingLength, buffer, indexPuback);
 
             // get message identifier
-            buffer[index++] = (byte)((MessageId >> 8) & 0x00FF); // MSB
-            buffer[index++] = (byte)(MessageId & 0x00FF); // LSB 
+            buffer[indexPuback++] = (byte)((MessageId >> 8) & 0x00FF); // MSB
+            buffer[indexPuback] = (byte)(MessageId & 0x00FF); // LSB 
 
             return buffer;
         }
@@ -124,7 +128,7 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-#if TRACE
+#if DEBUG
             return this.GetTraceString(
                 "PUBACK",
                 new object[] { "messageId" },

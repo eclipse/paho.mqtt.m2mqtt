@@ -29,5 +29,5 @@ namespace nanoFramework.M2Mqtt.Messages
         /// Subscribe only QOS Granted Failure [v3.1.1]
         /// </summary>
         GrantedFailure = 0x80,
-}
+    }
 }
