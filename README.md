@@ -1,15 +1,15 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=nanoframework_paho.mqtt.m2mqtt&metric=alert_status)](https://sonarcloud.io/dashboard?id=nanoframework_paho.mqtt.m2mqtt) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=nanoframework_paho.mqtt.m2mqtt&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=nanoframework_paho.mqtt.m2mqtt) [![License](https://img.shields.io/badge/License-EPL-blue.svg)](https://github.com/nanoframework/paho.mqtt.m2mqtt/blob/main/LICENSE) [![NuGet](https://img.shields.io/nuget/dt/nanoFramework.M2Mqtt.svg)](https://www.nuget.org/packages/nanoFramework.M2Mqtt) [![#yourfirstpr](https://img.shields.io/badge/first--timers--only-friendly-blue.svg)](https://github.com/nanoframework/Home/blob/main/CONTRIBUTING.md) [![Discord](https://img.shields.io/discord/478725473862549535.svg)](https://discord.gg/gCyBu8T)
 
-# nanoFramework M2Mqtt
+# .NET **nanoFramework** M2Mqtt
 
 ![.NET nanoFramework logo](images/M2Mqtt_Short_Logo.png)
 
-Welcome to the MQTT Client Library for nanoFramework.
+Welcome to the MQTT Client Library for .NET **nanoFramework**.
 
 This is a port of the MQTT Client Library [M2Mqtt](https://github.com/eclipse/paho.mqtt.m2mqtt).
-The orignal project has an official website [here](https://m2mqtt.wordpress.com/).
+The original project has an official website [here](https://m2mqtt.wordpress.com/).
 
-Since that time, the MQTT Client had some changes and has been adapted to .NET nanoFramework.
+Since that time, the MQTT Client had some changes and has been adapted to .NET **nanoFramework**.
 
 ## Build status
 
@@ -34,9 +34,9 @@ For all information about MQTT protocol, please visit official web site  http://
 
 ## Example
 
-The M2Mqtt library provides a main class MqttClient that represents the MQTT client to connect to a broker. You can connect to the broker providing its IP address or host name and optionally some parameters related to MQTT protocol.
+The M2Mqtt library provides a main class `MqttClient` that represents the MQTT client to connect to a broker. You can connect to the broker providing its IP address or host name and optionally some parameters related to MQTT protocol.
 
-After connecting to the broker you can use Publish() method to publish a message to a topic and Subscribe() method to subscribe to a topic and receive message published on it. The MqttClient class is events based so that you receive an event when a message is published to a topic you subscribed to. You can receive event when a message publishing is complete, you have subscribed or unsubscribed to a topic.
+After connecting to the broker you can use `Publish()` method to publish a message to a topic and `Subscribe()` method to subscribe to a topic and receive message published on it. The `MqttClient` class is events based so that you receive an event when a message is published to a topic you subscribed to. You can receive event when a message publishing is complete, you have subscribed or unsubscribed to a topic.
 
 Following an example of client subscriber to a topic :
 
@@ -87,3 +87,21 @@ client.Publish("/home/temperature", Encoding.UTF8.GetBytes(strValue), MqttQoSLev
 For documentation, providing feedback, issues and finding out how to contribute please refer to the [Home repo](https://github.com/nanoframework/Home).
 
 Join our Discord community [here](https://discord.gg/gCyBu8T).
+
+## Credits
+
+The list of contributors to this project can be found at [CONTRIBUTORS](https://github.com/nanoframework/Home/blob/main/CONTRIBUTORS.md).
+This library was created and maintained by [Paolo Patierno](https://github.com/ppatierno) and it's part of the [Eclipse Project](https://github.com/eclipse/paho.mqtt.m2mqtt).
+
+## License
+
+The **nanoFramework** Class Libraries are licensed under the [MIT license](LICENSE.md).
+
+## Code of Conduct
+
+This project has adopted the code of conduct defined by the Contributor Covenant to clarify expected behavior in our community.
+For more information see the [.NET Foundation Code of Conduct](https://dotnetfoundation.org/code-of-conduct).
+
+### .NET Foundation
+
+This project is supported by the [.NET Foundation](https://dotnetfoundation.org).

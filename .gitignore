@@ -197,3 +197,6 @@ FakesAssemblies/
 
 #SoundCloud
 *.sonarqube/
+
+#VS Code
+.vscode/
