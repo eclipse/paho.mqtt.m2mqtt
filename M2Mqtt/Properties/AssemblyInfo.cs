@@ -22,11 +22,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-#if (NANOFRAMEWORK_1_0)
 [assembly: AssemblyTitle("nanoFramework M2Mqtt Client")]
-#else
-[assembly: AssemblyTitle("M2Mqtt")]
-#endif
 [assembly: AssemblyDescription("MQTT Client Library for M2M communication")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Paolo Patierno")]
@@ -35,22 +31,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-#if (NANOFRAMEWORK_1_0)
+
 ///////////////////////////////////////////////////
 // this class doesn't have native implementation //
 [assembly: AssemblyNativeVersion("0.0.0.0")]
 ///////////////////////////////////////////////////
-#endif
 
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-
-// to avoid compilation error (AssemblyFileVersionAttribute doesn't exist) under .Net CF 3.5
-#if !WindowsCE
-
-#endif

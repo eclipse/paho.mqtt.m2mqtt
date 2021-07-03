@@ -15,56 +15,29 @@ Contributors:
    .NET Foundation and Contributors - nanoFramework support
 */
 
-#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || MF_FRAMEWORK_VERSION_V4_4 || MF_FRAMEWORK_VERSION_V4_4)
-using Microsoft.SPOT;
-#else
 using System;
-#endif
 
-namespace uPLibrary.Networking.M2Mqtt.Messages
+namespace nanoFramework.M2Mqtt.Messages
 {
     /// <summary>
     /// Event Args class for subscribe request on topics
     /// </summary>
     public class MqttMsgSubscribeEventArgs : EventArgs
     {
-        #region Properties...
-
         /// <summary>
         /// Message identifier
         /// </summary>
-        public ushort MessageId
-        {
-            get { return this.messageId; }
-            internal set { this.messageId = value; }
-        }
+        public ushort MessageId { get; internal set; }
 
         /// <summary>
         /// Topics requested to subscribe
         /// </summary>
-        public string[] Topics
-        {
-            get { return this.topics; }
-            internal set { this.topics = value; }
-        }
+        public string[] Topics { get; internal set; }
 
         /// <summary>
         /// List of QOS Levels requested
         /// </summary>
-        public byte[] QoSLevels
-        {
-            get { return this.qosLevels; }
-            internal set { this.qosLevels = value; }
-        }
-
-        #endregion
-
-        // message identifier
-        ushort messageId;
-        // topics requested to subscribe
-        string[] topics;
-        // QoS levels requested
-        byte[] qosLevels;
+        public MqttQoSLevel[] QoSLevels { get; internal set; }
 
         /// <summary>
         /// Constructor
@@ -72,11 +45,11 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// <param name="messageId">Message identifier for subscribe topics request</param>
         /// <param name="topics">Topics requested to subscribe</param>
         /// <param name="qosLevels">List of QOS Levels requested</param>
-        public MqttMsgSubscribeEventArgs(ushort messageId, string[] topics, byte[] qosLevels)
+        public MqttMsgSubscribeEventArgs(ushort messageId, string[] topics, MqttQoSLevel[] qosLevels)
         {
-            this.messageId = messageId;
-            this.topics = topics;
-            this.qosLevels = qosLevels;
+            MessageId = messageId;
+            Topics = topics;
+            QoSLevels = qosLevels;
         }
     }
 }

@@ -15,34 +15,19 @@ Contributors:
    .NET Foundation and Contributors - nanoFramework support
 */
 
-#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || MF_FRAMEWORK_VERSION_V4_4)
-using Microsoft.SPOT;
-#else
 using System;
-#endif
 
-namespace uPLibrary.Networking.M2Mqtt.Messages
+namespace nanoFramework.M2Mqtt.Messages
 {
     /// <summary>
     /// Event Args class for unsubscribed topic
     /// </summary>
     public class MqttMsgUnsubscribedEventArgs : EventArgs
     {
-        #region Properties...
-
         /// <summary>
         /// Message identifier
         /// </summary>
-        public ushort MessageId
-        {
-            get { return this.messageId; }
-            internal set { this.messageId = value; }
-        }
-
-        #endregion
-
-        // message identifier
-        ushort messageId;
+        public ushort MessageId { get; internal set; }      
 
         /// <summary>
         /// Constructor
@@ -50,7 +35,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// <param name="messageId">Message identifier for unsubscribed topic</param>
         public MqttMsgUnsubscribedEventArgs(ushort messageId)
         {
-            this.messageId = messageId;
+            MessageId = messageId;
         }
     }
 }

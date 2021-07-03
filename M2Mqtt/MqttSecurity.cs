@@ -15,7 +15,7 @@ Contributors:
    .NET Foundation and Contributors - nanoFramework support
 */
 
-namespace uPLibrary.Networking.M2Mqtt
+namespace nanoFramework.M2Mqtt
 {
     /// <summary>
     /// Supported SSL/TLS protocol versions

@@ -15,45 +15,24 @@ Contributors:
    .NET Foundation and Contributors - nanoFramework support
 */
 
-#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || MF_FRAMEWORK_VERSION_V4_4)
-using Microsoft.SPOT;
-#else
 using System;
-#endif
 
-namespace uPLibrary.Networking.M2Mqtt.Messages
+namespace nanoFramework.M2Mqtt.Messages
 {
     /// <summary>
     /// Event Args class for unsubscribe request on topics
     /// </summary>
     public class MqttMsgUnsubscribeEventArgs : EventArgs
     {
-        #region Properties...
-
         /// <summary>
         /// Message identifier
         /// </summary>
-        public ushort MessageId
-        {
-            get { return this.messageId; }
-            internal set { this.messageId = value; }
-        }
+        public ushort MessageId { get; internal set; }
 
         /// <summary>
         /// Topics requested to subscribe
         /// </summary>
-        public string[] Topics
-        {
-            get { return this.topics; }
-            internal set { this.topics = value; }
-        }
-
-        #endregion
-
-        // message identifier
-        ushort messageId;
-        // topics requested to unsubscribe
-        string[] topics;
+        public string[] Topics { get; internal set; }
 
         /// <summary>
         /// Constructor
@@ -62,8 +41,8 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// <param name="topics">Topics requested to subscribe</param>
         public MqttMsgUnsubscribeEventArgs(ushort messageId, string[] topics)
         {
-            this.messageId = messageId;
-            this.topics = topics;
+            MessageId = messageId;
+            Topics = topics;
         }
     }
 }

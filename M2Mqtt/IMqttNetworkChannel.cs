@@ -18,7 +18,7 @@ Contributors:
 using System;
 using System.Text;
 
-namespace uPLibrary.Networking.M2Mqtt
+namespace nanoFramework.M2Mqtt
 {
     /// <summary>
     /// Interface for channel under MQTT library

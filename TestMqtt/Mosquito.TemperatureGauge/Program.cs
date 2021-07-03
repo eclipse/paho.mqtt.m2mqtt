@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Text;
-using uPLibrary.Networking.M2Mqtt;
-using uPLibrary.Networking.M2Mqtt.Messages;
+using nanoFramework.M2Mqtt;
+using nanoFramework.M2Mqtt.Messages;
 using System.Net.NetworkInformation;
 using System.Security.Cryptography.X509Certificates;
 using System.Diagnostics;
@@ -43,7 +43,7 @@ namespace Mosquito.TemperatureGauge
             while (running)
             {
                 // send random temperature value to Gauge demo in Mosquito test server, see http://test.mosquitto.org/gauge/
-                client.Publish("temp/random", GetRandomTemperature(), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+                client.Publish("temp/random", GetRandomTemperature(), MqttQoSLevel.ExactlyOnce, false);
 
                 // the Mosquito test server has a local process that updates every 15 seconds, so we just follow that
                 Thread.Sleep(15000);

@@ -12,11 +12,12 @@ and the Eclipse Distribution License is available at
 
 Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
+   .NET Foundation and Contributors - nanoFramework support
 */
 
 using System.Collections;
 
-namespace uPLibrary.Networking.M2Mqtt.Session
+namespace nanoFramework.M2Mqtt.Session
 {
     /// <summary>
     /// MQTT Session base class
@@ -47,8 +48,8 @@ namespace uPLibrary.Networking.M2Mqtt.Session
         /// <param name="clientId">Client Id to create session</param>
         protected MqttSession(string clientId)
         {
-            this.ClientId = clientId;
-            this.InflightMessages = new Hashtable();
+            ClientId = clientId;
+            InflightMessages = new Hashtable();
         }
 
         /// <summary>
@@ -56,8 +57,8 @@ namespace uPLibrary.Networking.M2Mqtt.Session
         /// </summary>
         public virtual void Clear()
         {
-            this.ClientId = null;
-            this.InflightMessages.Clear();
+            ClientId = null;
+            InflightMessages.Clear();
         }
     }
 }

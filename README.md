@@ -2,12 +2,14 @@
 
 # nanoFramework M2Mqtt
 
-![](images/M2Mqtt_Short_Logo.png)
+![.NET nanoFramework logo](images/M2Mqtt_Short_Logo.png)
 
 Welcome to the MQTT Client Library for nanoFramework.
 
 This is a port of the MQTT Client Library [M2Mqtt](https://github.com/eclipse/paho.mqtt.m2mqtt).
 The orignal project has an official website [here](https://m2mqtt.wordpress.com/).
+
+Since that time, the MQTT Client had some changes and has been adapted to .NET nanoFramework.
 
 ## Build status
 
@@ -51,7 +53,7 @@ string clientId = Guid.NewGuid().ToString();
 client.Connect(clientId);
 
 // subscribe to the topic "/home/temperature" with QoS 2
-client.Subscribe(new string[] { "/home/temperature" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
+client.Subscribe(new string[] { "/home/temperature" }, new MqttQoSLevel[] { MqttMsgBase.ExactlyOnce });
 
 ...
 
@@ -75,7 +77,7 @@ client.Connect(clientId);
 string strValue = Convert.ToString(value);
 
 // publish a message on "/home/temperature" topic with QoS 2
-client.Publish("/home/temperature", Encoding.UTF8.GetBytes(strValue), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+client.Publish("/home/temperature", Encoding.UTF8.GetBytes(strValue), MqttQoSLevel.ExactlyOnce, false);
 
 ...
 ```

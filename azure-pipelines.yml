@@ -2,7 +2,7 @@ trigger:
   branches:
     include: [main, develop, "release-*" ]
   paths:
-    exclude: ["*.md", .gitignore]
+    exclude: [README.md, LICENSE.md, NuGet.Config, .github_changelog_generator, .gitignore]
   tags:
     include: ["v*"]
 
@@ -16,256 +16,28 @@ resources:
       name: nanoframework/nf-tools
       endpoint: nanoframework
 
-jobs:
+pool:
+  vmImage: 'windows-2019'
 
-##############################
-- job: Get_Build_Options
-  pool:
-    vmImage: 'windows-2019'
+variables:
+  DOTNET_NOLOGO: true
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  nugetPackageName: 'nanoFramework.M2Mqtt'
 
-  variables:
-    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+steps:
 
-  steps:
-  - checkout: self
+# step from template @ nf-tools repo
+# all build, update and publish steps
+- template: azure-pipelines-templates/class-lib-build.yml@templates
+  parameters:
+    sonarCloudProject: 'nanoframework_paho.mqtt.m2mqtt'
 
-    # get commit message
-  - powershell: |
-      git config --global user.email "nanoframework@outlook.com"
-      git config --global user.name "nfbot"
-
-      $auth = "basic $([System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":$(GitHubToken)"))))"
-
-      if($env:StartReleaseCandidate -like "true")
-      {
-        # this is a release prep so NO build
-        echo "##vso[task.setvariable variable=BUILD_M2Mqtt;isOutput=true]False"
-        
-        Write-Host "Release preparation, skipping build."
-      }
-      else
-      {
-        echo "##vso[task.setvariable variable=BUILD_M2Mqtt;isOutput=true]true"
-
-      }
-    name: BuildOptions
-    displayName: Get build options
-  
-  - template: azure-pipelines-templates/install-nbgv-tool.yml@templates
-
-  - template: azure-pipelines-templates/prepare-release.yml@templates
-
-#######################################
-# build
-- job: Build_M2Mqtt
-  condition: eq( dependencies.Get_Build_Options.outputs['BuildOptions.BUILD_M2Mqtt'], true )
-  dependsOn:
-  - Get_Build_Options
-
-  pool:
-    vmImage: 'windows-2019'
-
-  variables:
-    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-    solution: 'M2Mqtt.nanoFramework.sln'
-    buildPlatform: 'Any CPU'
-    buildConfiguration: 'Release'
-
-  steps:
-
-  - checkout: self
-
-  - script: |
-      git config --global user.email "nanoframework@outlook.com"
-      git config --global user.name "nfbot"
-      git config --global core.autocrlf true
-    displayName: Setup git identity
-  
-  - template: azure-pipelines-templates/install-nbgv-tool.yml@templates
-
-  - task: SonarCloudPrepare@1
-    inputs:
-      SonarCloud: 'sonarcloud-m2mqtt'
-      organization: 'nanoframework'
-      scannerMode: 'MSBuild'
-      projectKey: 'nanoframework_paho.mqtt.m2mqtt'
-    displayName: 'Prepare analysis on SonarCloud'
-
-  - task: NuGetToolInstaller@0
-    inputs:
-      versionSpec: '5.8.0'
-    displayName: 'Install specifc version of NuGet'
-
-  - task: NuGetCommand@2
-    inputs:
-      restoreSolution: '$(solution)'
-      feedsToUse: config
-      nugetConfigPath: 'NuGet.Config'
-    condition: succeeded()
-    displayName: NuGet restore
-
-  - task: InstallnFBuildComponents@1
-    displayName: Install nanoFramework MSBuild components
-
-  - task: VSBuild@1
-    inputs:
-      solution: '$(solution)'
-      platform: '$(buildPlatform)'
-      msbuildArgs: '/p:PublicRelease=true'
-      configuration: '$(buildConfiguration)'
-
-  - task: SonarCloudAnalyze@1
-    displayName: 'Run Code Analysis'
-
-  - task: SonarCloudPublish@1
-    inputs:
-      pollingTimeoutSec: '300'
-    displayName: 'Publish Quality Gate Result'
-
-  - powershell: |
-      # get subject and commit message for commit
-      $commitMessage = git log --format='%B' -1
-
-      # need to flatten message by removing new lines
-      $commitMessage = $commitMessage -replace "`r`n", " "
-
-      if($commitMessage -like "*PUBLISH_RELEASE*")
-      {
-        # set variable
-        Write-Host "$("##vso[task.setvariable variable=RELEASE_VERSION;isOutput=true]")True"
-        Write-Host "Release draft: FALSE"
-      }
-      else
-      {
-        # set variable
-        Write-Host "$("##vso[task.setvariable variable=RELEASE_VERSION;isOutput=true]")False"
-        Write-Host "Release draft: TRUE"
-      }
-    name: SetReleaseDraftVar
-    displayName: Set release draft var
-
-  - task: NuGetCommand@2
-    inputs:
-      command: 'custom' 
-      arguments: 'pack M2Mqtt\nanoFramework.M2Mqtt.nuspec  -Version $(MY_NUGET_VERSION) -properties commit="$(Build.SourceVersion)"'
-    displayName: Pack NuGet
-
-  - task: CopyFiles@1
-    inputs:
-      sourceFolder: $(Build.SourcesDirectory)
-      Contents: |
-        **\nanoFramework.M2Mqtt*.nupkg
-      TargetFolder: '$(Build.ArtifactStagingDirectory)'
-      flattenFolders: true
-    condition: succeeded()
-    displayName: Collecting deployable artifacts
-
-  - task: DotNetCoreCLI@2
-    displayName: Install SignTool tool
-    condition: and( succeeded(), eq(variables['System.PullRequest.PullRequestId'], '') )
-    inputs:
-      command: custom
-      custom: tool
-      arguments: install --tool-path . SignClient
-
-  - pwsh: |
-      .\SignClient "Sign" `
-      --baseDirectory "$(Build.ArtifactStagingDirectory)" `
-      --input "**/*.nupkg" `
-      --config "$(Build.Repository.LocalPath)\config\SignClient.json" `
-      --filelist "$(Build.Repository.LocalPath)\config\filelist.txt" `
-      --user "$(SignClientUser)" `
-      --secret '$(SignClientSecret)' `
-      --name "nanoFramework.M2Mqtt" `
-      --description "nanoFramework.M2Mqtt" `
-      --descriptionUrl "https://github.com/$env:Build_Repository_Name"
-    displayName: Sign packages
-    continueOnError: true
-    condition: and( succeeded(), eq(variables['System.PullRequest.PullRequestId'], '') )
-
-  # publish artifacts (only possible if this is not a PR originated on a fork)
-  - task: PublishBuildArtifacts@1
-    inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: deployables
-      ArtifactType: Container
-    condition: and( succeeded(), ne(variables['system.pullrequest.isfork'], true) )
-    displayName: Publish deployables artifacts
-
-  # push NuGet class lib package to NuGet (happens on every build except PRs)
-  - task: NuGetCommand@2
-    inputs:
-      command: push
-      nuGetFeedType: external
-      allowPackageConflicts: true
-      packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-      publishFeedCredentials: 'NuGet-m2mqtt'
-    condition: and( succeeded(), ne(variables['Build.Reason'], 'PullRequest') )
-    continueOnError: true
-    displayName: Push NuGet packages to NuGet
-    
-  # push NuGet packages to Azure Artifacts feed (always happens except on PR builds)
-  - task: NuGetCommand@2
-    inputs:
-      command: push
-      nuGetFeedType: external
-      allowPackageConflicts: true
-      packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-      publishFeedCredentials: 'AzureArtifacts-m2mqtt'
-    condition: succeeded()
-    continueOnError: true
-    displayName: Push NuGet packages to Azure Artifacts
-
-  # create or update GitHub release
-  - task: GithubRelease@1
-    condition: and( succeeded(), eq(variables['System.PullRequest.PullRequestId'], ''), not( startsWith(variables['Build.SourceBranch'], 'refs/tags/v') ), ne( variables['StartReleaseCandidate'], true ) )
-    displayName: Create/Update GitHub PREVIEW release
-    inputs:
-      gitHubConnection: 'github.com_nano-$(System.TeamProject)'
-      tagSource: userSpecifiedTag
-      tag: v$(MY_NUGET_VERSION)
-      title: 'nanoframework.M2Mqtt Library v$(MY_NUGET_VERSION)'
-      releaseNotesSource: inline
-      releaseNotesInline: 'Check the [changelog]($(Build.Repository.Uri)/blob/$(Build.SourceBranchName)/CHANGELOG.md).<br><br><h4>Install from NuGet</h4><br>The following NuGet packages are available for download from this release:<br>:package: [.NET](https://www.nuget.org/packages/nanoframework.M2Mqtt/$(MY_NUGET_VERSION)) v$(MY_NUGET_VERSION).'
-      assets: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-      assetUploadMode: replace
-      isPreRelease: true
-      addChangeLog: false
-
-  # create or update GitHub release ON tags from release or master branches
-  - task: GithubRelease@1
-    condition: and( succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v'), not(contains(variables['Build.SourceBranch'], 'preview') ) )
-    displayName: Create/Update GitHub stable release
-    inputs:
-      gitHubConnection: 'github.com_nano-$(System.TeamProject)'
-      tagSource: userSpecifiedTag
-      tag: v$(MY_NUGET_VERSION)
-      title: 'nanoframework.M2Mqtt Library v$(MY_NUGET_VERSION)'
-      releaseNotesSource: inline
-      releaseNotesInline: 'Check the [changelog]($(Build.Repository.Uri)/blob/$(Build.SourceBranchName)/CHANGELOG.md).<br><br><h4>Install from NuGet</h4><br>The following NuGet packages are available for download from this release:<br>:package: [.NET](https://www.nuget.org/packages/nanoframework.M2Mqtt/$(MY_NUGET_VERSION)) v$(MY_NUGET_VERSION).'
-      assets: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-      assetUploadMode: replace
-      isPreRelease: false
-      addChangeLog: false
-
-##################################
-# report build failure to Discord
-- job: Report_Build_Failure
-  dependsOn:
-  - Build_M2Mqtt
-  condition: failed('Build_M2Mqtt')
-
-  pool:
-    vmImage: 'windows-2019'
-
-  steps:
-
-  - checkout: self
-    fetchDepth: 1
-
-  # step from template @ nf-tools repo
-  - template: azure-pipelines-templates/discord-webhook.yml@templates
-    parameters:
-      status: 'failure'
-      webhookUrl: '$(DiscordWebhook)'
-      message: ''
+# step from template @ nf-tools repo
+# report error
+- template: azure-pipelines-templates/discord-webhook-task.yml@templates  
+  parameters:
+    status: 'failure'
+    webhookUrl: '$(DiscordWebhook)'
+    message: ''

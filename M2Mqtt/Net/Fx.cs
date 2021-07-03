@@ -12,19 +12,20 @@ and the Eclipse Distribution License is available at
 
 Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
+   .NET Foundation and Contributors - nanoFramework support
 */
 
 using System.Threading;
 
-namespace uPLibrary.Networking.M2Mqtt
+namespace nanoFramework.M2Mqtt
 {
     /// <summary>
-    /// Support methods fos specific framework
+    /// Support methods for specific framework
     /// </summary>
     public static class Fx
     {
         /// <summary>
-        /// Starts the thead
+        /// Starts the thread
         /// </summary>
         /// <param name="threadStart">Thread to start</param>
         public static void StartThread(ThreadStart threadStart)

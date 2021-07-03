@@ -12,12 +12,13 @@ and the Eclipse Distribution License is available at
 
 Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
+   .NET Foundation and Contributors - nanoFramework support
 */
 
 using System;
-using uPLibrary.Networking.M2Mqtt.Exceptions;
+using nanoFramework.M2Mqtt.Exceptions;
 
-namespace uPLibrary.Networking.M2Mqtt.Messages
+namespace nanoFramework.M2Mqtt.Messages
 {
     /// <summary>
     /// Class for CONNACK message from broker to client
@@ -72,35 +73,23 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// <summary>
         /// Session present flag
         /// </summary>
-        public bool SessionPresent
-        {
-            get { return this.sessionPresent; }
-            set { this.sessionPresent = value; }
-        }
+        public bool SessionPresent { get; set; }
 
         /// <summary>
         /// Return Code
         /// </summary>
-        public byte ReturnCode
-        {
-            get { return this.returnCode; }
-            set { this.returnCode = value; }
-        }
+        public byte ReturnCode { get; set; }
 
         #endregion
 
         // [v3.1.1] session present flag
-        private bool sessionPresent;
-
-        // return code for CONNACK message
-        private byte returnCode;
 
         /// <summary>
         /// Constructor
         /// </summary>
         public MqttMsgConnack()
         {
-            this.type = MQTT_MSG_CONNACK_TYPE;
+            Type = MQTT_MSG_CONNACK_TYPE;
         }
 
         /// <summary>
@@ -123,7 +112,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             }
 
             // get remaining length and allocate buffer
-            int remainingLength = MqttMsgBase.decodeRemainingLength(channel);
+            int remainingLength = MqttMsgBase.DecodeRemainingLength(channel);
             buffer = new byte[remainingLength];
 
             // read bytes from socket...
@@ -131,10 +120,10 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             if (protocolVersion == MqttMsgConnect.PROTOCOL_VERSION_V3_1_1)
             {
                 // [v3.1.1] ... set session present flag ...
-                msg.sessionPresent = (buffer[CONN_ACK_FLAGS_BYTE_OFFSET] & SESSION_PRESENT_FLAG_MASK) != 0x00;
+                msg.SessionPresent = (buffer[CONN_ACK_FLAGS_BYTE_OFFSET] & SESSION_PRESENT_FLAG_MASK) != 0x00;
             }
             // ...and set return code from broker
-            msg.returnCode = buffer[CONN_RETURN_CODE_BYTE_OFFSET];
+            msg.ReturnCode = buffer[CONN_RETURN_CODE_BYTE_OFFSET];
 
             return msg;
         }
@@ -184,17 +173,17 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
                 buffer[index++] = (byte)(MQTT_MSG_CONNACK_TYPE << MSG_TYPE_OFFSET);
             
             // encode remaining length
-            index = this.encodeRemainingLength(remainingLength, buffer, index);
+            index = EncodeRemainingLength(remainingLength, buffer, index);
 
             if (ProtocolVersion == MqttMsgConnect.PROTOCOL_VERSION_V3_1_1)
                 // [v3.1.1] session present flag
-                buffer[index++] = this.sessionPresent ? (byte)(1 << SESSION_PRESENT_FLAG_OFFSET) : (byte)0x00;
+                buffer[index++] = SessionPresent ? (byte)(1 << SESSION_PRESENT_FLAG_OFFSET) : (byte)0x00;
             else
                 // topic name compression response (reserved values. not used);
                 buffer[index++] = 0x00;
             
             // connect return code
-            buffer[index++] = this.returnCode;
+            buffer[index++] = ReturnCode;
 
             return buffer;
         }
@@ -209,7 +198,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             return this.GetTraceString(
                 "CONNACK",
                 new object[] { "returnCode" },
-                new object[] { this.returnCode });
+                new object[] { this.ReturnCode });
 #else
             return base.ToString();
 #endif

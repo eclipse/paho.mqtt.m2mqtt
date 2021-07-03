@@ -1,0 +1,13 @@
+user=nanoframework
+project=paho.mqtt.m2mqtt
+issues=true
+add_issues_wo_labels=false
+add_pr_wo_labels=false
+add_issues_wo_labels=false
+filter_issues_by_milestone=false
+exclude_labels=Area: Config-and-Build,Area: Infrastructure-and-Organization,reverted
+enhancement_labels=Type: enhancement
+bug_labels=Type: bug
+merge_prefix=**Documentation and other chores:**
+unreleased_label=**Changes available only in 'Preview' NuGet packages:**
+author=false

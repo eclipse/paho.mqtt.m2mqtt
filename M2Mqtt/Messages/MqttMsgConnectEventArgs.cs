@@ -15,13 +15,9 @@ Contributors:
    .NET Foundation and Contributors - nanoFramework support
 */
 
-#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || MF_FRAMEWORK_VERSION_V4_4)
-using Microsoft.SPOT;
-#else
 using System;
-#endif
 
-namespace uPLibrary.Networking.M2Mqtt.Messages
+namespace nanoFramework.M2Mqtt.Messages
 {
     /// <summary>
     /// Event Args class for CONNECT message received from client
@@ -39,7 +35,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// <param name="connect">CONNECT message received from client</param>
         public MqttMsgConnectEventArgs(MqttMsgConnect connect)
         {
-            this.Message = connect;
+            Message = connect;
         }
     }
 } 

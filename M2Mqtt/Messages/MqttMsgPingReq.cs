@@ -12,11 +12,12 @@ and the Eclipse Distribution License is available at
 
 Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
+   .NET Foundation and Contributors - nanoFramework support
 */
 
-using uPLibrary.Networking.M2Mqtt.Exceptions;
+using nanoFramework.M2Mqtt.Exceptions;
 
-namespace uPLibrary.Networking.M2Mqtt.Messages
+namespace nanoFramework.M2Mqtt.Messages
 {
     /// <summary>
     /// Class for PINGREQ message from client to broker
@@ -28,7 +29,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// </summary>
         public MqttMsgPingReq()
         {
-            this.type = MQTT_MSG_PINGREQ_TYPE;
+            Type = MQTT_MSG_PINGREQ_TYPE;
         }
 
         /// <summary>
@@ -66,12 +67,14 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             {
                 // [v3.1.1] check flag bits
                 if ((fixedHeaderFirstByte & MSG_FLAG_BITS_MASK) != MQTT_MSG_PINGREQ_FLAG_BITS)
+                {
                     throw new MqttClientException(MqttClientErrorCode.InvalidFlagBits);
+                }
             }
 
             // already know remaininglength is zero (MQTT specification),
             // so it isn't necessary to read other data from socket
-            int remainingLength = MqttMsgBase.decodeRemainingLength(channel);
+            MqttMsgBase.DecodeRemainingLength(channel);
 
             return msg;
         }

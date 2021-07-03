@@ -5,8 +5,8 @@ using System.Net.NetworkInformation;
 using System.Security.Cryptography.X509Certificates;
 using System.Diagnostics;
 
-using uPLibrary.Networking.M2Mqtt;
-using uPLibrary.Networking.M2Mqtt.Messages;
+using nanoFramework.M2Mqtt;
+using nanoFramework.M2Mqtt.Messages;
 
 namespace TestMqtt
 {
@@ -47,10 +47,10 @@ namespace TestMqtt
 
                     Debug.WriteLine("Connected MQTT");
                     // Subscribe topics
-                    //     client.Subscribe(new string[] { "Test1", "Test2" }, new byte[] { 2, 2 });
+                    //     client.Subscribe(new string[] { "Test1", "Test2" }, new MqttQoSLevel[] { MqttQoSLevel.ExactlyOnce, MqttQoSLevel.ExactlyOnce });
 
                     byte[] message = Encoding.UTF8.GetBytes("Test message");
-                    client.Publish("/Esp32/Test1", message, MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+                    client.Publish("/Esp32/Test1", message, MqttQoSLevel.ExactlyOnce, false);
 
                     string[] SubTopics = new string[]
                     {
@@ -58,13 +58,13 @@ namespace TestMqtt
                     };
 
                     Debug.WriteLine("Subscribe /Automation/Lights/#");
-                    client.Subscribe(SubTopics, new byte[] { 2 });
+                    client.Subscribe(SubTopics, new MqttQoSLevel[] { MqttQoSLevel.ExactlyOnce });
 
                     Debug.WriteLine("Enter wait loop");
                     while (running)
                     {
                         Thread.Sleep(10000);
-                        client.Publish("/Esp32/Test1", message, MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+                        client.Publish("/Esp32/Test1", message, MqttQoSLevel.ExactlyOnce, false);
                     }
 
                     client.Disconnect();

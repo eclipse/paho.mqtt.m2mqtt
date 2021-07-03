@@ -15,7 +15,7 @@ Contributors:
    .NET Foundation and Contributors - nanoFramework support
 */
 
-namespace uPLibrary.Networking.M2Mqtt
+namespace nanoFramework.M2Mqtt
 {
     /// <summary>
     /// Settings class for the MQTT broker
@@ -25,23 +25,28 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <summary>
         /// Default port for the MQTT protocol
         /// </summary>
-        public const int MQTT_BROKER_DEFAULT_PORT = 1883;
+        public const int BrokerDefaultPort = 1883;
+
         /// <summary>
         /// Default SSL port for the MQTT protocol
         /// </summary>
-        public const int MQTT_BROKER_DEFAULT_SSL_PORT = 8883;
+        public const int BrokerDefaultSslPort = 8883;
+
         /// <summary>
         /// Default timeout on receiving from client
         /// </summary>
-        public const int MQTT_DEFAULT_TIMEOUT = 30000;
+        public const int DefaultTimeout = 30000;
+
         /// <summary>
         /// Max publish, subscribe and unsubscribe retry for QoS Level 1 or 2
         /// </summary>
-        public const int MQTT_ATTEMPTS_RETRY = 3;
+        public const int MaximumAttemptsRetry = 3;
+
         /// <summary>
         /// Delay for retry publish, subscribe and unsubscribe for QoS Level 1 or 2
         /// </summary>
-        public const int MQTT_DELAY_RETRY = 10000;
+        public const int DefaultDelayRetry = 10000;
+
         /// <summary>
         /// Connection Timeout
         /// </summary>
@@ -49,11 +54,12 @@ namespace uPLibrary.Networking.M2Mqtt
         /// The broker needs to receive the first message (CONNECT)
         /// within a reasonable amount of time after the initial TCP/IP connection 
         /// </remarks>
-        public const int MQTT_CONNECT_TIMEOUT = 30000;
+        public const int ConnectTimeout = 30000;
+
         /// <summary>
         /// The default inflight queue size
         /// </summary>
-        public const int MQTT_MAX_INFLIGHT_QUEUE_SIZE = int.MaxValue;
+        public const int DefaultInflightQueueSize = int.MaxValue;
 
         /// <summary>
         /// Listening connection port
@@ -111,13 +117,13 @@ namespace uPLibrary.Networking.M2Mqtt
         /// </summary>
         private MqttSettings()
         {
-            this.Port = MQTT_BROKER_DEFAULT_PORT;
-            this.SslPort = MQTT_BROKER_DEFAULT_SSL_PORT;
-            this.TimeoutOnReceiving = MQTT_DEFAULT_TIMEOUT;
-            this.AttemptsOnRetry = MQTT_ATTEMPTS_RETRY;
-            this.DelayOnRetry = MQTT_DELAY_RETRY;
-            this.TimeoutOnConnection = MQTT_CONNECT_TIMEOUT;
-            this.InflightQueueSize = MQTT_MAX_INFLIGHT_QUEUE_SIZE;
+            Port = BrokerDefaultPort;
+            SslPort = BrokerDefaultSslPort;
+            TimeoutOnReceiving = DefaultTimeout;
+            AttemptsOnRetry = MaximumAttemptsRetry;
+            DelayOnRetry = DefaultDelayRetry;
+            TimeoutOnConnection = ConnectTimeout;
+            InflightQueueSize = DefaultInflightQueueSize;
         }
     }
 }

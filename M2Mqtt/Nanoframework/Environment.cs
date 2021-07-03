@@ -1,14 +1,12 @@
-﻿#if (NANOFRAMEWORK_1_0)
+﻿/*
+Contributors:   
+   .NET Foundation and Contributors - nanoFramework support
+*/
 
 namespace System
 {
     static class Environment
     {
-        public static int TickCount
-        {
-            get { return (int)DateTime.UtcNow.Ticks; }
-        }
+        public static int TickCount => (int)DateTime.UtcNow.Ticks;
     }
 }
-
-#endif

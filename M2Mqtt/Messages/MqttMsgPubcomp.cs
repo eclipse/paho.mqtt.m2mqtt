@@ -12,11 +12,12 @@ and the Eclipse Distribution License is available at
 
 Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
+   .NET Foundation and Contributors - nanoFramework support
 */
 
-using uPLibrary.Networking.M2Mqtt.Exceptions;
+using nanoFramework.M2Mqtt.Exceptions;
 
-namespace uPLibrary.Networking.M2Mqtt.Messages
+namespace nanoFramework.M2Mqtt.Messages
 {
     /// <summary>
     /// Class for PUBCOMP message from broker to client
@@ -28,7 +29,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// </summary>
         public MqttMsgPubcomp()
         {
-            this.type = MQTT_MSG_PUBCOMP_TYPE;
+            Type = MQTT_MSG_PUBCOMP_TYPE;
         }
 
         /// <summary>
@@ -72,11 +73,11 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
                 buffer[index++] = (MQTT_MSG_PUBCOMP_TYPE << MSG_TYPE_OFFSET);
 
             // encode remaining length
-            index = this.encodeRemainingLength(remainingLength, buffer, index);
+            index = this.EncodeRemainingLength(remainingLength, buffer, index);
 
             // get message identifier
-            buffer[index++] = (byte)((this.messageId >> 8) & 0x00FF); // MSB
-            buffer[index++] = (byte)(this.messageId & 0x00FF); // LSB 
+            buffer[index++] = (byte)((MessageId >> 8) & 0x00FF); // MSB
+            buffer[index++] = (byte)(MessageId & 0x00FF); // LSB 
 
             return buffer;
         }
@@ -98,19 +99,21 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             {
                 // [v3.1.1] check flag bits
                 if ((fixedHeaderFirstByte & MSG_FLAG_BITS_MASK) != MQTT_MSG_PUBCOMP_FLAG_BITS)
+                {
                     throw new MqttClientException(MqttClientErrorCode.InvalidFlagBits);
+                }
             }
 
             // get remaining length and allocate buffer
-            int remainingLength = MqttMsgBase.decodeRemainingLength(channel);
+            int remainingLength = MqttMsgBase.DecodeRemainingLength(channel);
             buffer = new byte[remainingLength];
 
             // read bytes from socket...
             channel.Receive(buffer);
 
             // message id
-            msg.messageId = (ushort)((buffer[index++] << 8) & 0xFF00);
-            msg.messageId |= (buffer[index++]);
+            msg.MessageId = (ushort)((buffer[index++] << 8) & 0xFF00);
+            msg.MessageId |= (buffer[index]);
 
             return msg;
         }
@@ -125,7 +128,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             return this.GetTraceString(
                 "PUBCOMP",
                 new object[] { "messageId" },
-                new object[] { this.messageId });
+                new object[] { MessageId });
 #else
             return base.ToString();
 #endif

@@ -16,70 +16,49 @@ Contributors:
 */
 
 using System;
-// if NOT .Net Micro Framework
-#if (!MF_FRAMEWORK_VERSION_V4_2 && !MF_FRAMEWORK_VERSION_V4_3 && !MF_FRAMEWORK_VERSION_V4_4 && !NANOFRAMEWORK_1_0)
-using System.Collections.Generic;
-#endif
 using System.Collections;
 using System.Text;
-using uPLibrary.Networking.M2Mqtt.Exceptions;
+using nanoFramework.M2Mqtt.Exceptions;
 
-namespace uPLibrary.Networking.M2Mqtt.Messages
+namespace nanoFramework.M2Mqtt.Messages
 {
     /// <summary>
     /// Class for SUBSCRIBE message from client to broker
     /// </summary>
     public class MqttMsgSubscribe : MqttMsgBase
     {
-        #region Properties...
-
         /// <summary>
         /// List of topics to subscribe
         /// </summary>
-        public string[] Topics
-        {
-            get { return this.topics; }
-            set { this.topics = value; }
-        }
+        public string[] Topics { get; set; }
 
         /// <summary>
         /// List of QOS Levels related to topics
         /// </summary>
-        public byte[] QoSLevels
-        {
-            get { return this.qosLevels; }
-            set { this.qosLevels = value; }
-        }
+        public MqttQoSLevel[] QoSLevels { get; set; }
 
-        #endregion
-
-        // topics to subscribe
-        string[] topics;
-        // QOS levels related to topics
-        byte[] qosLevels;
-        
         /// <summary>
         /// Constructor
         /// </summary>
         public MqttMsgSubscribe()
         {
-            this.type = MQTT_MSG_SUBSCRIBE_TYPE;
+            Type = MQTT_MSG_SUBSCRIBE_TYPE;
         }
-        
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="topics">List of topics to subscribe</param>
         /// <param name="qosLevels">List of QOS Levels related to topics</param>
-        public MqttMsgSubscribe(string[] topics, byte[] qosLevels)
+        public MqttMsgSubscribe(string[] topics, MqttQoSLevel[] qosLevels)
         {
-            this.type = MQTT_MSG_SUBSCRIBE_TYPE;
+            Type = MQTT_MSG_SUBSCRIBE_TYPE;
 
-            this.topics = topics;
-            this.qosLevels = qosLevels;
+            Topics = topics;
+            QoSLevels = qosLevels;
 
             // SUBSCRIBE message uses QoS Level 1 (not "officially" in 3.1.1)
-            this.qosLevel = QOS_LEVEL_AT_LEAST_ONCE;
+            QosLevel = (byte)MqttQoSLevel.AtLeastOnce;
         }
 
         /// <summary>
@@ -101,11 +80,13 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             {
                 // [v3.1.1] check flag bits
                 if ((fixedHeaderFirstByte & MSG_FLAG_BITS_MASK) != MQTT_MSG_SUBSCRIBE_FLAG_BITS)
+                {
                     throw new MqttClientException(MqttClientErrorCode.InvalidFlagBits);
+                }
             }
 
             // get remaining length and allocate buffer
-            int remainingLength = MqttMsgBase.decodeRemainingLength(channel);
+            int remainingLength = MqttMsgBase.DecodeRemainingLength(channel);
             buffer = new byte[remainingLength];
 
             // read bytes from socket...
@@ -116,29 +97,22 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
                 // only 3.1.0
 
                 // read QoS level from fixed header
-                msg.qosLevel = (byte)((fixedHeaderFirstByte & QOS_LEVEL_MASK) >> QOS_LEVEL_OFFSET);
+                msg.QosLevel = (byte)((fixedHeaderFirstByte & QOS_LEVEL_MASK) >> QOS_LEVEL_OFFSET);
                 // read DUP flag from fixed header
-                msg.dupFlag = (((fixedHeaderFirstByte & DUP_FLAG_MASK) >> DUP_FLAG_OFFSET) == 0x01);
+                msg.DupFlag = (((fixedHeaderFirstByte & DUP_FLAG_MASK) >> DUP_FLAG_OFFSET) == 0x01);
                 // retain flag not used
-                msg.retain = false;
+                msg.Retain = false;
             }
 
             // message id
-            msg.messageId = (ushort)((buffer[index++] << 8) & 0xFF00);
-            msg.messageId |= (buffer[index++]);
+            msg.MessageId = (ushort)((buffer[index++] << 8) & 0xFF00);
+            msg.MessageId |= (buffer[index++]);
 
             // payload contains topics and QoS levels
             // NOTE : before, I don't know how many topics will be in the payload (so use List)
 
-            // if .Net Micro Framework
-#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || MF_FRAMEWORK_VERSION_V4_4 || NANOFRAMEWORK_1_0)
             IList tmpTopics = new ArrayList();
             IList tmpQosLevels = new ArrayList();
-// else other frameworks (.Net, .Net Compact, Mono, Windows Phone) 
-#else
-            IList<String> tmpTopics = new List<String>();
-            IList<byte> tmpQosLevels = new List<byte>();
-#endif
             do
             {
                 // topic name
@@ -155,12 +129,12 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             } while (index < remainingLength);
 
             // copy from list to array
-            msg.topics = new string[tmpTopics.Count];
-            msg.qosLevels = new byte[tmpQosLevels.Count];
+            msg.Topics = new string[tmpTopics.Count];
+            msg.QoSLevels = new MqttQoSLevel[tmpQosLevels.Count];
             for (int i = 0; i < tmpTopics.Count; i++)
             {
-                msg.topics[i] = (string)tmpTopics[i];
-                msg.qosLevels[i] = (byte)tmpQosLevels[i];
+                msg.Topics[i] = (string)tmpTopics[i];
+                msg.QoSLevels[i] = (MqttQoSLevel)tmpQosLevels[i];
             }
 
             return msg;
@@ -181,30 +155,38 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             int index = 0;
 
             // topics list empty
-            if ((this.topics == null) || (this.topics.Length == 0))
+            if ((Topics == null) || (Topics.Length == 0))
+            {
                 throw new MqttClientException(MqttClientErrorCode.TopicsEmpty);
+            }
 
             // qos levels list empty
-            if ((this.qosLevels == null) || (this.qosLevels.Length == 0))
+            if ((QoSLevels == null) || (QoSLevels.Length == 0))
+            {
                 throw new MqttClientException(MqttClientErrorCode.QosLevelsEmpty);
+            }
 
             // topics and qos levels lists length don't match
-            if (this.topics.Length != this.qosLevels.Length)
+            if (Topics.Length != QoSLevels.Length)
+            {
                 throw new MqttClientException(MqttClientErrorCode.TopicsQosLevelsNotMatch);
+            }
 
             // message identifier
             varHeaderSize += MESSAGE_ID_SIZE;
 
             int topicIdx = 0;
-            byte[][] topicsUtf8 = new byte[this.topics.Length][];
+            byte[][] topicsUtf8 = new byte[Topics.Length][];
 
-            for (topicIdx = 0; topicIdx < this.topics.Length; topicIdx++)
+            for (topicIdx = 0; topicIdx < Topics.Length; topicIdx++)
             {
                 // check topic length
-                if ((this.topics[topicIdx].Length < MIN_TOPIC_LENGTH) || (this.topics[topicIdx].Length > MAX_TOPIC_LENGTH))
+                if ((Topics[topicIdx].Length < MIN_TOPIC_LENGTH) || (Topics[topicIdx].Length > MAX_TOPIC_LENGTH))
+                {
                     throw new MqttClientException(MqttClientErrorCode.TopicLength);
+                }
 
-                topicsUtf8[topicIdx] = Encoding.UTF8.GetBytes(this.topics[topicIdx]);
+                topicsUtf8[topicIdx] = Encoding.UTF8.GetBytes(Topics[topicIdx]);
                 payloadSize += 2; // topic size (MSB, LSB)
                 payloadSize += topicsUtf8[topicIdx].Length;
                 payloadSize++; // byte for QoS
@@ -229,26 +211,30 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
 
             // first fixed header byte
             if (protocolVersion == MqttMsgConnect.PROTOCOL_VERSION_V3_1_1)
+            {
                 buffer[index++] = (MQTT_MSG_SUBSCRIBE_TYPE << MSG_TYPE_OFFSET) | MQTT_MSG_SUBSCRIBE_FLAG_BITS; // [v.3.1.1]
+            }
             else
             {
                 buffer[index] = (byte)((MQTT_MSG_SUBSCRIBE_TYPE << MSG_TYPE_OFFSET) |
-                                   (this.qosLevel << QOS_LEVEL_OFFSET));
-                buffer[index] |= this.dupFlag ? (byte)(1 << DUP_FLAG_OFFSET) : (byte)0x00;
+                                   (QosLevel << QOS_LEVEL_OFFSET));
+                buffer[index] |= DupFlag ? (byte)(1 << DUP_FLAG_OFFSET) : (byte)0x00;
                 index++;
             }
-            
+
             // encode remaining length
-            index = this.encodeRemainingLength(remainingLength, buffer, index);
+            index = EncodeRemainingLength(remainingLength, buffer, index);
 
             // check message identifier assigned (SUBSCRIBE uses QoS Level 1, so message id is mandatory)
-            if (this.messageId == 0)
+            if (MessageId == 0)
+            {
                 throw new MqttClientException(MqttClientErrorCode.WrongMessageId);
-            buffer[index++] = (byte)((messageId >> 8) & 0x00FF); // MSB
-            buffer[index++] = (byte)(messageId & 0x00FF); // LSB 
+            }
 
-            topicIdx = 0;
-            for (topicIdx = 0; topicIdx < this.topics.Length; topicIdx++)
+            buffer[index++] = (byte)((MessageId >> 8) & 0x00FF); // MSB
+            buffer[index++] = (byte)(MessageId & 0x00FF); // LSB 
+
+            for (topicIdx = 0; topicIdx < Topics.Length; topicIdx++)
             {
                 // topic name
                 buffer[index++] = (byte)((topicsUtf8[topicIdx].Length >> 8) & 0x00FF); // MSB
@@ -257,9 +243,9 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
                 index += topicsUtf8[topicIdx].Length;
 
                 // requested QoS
-                buffer[index++] = this.qosLevels[topicIdx];
+                buffer[index++] = (byte)QoSLevels[topicIdx];
             }
-            
+
             return buffer;
         }
 
@@ -273,7 +259,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             return this.GetTraceString(
                 "SUBSCRIBE",
                 new object[] { "messageId", "topics", "qosLevels" },
-                new object[] { this.messageId, this.topics, this.qosLevels });
+                new object[] { MessageId, Topics, QoSLevels });
 #else
             return base.ToString();
 #endif
