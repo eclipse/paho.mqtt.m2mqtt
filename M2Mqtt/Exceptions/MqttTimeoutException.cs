@@ -12,16 +12,16 @@ and the Eclipse Distribution License is available at
 
 Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
+   .NET Foundation and Contributors - nanoFramework support
 */
 
 using System;
 
-namespace uPLibrary.Networking.M2Mqtt.Exceptions
+namespace nanoFramework.M2Mqtt.Exceptions
 {
     /// <summary>
     /// Timeout on receiving from broker exception
     /// </summary>
     public class MqttTimeoutException : Exception
-    {
-    }
+    { }
 }

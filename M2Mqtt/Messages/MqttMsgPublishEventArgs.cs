@@ -12,82 +12,42 @@ and the Eclipse Distribution License is available at
 
 Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
+   .NET Foundation and Contributors - nanoFramework support
 */
 
-#if (NANOFRAMEWORK_1_0)
-using nanoFramework.Runtime.Events;
-#elif (!MF_FRAMEWORK_VERSION_V4_2 && !MF_FRAMEWORK_VERSION_V4_3)
 using System;
-#else
-using Microsoft.SPOT;
-#endif
 
-namespace uPLibrary.Networking.M2Mqtt.Messages
+namespace nanoFramework.M2Mqtt.Messages
 {
     /// <summary>
     /// Event Args class for PUBLISH message received from broker
     /// </summary>
     public class MqttMsgPublishEventArgs : EventArgs
     {
-        #region Properties...
-
         /// <summary>
         /// Message topic
         /// </summary>
-        public string Topic
-        {
-            get { return this.topic; }
-            internal set { this.topic = value; }
-        }
+        public string Topic { get; internal set; }
 
         /// <summary>
         /// Message data
         /// </summary>
-        public byte[] Message
-        {
-            get { return this.message; }
-            internal set { this.message = value; }
-        }
+        public byte[] Message { get; internal set; }
 
         /// <summary>
         /// Duplicate message flag
         /// </summary>
-        public bool DupFlag
-        {
-            get { return this.dupFlag; }
-            set { this.dupFlag = value; }
-        }
+        public bool DupFlag { get; internal set; }
 
         /// <summary>
         /// Quality of Service level
         /// </summary>
-        public byte QosLevel
-        {
-            get { return this.qosLevel; }
-            internal set { this.qosLevel = value; }
-        }
+        public MqttQoSLevel QosLevel { get; internal set; }
 
         /// <summary>
         /// Retain message flag
         /// </summary>
-        public bool Retain
-        {
-            get { return this.retain; }
-            internal set { this.retain = value; }
-        }
-
-        #endregion
-
-        // message topic
-        private string topic;
-        // message data
-        private byte[] message;
-        // duplicate delivery
-        private bool dupFlag;
-        // quality of service level
-        private byte qosLevel;
-        // retain flag
-        private bool retain;       
+        public bool Retain { get; internal set; }
 
         /// <summary>
         /// Constructor
@@ -98,16 +58,16 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// <param name="qosLevel">Quality of Service level</param>
         /// <param name="retain">Retain flag</param>
         public MqttMsgPublishEventArgs(string topic,
-            byte[] message,
-            bool dupFlag,
-            byte qosLevel,
-            bool retain)
+                byte[] message,
+                bool dupFlag,
+                MqttQoSLevel qosLevel,
+                bool retain)
         {
-            this.topic = topic;
-            this.message = message;
-            this.dupFlag = dupFlag;
-            this.qosLevel = qosLevel;
-            this.retain = retain;
+            Topic = topic;
+            Message = message;
+            DupFlag = dupFlag;
+            QosLevel = qosLevel;
+            Retain = retain;
         }
     }
 }

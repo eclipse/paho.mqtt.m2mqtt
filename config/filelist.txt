@@ -1,0 +1,1 @@
+**/nanoFramework.M2Mqtt.*

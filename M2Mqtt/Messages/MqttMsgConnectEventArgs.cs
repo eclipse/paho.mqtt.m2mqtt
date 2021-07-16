@@ -12,17 +12,12 @@ and the Eclipse Distribution License is available at
 
 Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
+   .NET Foundation and Contributors - nanoFramework support
 */
 
-#if (NANOFRAMEWORK_1_0)
-using nanoFramework.Runtime.Events;
-#elif (!MF_FRAMEWORK_VERSION_V4_2 && !MF_FRAMEWORK_VERSION_V4_3)
 using System;
-#else
-using Microsoft.SPOT;
-#endif
 
-namespace uPLibrary.Networking.M2Mqtt.Messages
+namespace nanoFramework.M2Mqtt.Messages
 {
     /// <summary>
     /// Event Args class for CONNECT message received from client
@@ -37,10 +32,10 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="msg">CONNECT message received from client</param>
+        /// <param name="connect">CONNECT message received from client</param>
         public MqttMsgConnectEventArgs(MqttMsgConnect connect)
         {
-            this.Message = connect;
+            Message = connect;
         }
     }
 } 

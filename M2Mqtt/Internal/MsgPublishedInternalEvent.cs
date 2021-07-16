@@ -12,32 +12,22 @@ and the Eclipse Distribution License is available at
 
 Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
+   .NET Foundation and Contributors - nanoFramework support
 */
 
-using uPLibrary.Networking.M2Mqtt.Messages;
+using nanoFramework.M2Mqtt.Messages;
 
-namespace uPLibrary.Networking.M2Mqtt.Internal
+namespace nanoFramework.M2Mqtt.Internal
 {
     /// <summary>
     /// Internal event for a published message
     /// </summary>
     public class MsgPublishedInternalEvent : MsgInternalEvent
     {
-        #region Properties...
-
         /// <summary>
         /// Message published (or failed due to retries)
         /// </summary>
-        public bool IsPublished
-        {
-            get { return this.isPublished; }
-            internal set { this.isPublished = value; }
-        }
-
-        #endregion
-
-        // published flag
-        bool isPublished;
+        public bool IsPublished { get; internal set; }
 
         /// <summary>
         /// Constructor
@@ -47,7 +37,7 @@ namespace uPLibrary.Networking.M2Mqtt.Internal
         public MsgPublishedInternalEvent(MqttMsgBase msg, bool isPublished) 
             : base(msg)
         {
-            this.isPublished = isPublished;
+            IsPublished = isPublished;
         }
     }
 }

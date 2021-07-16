@@ -12,12 +12,12 @@ and the Eclipse Distribution License is available at
 
 Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
+   .NET Foundation and Contributors - nanoFramework support
 */
 
-using System;
 using System.Collections;
 
-namespace uPLibrary.Networking.M2Mqtt.Utility
+namespace nanoFramework.M2Mqtt.Utility
 {
     /// <summary>
     /// Extension class for a Queue
@@ -42,8 +42,11 @@ namespace uPLibrary.Networking.M2Mqtt.Utility
             foreach (var item in queue)
             {
                 if (predicate(item))
+                {
                     return item;
+                }
             }
+
             return null;
         }
     }

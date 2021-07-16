@@ -12,12 +12,13 @@ and the Eclipse Distribution License is available at
 
 Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
+   .NET Foundation and Contributors - nanoFramework support
 */
 
 using System;
 using System.Text;
 
-namespace uPLibrary.Networking.M2Mqtt.Messages
+namespace nanoFramework.M2Mqtt.Messages
 {
     /// <summary>
     /// Base class for all MQTT messages
@@ -75,79 +76,36 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         internal const byte MQTT_MSG_PINGRESP_FLAG_BITS = 0x00;
         internal const byte MQTT_MSG_DISCONNECT_FLAG_BITS = 0x00;
 
-        // QOS levels
-        public const byte QOS_LEVEL_AT_MOST_ONCE = 0x00;
-        public const byte QOS_LEVEL_AT_LEAST_ONCE = 0x01;
-        public const byte QOS_LEVEL_EXACTLY_ONCE = 0x02;
-
-        // SUBSCRIBE QoS level granted failure [v3.1.1]
-        public const byte QOS_LEVEL_GRANTED_FAILURE = 0x80;
-
         internal const ushort MAX_TOPIC_LENGTH = 65535;
         internal const ushort MIN_TOPIC_LENGTH = 1;
         internal const byte MESSAGE_ID_SIZE = 2;
 
         #endregion
 
-        #region Properties...
-
         /// <summary>
         /// Message type
         /// </summary>
-        public byte Type
-        {
-            get { return this.type; }
-            set { this.type = value; }
-        }
+        public byte Type { get; set; }
 
         /// <summary>
         /// Duplicate message flag
         /// </summary>
-        public bool DupFlag
-        {
-            get { return this.dupFlag; }
-            set { this.dupFlag = value; }
-        }
+        public bool DupFlag { get; set; }
 
         /// <summary>
         /// Quality of Service level
         /// </summary>
-        public byte QosLevel
-        {
-            get { return this.qosLevel; }
-            set { this.qosLevel = value; }
-        }
+        public MqttQoSLevel QosLevel { get; set; }
 
         /// <summary>
         /// Retain message flag
         /// </summary>
-        public bool Retain
-        {
-            get { return this.retain; }
-            set { this.retain = value; }
-        }
+        public bool Retain { get; set; }
 
         /// <summary>
         /// Message identifier for the message
         /// </summary>
-        public ushort MessageId
-        {
-            get { return this.messageId; }
-            set { this.messageId = value; }
-        }
-
-        #endregion
-
-        // message type
-        protected byte type;
-        // duplicate delivery
-        protected bool dupFlag;
-        // quality of service level
-        protected byte qosLevel;
-        // retain flag
-        protected bool retain;
-        // message identifier
-        protected ushort messageId;
+        public ushort MessageId { get; set; }
 
         /// <summary>
         /// Returns message bytes rapresentation
@@ -163,7 +121,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// <param name="buffer">Message buffer for inserting encoded value</param>
         /// <param name="index">Index from which insert encoded value into buffer</param>
         /// <returns>Index updated</returns>
-        protected int encodeRemainingLength(int remainingLength, byte[] buffer, int index)
+        protected int EncodeRemainingLength(int remainingLength, byte[] buffer, int index)
         {
             int digit = 0;
             do
@@ -171,7 +129,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
                 digit = remainingLength % 128;
                 remainingLength /= 128;
                 if (remainingLength > 0)
-                    digit = digit | 0x80;
+                    digit |= 0x80;
                 buffer[index++] = (byte)digit;
             } while (remainingLength > 0);
             return index;
@@ -182,7 +140,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// </summary>
         /// <param name="channel">Channel from reading bytes</param>
         /// <returns>Decoded remaining length</returns>
-        protected static int decodeRemainingLength(IMqttNetworkChannel channel)
+        protected static int DecodeRemainingLength(IMqttNetworkChannel channel)
         {
             int multiplier = 1;
             int value = 0;
@@ -199,7 +157,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             return value;
         }
 
-#if TRACE
+#if DEBUG
         /// <summary>
         /// Returns a string representation of the message for tracing
         /// </summary>

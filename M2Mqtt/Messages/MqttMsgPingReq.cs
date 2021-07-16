@@ -12,11 +12,12 @@ and the Eclipse Distribution License is available at
 
 Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
+   .NET Foundation and Contributors - nanoFramework support
 */
 
-using uPLibrary.Networking.M2Mqtt.Exceptions;
+using nanoFramework.M2Mqtt.Exceptions;
 
-namespace uPLibrary.Networking.M2Mqtt.Messages
+namespace nanoFramework.M2Mqtt.Messages
 {
     /// <summary>
     /// Class for PINGREQ message from client to broker
@@ -28,9 +29,14 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// </summary>
         public MqttMsgPingReq()
         {
-            this.type = MQTT_MSG_PINGREQ_TYPE;
+            Type = MQTT_MSG_PINGREQ_TYPE;
         }
 
+        /// <summary>
+        /// Returns the bytes that represents the current object.
+        /// </summary>
+        /// <param name="protocolVersion">MQTT protocol version</param>
+        /// <returns>An array of bytes that represents the current object.</returns>
         public override byte[] GetBytes(byte protocolVersion)
         {
             byte[] buffer = new byte[2];
@@ -50,7 +56,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// Parse bytes for a PINGREQ message
         /// </summary>
         /// <param name="fixedHeaderFirstByte">First fixed header byte</param>
-        /// <param name="protocolVersion">Protocol Version</param>
+        /// <param name="protocolVersion">MQTT Protocol Version</param>
         /// <param name="channel">Channel connected to the broker</param>
         /// <returns>PINGREQ message instance</returns>
         public static MqttMsgPingReq Parse(byte fixedHeaderFirstByte, byte protocolVersion, IMqttNetworkChannel channel)
@@ -61,19 +67,25 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             {
                 // [v3.1.1] check flag bits
                 if ((fixedHeaderFirstByte & MSG_FLAG_BITS_MASK) != MQTT_MSG_PINGREQ_FLAG_BITS)
+                {
                     throw new MqttClientException(MqttClientErrorCode.InvalidFlagBits);
+                }
             }
 
             // already know remaininglength is zero (MQTT specification),
             // so it isn't necessary to read other data from socket
-            int remainingLength = MqttMsgBase.decodeRemainingLength(channel);
+            MqttMsgBase.DecodeRemainingLength(channel);
 
             return msg;
         }
 
+        /// <summary>
+        /// Returns a string that represents the current object.
+        /// </summary>
+        /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-#if TRACE
+#if DEBUG
             return this.GetTraceString(
                 "PINGREQ",
                 null,

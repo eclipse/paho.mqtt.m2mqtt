@@ -12,12 +12,13 @@ and the Eclipse Distribution License is available at
 
 Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
+   .NET Foundation and Contributors - nanoFramework support
 */
 
 using System;
 using System.Text;
 
-namespace uPLibrary.Networking.M2Mqtt.Messages
+namespace nanoFramework.M2Mqtt.Messages
 {
     /// <summary>
     /// Context for MQTT message
@@ -52,10 +53,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// <summary>
         /// Unique key
         /// </summary>
-        public string Key 
-        {
-            get { return this.Flow + "_" + this.Message.MessageId; }
-        }
+        public string Key => Flow + "_" + Message.MessageId;
     }
 
     /// <summary>
@@ -118,7 +116,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// QOS = 2, start first phase handshake send PUBREC
         /// </summary>
         SendPubrec,
-        
+
         /// <summary>
         /// QOS = 2, start second phase handshake send PUBREL
         /// </summary>

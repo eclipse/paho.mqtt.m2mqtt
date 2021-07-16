@@ -12,11 +12,12 @@ and the Eclipse Distribution License is available at
 
 Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
+   .NET Foundation and Contributors - nanoFramework support
 */
 
-using uPLibrary.Networking.M2Mqtt.Exceptions;
+using nanoFramework.M2Mqtt.Exceptions;
 
-namespace uPLibrary.Networking.M2Mqtt.Messages
+namespace nanoFramework.M2Mqtt.Messages
 {
     /// <summary>
     /// Class for PUBACK message from broker to client
@@ -28,17 +29,22 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// </summary>
         public MqttMsgPuback()
         {
-            this.type = MQTT_MSG_PUBACK_TYPE;
+            Type = MQTT_MSG_PUBACK_TYPE;
         }
 
+        /// <summary>
+        /// Returns the bytes that represents the current object.
+        /// </summary>
+        /// <param name="protocolVersion">MQTT protocol version</param>
+        /// <returns>An array of bytes that represents the current object.</returns>
         public override byte[] GetBytes(byte protocolVersion)
         {
-            int fixedHeaderSize = 0;
+            int fixedHeaderSize;
             int varHeaderSize = 0;
             int payloadSize = 0;
             int remainingLength = 0;
             byte[] buffer;
-            int index = 0;
+            int indexPuback = 0;
 
             // message identifier
             varHeaderSize += MESSAGE_ID_SIZE;
@@ -54,7 +60,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             do
             {
                 fixedHeaderSize++;
-                temp = temp / 128;
+                temp /= 128;
             } while (temp > 0);
 
             // allocate buffer for message
@@ -62,16 +68,20 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
 
             // first fixed header byte
             if (protocolVersion == MqttMsgConnect.PROTOCOL_VERSION_V3_1_1)
-                buffer[index++] = (MQTT_MSG_PUBACK_TYPE << MSG_TYPE_OFFSET) | MQTT_MSG_PUBACK_FLAG_BITS; // [v.3.1.1]
+            {
+                buffer[indexPuback++] = (MQTT_MSG_PUBACK_TYPE << MSG_TYPE_OFFSET) | MQTT_MSG_PUBACK_FLAG_BITS; // [v.3.1.1]
+            }
             else
-                buffer[index++] = (MQTT_MSG_PUBACK_TYPE << MSG_TYPE_OFFSET);
+            {
+                buffer[indexPuback++] = MQTT_MSG_PUBACK_TYPE << MSG_TYPE_OFFSET;
+            }
                               
             // encode remaining length
-            index = this.encodeRemainingLength(remainingLength, buffer, index);
+            indexPuback = EncodeRemainingLength(remainingLength, buffer, indexPuback);
 
             // get message identifier
-            buffer[index++] = (byte)((this.messageId >> 8) & 0x00FF); // MSB
-            buffer[index++] = (byte)(this.messageId & 0x00FF); // LSB 
+            buffer[indexPuback++] = (byte)((MessageId >> 8) & 0x00FF); // MSB
+            buffer[indexPuback] = (byte)(MessageId & 0x00FF); // LSB 
 
             return buffer;
         }
@@ -80,7 +90,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         /// Parse bytes for a PUBACK message
         /// </summary>
         /// <param name="fixedHeaderFirstByte">First fixed header byte</param>
-        /// <param name="protocolVersion">Protocol Version</param>
+        /// <param name="protocolVersion">MQTT Protocol Version</param>
         /// <param name="channel">Channel connected to the broker</param>
         /// <returns>PUBACK message instance</returns>
         public static MqttMsgPuback Parse(byte fixedHeaderFirstByte, byte protocolVersion, IMqttNetworkChannel channel)
@@ -93,30 +103,36 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
             {
                 // [v3.1.1] check flag bits
                 if ((fixedHeaderFirstByte & MSG_FLAG_BITS_MASK) != MQTT_MSG_PUBACK_FLAG_BITS)
+                {
                     throw new MqttClientException(MqttClientErrorCode.InvalidFlagBits);
+                }
             }
 
             // get remaining length and allocate buffer
-            int remainingLength = MqttMsgBase.decodeRemainingLength(channel);
+            int remainingLength = MqttMsgBase.DecodeRemainingLength(channel);
             buffer = new byte[remainingLength];
 
             // read bytes from socket...
             channel.Receive(buffer);
 
             // message id
-            msg.messageId = (ushort)((buffer[index++] << 8) & 0xFF00);
-            msg.messageId |= (buffer[index++]);
+            msg.MessageId = (ushort)((buffer[index++] << 8) & 0xFF00);
+            msg.MessageId |= (buffer[index]);
 
             return msg;
         }
 
+        /// <summary>
+        /// Returns a string that represents the current object.
+        /// </summary>
+        /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-#if TRACE
+#if DEBUG
             return this.GetTraceString(
                 "PUBACK",
                 new object[] { "messageId" },
-                new object[] { this.messageId });
+                new object[] { MessageId });
 #else
             return base.ToString();
 #endif

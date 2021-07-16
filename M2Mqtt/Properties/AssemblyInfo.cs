@@ -1,5 +1,4 @@
 ﻿/*
-Copyright (c) 2019 The nanoFramework project contributors
 Copyright (c) 2013, 2014 Paolo Patierno
 
 All rights reserved. This program and the accompanying materials
@@ -13,6 +12,7 @@ and the Eclipse Distribution License is available at
 
 Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
+   .NET Foundation and Contributors - nanoFramework support
 */
 
 using System.Reflection;
@@ -22,31 +22,18 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("M2Mqtt")]
+[assembly: AssemblyTitle("nanoFramework M2Mqtt Client")]
 [assembly: AssemblyDescription("MQTT Client Library for M2M communication")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Paolo Patierno")]
 [assembly: AssemblyProduct("M2Mqtt")]
-[assembly: AssemblyCopyright("Copyright © Paolo Patierno 2014")]
+[assembly: AssemblyCopyright("Copyright © Paolo Patierno 2014 & .NET Foundation and Contributors")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-#if (NANOFRAMEWORK_1_0)
+
 ///////////////////////////////////////////////////
 // this class doesn't have native implementation //
 [assembly: AssemblyNativeVersion("0.0.0.0")]
 ///////////////////////////////////////////////////
-#endif
 
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-
-// to avoid compilation error (AssemblyFileVersionAttribute doesn't exist) under .Net CF 3.5
-#if !WindowsCE
-
-#endif

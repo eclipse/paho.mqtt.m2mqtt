@@ -12,11 +12,12 @@ and the Eclipse Distribution License is available at
 
 Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
+   .NET Foundation and Contributors - nanoFramework support
 */
 
 using System;
 
-namespace uPLibrary.Networking.M2Mqtt.Exceptions
+namespace nanoFramework.M2Mqtt.Exceptions
 {
     /// <summary>
     /// Exception due to error communication with broker on socket
@@ -27,16 +28,14 @@ namespace uPLibrary.Networking.M2Mqtt.Exceptions
         /// Default constructor
         /// </summary>
         public MqttCommunicationException()
-        {
-        }
+        { }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="e">Inner Exception</param>
         public MqttCommunicationException(Exception e)
-            : base(String.Empty, e)
-        {
-        }
+            : base(string.Empty, e)
+        { }
     }
 }

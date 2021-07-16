@@ -12,9 +12,10 @@ and the Eclipse Distribution License is available at
 
 Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
+   .NET Foundation and Contributors - nanoFramework support
 */
 
-namespace uPLibrary.Networking.M2Mqtt.Session
+namespace nanoFramework.M2Mqtt.Session
 {
     /// <summary>
     /// MQTT Client Session
@@ -27,7 +28,6 @@ namespace uPLibrary.Networking.M2Mqtt.Session
         /// <param name="clientId">Client Id to create session</param>
         public MqttClientSession(string clientId)
             : base(clientId)
-        {
-        }
+        { }
     }
 }
