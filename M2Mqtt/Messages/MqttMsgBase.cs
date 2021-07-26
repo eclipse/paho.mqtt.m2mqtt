@@ -16,6 +16,7 @@ Contributors:
 */
 
 using System;
+using System.Collections;
 using System.Text;
 
 namespace nanoFramework.M2Mqtt.Messages
@@ -44,22 +45,6 @@ namespace nanoFramework.M2Mqtt.Messages
         internal const byte RETAIN_FLAG_OFFSET = 0x00;
         internal const byte RETAIN_FLAG_SIZE = 0x01;
 
-        // MQTT message types
-        internal const byte MQTT_MSG_CONNECT_TYPE = 0x01;
-        internal const byte MQTT_MSG_CONNACK_TYPE = 0x02;
-        internal const byte MQTT_MSG_PUBLISH_TYPE = 0x03;
-        internal const byte MQTT_MSG_PUBACK_TYPE = 0x04;
-        internal const byte MQTT_MSG_PUBREC_TYPE = 0x05;
-        internal const byte MQTT_MSG_PUBREL_TYPE = 0x06;
-        internal const byte MQTT_MSG_PUBCOMP_TYPE = 0x07;
-        internal const byte MQTT_MSG_SUBSCRIBE_TYPE = 0x08;
-        internal const byte MQTT_MSG_SUBACK_TYPE = 0x09;
-        internal const byte MQTT_MSG_UNSUBSCRIBE_TYPE = 0x0A;
-        internal const byte MQTT_MSG_UNSUBACK_TYPE = 0x0B;
-        internal const byte MQTT_MSG_PINGREQ_TYPE = 0x0C;
-        internal const byte MQTT_MSG_PINGRESP_TYPE = 0x0D;
-        internal const byte MQTT_MSG_DISCONNECT_TYPE = 0x0E;
-
         // [v3.1.1] MQTT flag bits
         internal const byte MQTT_MSG_CONNECT_FLAG_BITS = 0x00;
         internal const byte MQTT_MSG_CONNACK_FLAG_BITS = 0x00;
@@ -75,17 +60,25 @@ namespace nanoFramework.M2Mqtt.Messages
         internal const byte MQTT_MSG_PINGREQ_FLAG_BITS = 0x00;
         internal const byte MQTT_MSG_PINGRESP_FLAG_BITS = 0x00;
         internal const byte MQTT_MSG_DISCONNECT_FLAG_BITS = 0x00;
+        // v5.0
+        internal const byte MQTT_MSG_AUTH_FLAG_BITS = 0x00;
 
         internal const ushort MAX_TOPIC_LENGTH = 65535;
         internal const ushort MIN_TOPIC_LENGTH = 1;
         internal const byte MESSAGE_ID_SIZE = 2;
+        // v5.0
+        internal const byte ENCODING_BYTE_SIZE = 2;
+        internal const byte ENCODING_FOUR_BYTE_SIZE = 5;
+        internal const byte ENCODING_TWO_BYTE_SIZE = 3;
+        internal const byte ENCODING_UTF8_SIZE = 3;
+        internal const byte ENCODING_BINARY_DATA_SIZE = 3;
 
         #endregion
 
         /// <summary>
         /// Message type
         /// </summary>
-        public byte Type { get; set; }
+        public MqttMessageType Type { get; set; }
 
         /// <summary>
         /// Duplicate message flag
@@ -108,11 +101,21 @@ namespace nanoFramework.M2Mqtt.Messages
         public ushort MessageId { get; set; }
 
         /// <summary>
+        /// User Property, v5.0 only
+        /// </summary>
+        public ArrayList UserProperties { get; internal set; } = new ArrayList();
+
+        /// <summary>
+        /// Maximum Packet Size, v5.0 only
+        /// </summary>
+        public uint MaximumPacketSize { get; set; }
+
+        /// <summary>
         /// Returns message bytes rapresentation
         /// </summary>
         /// <param name="protocolVersion">Protocol version</param>
         /// <returns>Bytes rapresentation</returns>
-        public abstract byte[] GetBytes(byte protocolVersion);
+        public abstract byte[] GetBytes(MqttProtocolVersion protocolVersion);
         
         /// <summary>
         /// Encode remaining length and insert it into message buffer
@@ -121,7 +124,7 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <param name="buffer">Message buffer for inserting encoded value</param>
         /// <param name="index">Index from which insert encoded value into buffer</param>
         /// <returns>Index updated</returns>
-        protected int EncodeRemainingLength(int remainingLength, byte[] buffer, int index)
+        protected int EncodeVariableByte(int remainingLength, byte[] buffer, int index)
         {
             int digit = 0;
             do
@@ -140,7 +143,7 @@ namespace nanoFramework.M2Mqtt.Messages
         /// </summary>
         /// <param name="channel">Channel from reading bytes</param>
         /// <returns>Decoded remaining length</returns>
-        protected static int DecodeRemainingLength(IMqttNetworkChannel channel)
+        protected static int DecodeVariableByte(IMqttNetworkChannel channel)
         {
             int multiplier = 1;
             int value = 0;
@@ -200,12 +203,22 @@ namespace nanoFramework.M2Mqtt.Messages
             byte[] binary = value as byte[];
             if (binary != null)
             {
-                string hexChars = "0123456789ABCDEF";
                 StringBuilder sb = new StringBuilder(binary.Length * 2);
                 for (int i = 0; i < binary.Length; ++i)
                 {
-                    sb.Append(hexChars[binary[i] >> 4]);
-                    sb.Append(hexChars[binary[i] & 0x0F]);
+                    sb.Append(binary[i].ToString("X2"));
+                }
+
+                return sb.ToString();
+            }
+
+            MqttQoSLevel[] qosLevel = value as MqttQoSLevel[];
+            if (qosLevel != null)
+            {
+                StringBuilder sb = new StringBuilder(qosLevel.Length * 2);
+                for (int i = 0; i < qosLevel.Length; ++i)
+                {
+                    sb.Append(((byte)qosLevel[i]).ToString("X2"));
                 }
 
                 return sb.ToString();

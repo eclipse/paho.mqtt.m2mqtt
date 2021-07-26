@@ -28,7 +28,16 @@
   </PropertyGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
+    <Compile Include="Messages\ConnectionClosedRequestEventArgs.cs" />
+    <Compile Include="Messages\ConnectionOpenedEventArgs.cs" />
+    <Compile Include="Messages\MqttMessageType.cs" />
+    <Compile Include="Messages\MqttMsgAuthentication.cs" />
+    <Compile Include="Messages\MqttMsgAuthenticationEventArgs.cs" />
+    <Compile Include="Messages\MqttProperty.cs" />
     <Compile Include="Messages\MqttQoSLevel.cs" />
+    <Compile Include="Messages\MqttReasonCode.cs" />
+    <Compile Include="Messages\MqttRetainHandeling.cs" />
+    <Compile Include="Messages\UserProperty.cs" />
     <Compile Include="nanoFramework\Environment.cs" />
     <Compile Include="Exceptions\MqttClientException.cs" />
     <Compile Include="Exceptions\MqttCommunicationException.cs" />
@@ -70,36 +79,42 @@
     <Compile Include="Session\MqttClientSession.cs" />
     <Compile Include="Session\MqttSession.cs" />
     <Compile Include="Utility\QueueExtension.cs" />
-    <Compile Include="Utility\Trace.cs" />
+    <Compile Include="Utility\EncodeDecodeHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib, Version=1.10.5.4, Culture=neutral, PublicKeyToken=c07d481e9758c731">
       <HintPath>..\packages\nanoFramework.CoreLibrary.1.10.5\lib\mscorlib.dll</HintPath>
       <Private>True</Private>
+      <SpecificVersion>True</SpecificVersion>
     </Reference>
     <Reference Include="nanoFramework.Runtime.Events, Version=1.9.1.3, Culture=neutral, PublicKeyToken=c07d481e9758c731">
       <HintPath>..\packages\nanoFramework.Runtime.Events.1.9.1\lib\nanoFramework.Runtime.Events.dll</HintPath>
       <Private>True</Private>
+      <SpecificVersion>True</SpecificVersion>
     </Reference>
     <Reference Include="nanoFramework.Runtime.Native, Version=1.5.1.3, Culture=neutral, PublicKeyToken=c07d481e9758c731">
       <HintPath>..\packages\nanoFramework.Runtime.Native.1.5.1\lib\nanoFramework.Runtime.Native.dll</HintPath>
       <Private>True</Private>
+      <SpecificVersion>True</SpecificVersion>
     </Reference>
     <Reference Include="nanoFramework.System.Collections, Version=1.2.0.3, Culture=neutral, PublicKeyToken=c07d481e9758c731">
       <HintPath>..\packages\nanoFramework.System.Collections.1.2.0\lib\nanoFramework.System.Collections.dll</HintPath>
       <Private>True</Private>
+      <SpecificVersion>True</SpecificVersion>
     </Reference>
     <Reference Include="nanoFramework.System.Text, Version=1.1.1.3, Culture=neutral, PublicKeyToken=c07d481e9758c731">
       <HintPath>..\packages\nanoFramework.System.Text.1.1.1\lib\nanoFramework.System.Text.dll</HintPath>
       <Private>True</Private>
+      <SpecificVersion>True</SpecificVersion>
     </Reference>
     <Reference Include="System.Net, Version=1.7.0.3, Culture=neutral, PublicKeyToken=c07d481e9758c731">
       <HintPath>..\packages\nanoFramework.System.Net.1.7.0\lib\System.Net.dll</HintPath>
       <Private>True</Private>
+      <SpecificVersion>True</SpecificVersion>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets')" />
   <ProjectExtensions>

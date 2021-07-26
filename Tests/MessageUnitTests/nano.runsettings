@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+   <!-- Configurations that affect the Test Framework -->
+   <RunConfiguration>
+       <MaxCpuCount>1</MaxCpuCount>
+       <ResultsDirectory>.\TestResults</ResultsDirectory><!-- Path relative to solution directory -->
+       <TestSessionTimeout>120000</TestSessionTimeout><!-- Milliseconds -->
+       <TargetFrameworkVersion>Framework40</TargetFrameworkVersion>
+   </RunConfiguration>
+   <nanoFrameworkAdapter>
+       <Logging>None</Logging>
+       <IsRealHardware>False</IsRealHardware>
+   </nanoFrameworkAdapter>
+</RunSettings>

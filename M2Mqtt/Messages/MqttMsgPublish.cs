@@ -18,6 +18,7 @@ Contributors:
 using System;
 using System.Text;
 using nanoFramework.M2Mqtt.Exceptions;
+using nanoFramework.M2Mqtt.Utility;
 
 namespace nanoFramework.M2Mqtt.Messages
 {
@@ -30,18 +31,58 @@ namespace nanoFramework.M2Mqtt.Messages
         /// Message topic
         /// </summary>
         public string Topic { get; set; }
-        
+
         /// <summary>
         /// Message data
         /// </summary>
         public byte[] Message { get; set; }
 
         /// <summary>
+        /// True if the payload is UTF8 encoded, v5.0 only
+        /// </summary>
+        public bool IsPayloadUTF8 { get; set; }
+
+        /// <summary>
+        /// Message Expiry Interval. If the server did not managed to process it on time, the message must be deleted.
+        /// Value is the lifetime of the Will Message in seconds and is sent as the Publication Expiry Interval when the Server publishes the Will Message.
+        /// v5.0 only
+        /// </summary>
+        /// <remarks>The value 0 is the default one, it means, it is not present</remarks>
+        public uint MessageExpiryInterval { get; set; }
+
+        /// <summary>
+        /// Used instead of the Topic to reduce size of the Publish packet, v5.0 only
+        /// </summary>
+        /// <remarks>The 0 value is not permitted.
+        /// The client must not send value higher than the Topic Alias Maximum received in the Connack/Connect message.</remarks>
+        public ushort TopicAlias { get; set; }
+
+        /// <summary>
+        /// Response Topic is used as the Topic Name for a response message, v5.0 only
+        /// </summary>
+        public string ResponseTopic { get; set; }
+
+        /// <summary>
+        /// The Correlation Data is used by the sender of the Request Message to identify which request the Response Message is for when it is received, v5.0 only
+        /// </summary>
+        public byte[] CorrelationData { get; set; }
+
+        /// <summary>
+        /// The Subscription Identifier can have the value of 1 to 268,435,455, v5.0 only
+        /// </summary>
+        public int SubscriptionIdentifier { get; set; }
+
+        /// <summary>
+        /// The content of the Application Message, v5.0 only
+        /// </summary>
+        public string ContentType { get; set; }
+
+        /// <summary>
         /// Constructor
         /// </summary>
         public MqttMsgPublish()
         {
-            Type = MQTT_MSG_PUBLISH_TYPE;
+            Type = MqttMessageType.Publish;
         }
 
         /// <summary>
@@ -68,7 +109,7 @@ namespace nanoFramework.M2Mqtt.Messages
             MqttQoSLevel qosLevel,
             bool retain) : base()
         {
-            Type = MQTT_MSG_PUBLISH_TYPE;
+            Type = MqttMessageType.Publish;
 
             Topic = topic;
             Message = message;
@@ -83,14 +124,19 @@ namespace nanoFramework.M2Mqtt.Messages
         /// </summary>
         /// <param name="protocolVersion">MQTT protocol version</param>
         /// <returns>An array of bytes that represents the current object.</returns>
-        public override byte[] GetBytes(byte protocolVersion)
+        public override byte[] GetBytes(MqttProtocolVersion protocolVersion)
         {
             int fixedHeaderSize;
             int varHeaderSize = 0;
+            int varHeaderPropSize = 0;
             int payloadSize = 0;
             int remainingLength = 0;
             byte[] buffer;
             int index = 0;
+            byte[] responseTopic = null;
+            byte[] correlationData = null;
+            byte[] userProperties = null;
+            byte[] contentType = null;
 
             // topic can't contain wildcards
             if ((Topic.IndexOf('#') != -1) || (Topic.IndexOf('+') != -1))
@@ -110,13 +156,63 @@ namespace nanoFramework.M2Mqtt.Messages
                 throw new MqttClientException(MqttClientErrorCode.QosNotAllowed);
             }
 
+            if (protocolVersion == MqttProtocolVersion.Version_5)
+            {
+                if (IsPayloadUTF8)
+                {
+                    varHeaderPropSize += ENCODING_BYTE_SIZE;
+                }
+
+                if (MessageExpiryInterval > 0)
+                {
+                    varHeaderPropSize += ENCODING_FOUR_BYTE_SIZE;
+                }
+
+                if (TopicAlias > 0)
+                {
+                    varHeaderPropSize += ENCODING_TWO_BYTE_SIZE;
+                }
+
+                if (!string.IsNullOrEmpty(ResponseTopic))
+                {
+                    responseTopic = Encoding.UTF8.GetBytes(ResponseTopic);
+                    varHeaderPropSize += ENCODING_UTF8_SIZE + responseTopic.Length;
+                }
+
+                if ((CorrelationData != null) && (CorrelationData.Length > 0))
+                {
+                    correlationData = EncodeDecodeHelper.EncodeArray(MqttProperty.CorrelationData, CorrelationData);
+                    varHeaderPropSize += correlationData.Length;
+                }
+
+                if (UserProperties.Count > 0)
+                {
+                    userProperties = EncodeDecodeHelper.EncodeUserProperties(UserProperties);
+                    varHeaderPropSize += userProperties.Length;
+                }
+
+                if (SubscriptionIdentifier > 0)
+                {
+                    // Variable byte identifier, so 1 for the type and the size of the id.
+                    varHeaderPropSize += 1 + EncodeDecodeHelper.EncodeLength(SubscriptionIdentifier);
+                }
+
+                if (!string.IsNullOrEmpty(ContentType))
+                {
+                    contentType = Encoding.UTF8.GetBytes(ContentType);
+                    varHeaderPropSize += ENCODING_UTF8_SIZE + contentType.Length;
+                }
+
+                varHeaderSize += varHeaderPropSize + EncodeDecodeHelper.EncodeLength(varHeaderPropSize);
+            }
+
             byte[] topicUtf8 = Encoding.UTF8.GetBytes(Topic);
 
             // topic name
             varHeaderSize += topicUtf8.Length + 2;
 
             // message id is valid only with QOS level 1 or QOS level 2
-            if ((QosLevel == MqttQoSLevel.AtLeastOnce) || 
+            if ((QosLevel == MqttQoSLevel.AtLeastOnce) ||
                 (QosLevel == MqttQoSLevel.ExactlyOnce))
             {
                 varHeaderSize += MESSAGE_ID_SIZE;
@@ -124,7 +220,7 @@ namespace nanoFramework.M2Mqtt.Messages
 
             // check on message with zero length
             if (Message != null)
-            {   
+            {
                 // message data
                 payloadSize += Message.Length;
             }
@@ -147,14 +243,14 @@ namespace nanoFramework.M2Mqtt.Messages
             buffer = new byte[fixedHeaderSize + varHeaderSize + payloadSize];
 
             // first fixed header byte
-            buffer[index] = (byte)((MQTT_MSG_PUBLISH_TYPE << MSG_TYPE_OFFSET) |
+            buffer[index] = (byte)(((byte)MqttMessageType.Publish << MSG_TYPE_OFFSET) |
                                    ((byte)QosLevel << QOS_LEVEL_OFFSET));
             buffer[index] |= DupFlag ? (byte)(1 << DUP_FLAG_OFFSET) : (byte)0x00;
             buffer[index] |= Retain ? (byte)(1 << RETAIN_FLAG_OFFSET) : (byte)0x00;
             index++;
 
             // encode remaining length
-            index = EncodeRemainingLength(remainingLength, buffer, index);
+            index = EncodeVariableByte(remainingLength, buffer, index);
 
             // topic name
             buffer[index++] = (byte)((topicUtf8.Length >> 8) & 0x00FF); // MSB
@@ -176,11 +272,62 @@ namespace nanoFramework.M2Mqtt.Messages
                 buffer[index++] = (byte)(MessageId & 0x00FF); // LSB
             }
 
+            // Properties for v5.0
+            if (protocolVersion == MqttProtocolVersion.Version_5)
+            {
+                index = EncodeVariableByte(varHeaderPropSize, buffer, index);
+
+                if (IsPayloadUTF8)
+                {
+                    buffer[index++] = (byte)MqttProperty.PayloadFormatIndicator;
+                    buffer[index++] = (byte)(IsPayloadUTF8 ? 1 : 0);
+                }
+
+                if (MessageExpiryInterval > 0)
+                {
+                    index = EncodeDecodeHelper.EncodeUint(MqttProperty.MessageExpiryInterval, MessageExpiryInterval, buffer, index);
+                }
+
+                if (TopicAlias > 0)
+                {
+                    index = EncodeDecodeHelper.EncodeUshort(MqttProperty.TopicAlias, TopicAlias, buffer, index);
+                }
+
+                if (responseTopic != null)
+                {
+                    EncodeDecodeHelper.EncodeUTF8FromBuffer(MqttProperty.ResponseTopic, responseTopic, buffer, ref index);
+                }
+
+                if (correlationData != null)
+                {
+                    Array.Copy(correlationData, 0, buffer, index, correlationData.Length);
+                    index += correlationData.Length;
+                }
+
+                if (UserProperties.Count > 0)
+                {
+                    Array.Copy(userProperties, 0, buffer, index, userProperties.Length);
+                    index += userProperties.Length;
+                }
+
+                if (SubscriptionIdentifier > 0)
+                {
+                    // Variable byte
+                    buffer[index++] = (byte)MqttProperty.SubscriptionIdentifier;
+                    index = EncodeVariableByte(SubscriptionIdentifier, buffer, index);
+                }
+
+                if (contentType != null)
+                {
+                    EncodeDecodeHelper.EncodeUTF8FromBuffer(MqttProperty.ContentType, contentType, buffer, ref index);
+                }
+            }
+
             // check on message with zero length
             if (Message != null)
             {
                 // message data
-                Array.Copy(Message, 0, buffer, index, Message.Length);                
+                Array.Copy(Message, 0, buffer, index, Message.Length);
             }
 
             return buffer;
@@ -193,7 +340,7 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <param name="protocolVersion">MQTT Protocol Version</param>
         /// <param name="channel">Channel connected to the broker</param>
         /// <returns>PUBLISH message instance</returns>
-        public static MqttMsgPublish Parse(byte fixedHeaderFirstByte, byte protocolVersion, IMqttNetworkChannel channel)
+        public static MqttMsgPublish Parse(byte fixedHeaderFirstByte, MqttProtocolVersion protocolVersion, IMqttNetworkChannel channel)
         {
             byte[] buffer;
             int index = 0;
@@ -202,7 +349,7 @@ namespace nanoFramework.M2Mqtt.Messages
             MqttMsgPublish msg = new MqttMsgPublish();
 
             // get remaining length and allocate buffer
-            int remainingLength = MqttMsgBase.DecodeRemainingLength(channel);
+            int remainingLength = DecodeVariableByte(channel);
             buffer = new byte[remainingLength];
 
             // read bytes from socket...
@@ -228,7 +375,7 @@ namespace nanoFramework.M2Mqtt.Messages
             msg.DupFlag = (((fixedHeaderFirstByte & DUP_FLAG_MASK) >> DUP_FLAG_OFFSET) == 0x01);
             // read retain flag from fixed header
             msg.Retain = (((fixedHeaderFirstByte & RETAIN_FLAG_MASK) >> RETAIN_FLAG_OFFSET) == 0x01);
-            
+
             // message id is valid only with QOS level 1 or QOS level 2
             if ((msg.QosLevel == MqttQoSLevel.AtLeastOnce) ||
                 (msg.QosLevel == MqttQoSLevel.ExactlyOnce))
@@ -236,6 +383,60 @@ namespace nanoFramework.M2Mqtt.Messages
                 // message id
                 msg.MessageId = (ushort)((buffer[index++] << 8) & 0xFF00);
                 msg.MessageId |= buffer[index++];
+            }
+
+            // We do have the properties here to decode
+            if (protocolVersion == MqttProtocolVersion.Version_5)
+            {
+                // size of the properties
+                int propSize = EncodeDecodeHelper.GetPropertySize(buffer, ref index);
+                propSize += index;
+                MqttProperty prop;
+
+                while (propSize > index)
+                {
+                    prop = (MqttProperty)buffer[index++];
+                    switch (prop)
+                    {
+                        case MqttProperty.PayloadFormatIndicator:
+                            msg.IsPayloadUTF8 = buffer[index++] != 0;
+                            break;
+                        case MqttProperty.MessageExpiryInterval:
+                            msg.MessageExpiryInterval = EncodeDecodeHelper.DecodeUint(buffer, ref index);
+                            break;
+                        case MqttProperty.TopicAlias:
+                            msg.TopicAlias = (ushort)(buffer[index++] << 8);
+                            msg.TopicAlias |= buffer[index++];
+                            break;
+                        case MqttProperty.ResponseTopic:
+                            msg.ResponseTopic = EncodeDecodeHelper.GetUTF8FromBuffer(buffer, ref index);
+                            break;
+                        case MqttProperty.CorrelationData:
+                            // byte[]
+                            int length = ((buffer[index++] << 8) & 0xFF00);
+                            length |= buffer[index++];
+                            msg.CorrelationData = new byte[length];
+                            Array.Copy(buffer, index, msg.CorrelationData, 0, length);
+                            index += length;
+                            break;
+                        case MqttProperty.UserProperty:
+                            // UTF8 key value encoding, so 2 strings in a raw
+                            string key = EncodeDecodeHelper.GetUTF8FromBuffer(buffer, ref index);
+                            string value = EncodeDecodeHelper.GetUTF8FromBuffer(buffer, ref index);
+                            msg.UserProperties.Add(new UserProperty(key, value));
+                            break;
+                        case MqttProperty.SubscriptionIdentifier:
+                            msg.SubscriptionIdentifier = EncodeDecodeHelper.DecodeVariableByte(buffer, ref index);
+                            break;
+                        case MqttProperty.ContentType:
+                            msg.ContentType = EncodeDecodeHelper.GetUTF8FromBuffer(buffer, ref index);
+                            break;
+                        default:
+                            // non supported property
+                            index = propSize;
+                            break;
+                    }
+                }
             }
 
             // get payload with message data
