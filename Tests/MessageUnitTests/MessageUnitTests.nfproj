@@ -45,25 +45,21 @@
     <Compile Include="UnsubscribeTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="mscorlib, Version=1.10.5.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\..\packages\nanoFramework.CoreLibrary.1.10.5-preview.18\lib\mscorlib.dll</HintPath>
+    <Reference Include="mscorlib, Version=1.10.5.4, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\..\packages\nanoFramework.CoreLibrary.1.10.5\lib\mscorlib.dll</HintPath>
       <Private>True</Private>
-      <SpecificVersion>True</SpecificVersion>
     </Reference>
-    <Reference Include="nanoFramework.System.Text, Version=1.1.1.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\..\packages\nanoFramework.System.Text.1.1.1-preview.64\lib\nanoFramework.System.Text.dll</HintPath>
+    <Reference Include="nanoFramework.System.Text, Version=1.1.1.3, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\..\packages\nanoFramework.System.Text.1.1.1\lib\nanoFramework.System.Text.dll</HintPath>
       <Private>True</Private>
-      <SpecificVersion>True</SpecificVersion>
     </Reference>
-    <Reference Include="nanoFramework.TestFramework, Version=1.0.146.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\..\packages\nanoFramework.TestFramework.1.0.146\lib\nanoFramework.TestFramework.dll</HintPath>
+    <Reference Include="nanoFramework.TestFramework, Version=1.0.150.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\..\packages\nanoFramework.TestFramework.1.0.150\lib\nanoFramework.TestFramework.dll</HintPath>
       <Private>True</Private>
-      <SpecificVersion>True</SpecificVersion>
     </Reference>
     <Reference Include="nanoFramework.UnitTestLauncher, Version=0.0.0.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\..\packages\nanoFramework.TestFramework.1.0.146\lib\nanoFramework.UnitTestLauncher.exe</HintPath>
+      <HintPath>..\..\packages\nanoFramework.TestFramework.1.0.150\lib\nanoFramework.UnitTestLauncher.exe</HintPath>
       <Private>True</Private>
-      <SpecificVersion>True</SpecificVersion>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -75,16 +71,16 @@
   </ItemGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets')" />
   <!-- MANUAL UPDATE HERE -->
-  <Import Project="..\..\packages\nanoFramework.TestFramework.1.0.146\build\nanoFramework.TestFramework.targets" Condition="Exists('..\..\packages\nanoFramework.TestFramework.1.0.146\build\nanoFramework.TestFramework.targets')" />
   <ProjectExtensions>
     <ProjectCapabilities>
       <ProjectConfigurationsDeclaredAsItems />
     </ProjectCapabilities>
   </ProjectExtensions>
+  <Import Project="..\..\packages\nanoFramework.TestFramework.1.0.150\build\nanoFramework.TestFramework.targets" Condition="Exists('..\..\packages\nanoFramework.TestFramework.1.0.150\build\nanoFramework.TestFramework.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
-      <WarningText>Update the Import path in nfproj to the correct nanoFramework.TestFramework NuGet package folder.</WarningText>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Warning Condition="!Exists('..\..\packages\nanoFramework.TestFramework.1.0.146\build\nanoFramework.TestFramework.targets')" Text="'$(WarningText)'" />
+    <Error Condition="!Exists('..\..\packages\nanoFramework.TestFramework.1.0.150\build\nanoFramework.TestFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\nanoFramework.TestFramework.1.0.150\build\nanoFramework.TestFramework.targets'))" />
   </Target>
 </Project>
