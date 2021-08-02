@@ -1,5 +1,5 @@
 user=nanoframework
-project=paho.mqtt.m2mqtt
+project=nanoFramework.m2mqtt
 issues=true
 add_issues_wo_labels=false
 add_pr_wo_labels=false

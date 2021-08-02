@@ -7,9 +7,9 @@
     <authors>nanoFramework project contributors</authors>
     <owners>nanoFramework project contributors,dotnetfoundation</owners>
     <license type="file">LICENSE.md</license>
-    <projectUrl>https://github.com/nanoframework/paho.mqtt.m2mqtt</projectUrl>
+    <projectUrl>https://github.com/nanoframework/nanoFramework.m2mqtt</projectUrl>
     <icon>images\nf-logo.png</icon>
-    <repository type="git" url="https://github.com/nanoframework/paho.mqtt.m2mqtt" commit="$commit$" />
+    <repository type="git" url="https://github.com/nanoframework/nanoFramework.m2mqtt" commit="$commit$" />
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>M2Mqtt is a MQTT client available for .NET nanoFramework for M2M communication.</description>
     <summary>M2Mqtt is a MQTT client available for .NET nanoFramework for M2M communication.</summary>

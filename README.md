@@ -15,8 +15,8 @@ Since that time, the MQTT Client had some changes and has been adapted to .NET n
 
 | Component | Build Status | NuGet Package |
 |:-|---|---|
-| nanoFramework.M2Mqtt | [![Build Status](https://dev.azure.com/nanoframework/paho.mqtt.m2mqtt/_apis/build/status/nanoframework.paho.mqtt.m2mqtt?branchName=main)](https://dev.azure.com/nanoframework/paho.mqtt.m2mqtt/_build/latest?definitionId=56&branchName=main) | [![NuGet](https://img.shields.io/nuget/v/nanoFramework.M2Mqtt.svg?label=NuGet&style=flat&logo=nuget)](https://www.nuget.org/packages/nanoFramework.M2Mqtt/) |
-| nanoFramework.M2Mqtt (preview) | [![Build Status](https://dev.azure.com/nanoframework/paho.mqtt.m2mqtt/_apis/build/status/nanoframework.paho.mqtt.m2mqtt?branchName=develop)](https://dev.azure.com/nanoframework/paho.mqtt.m2mqtt/_build/latest?definitionId=56&branchName=develop) | [![NuGet](https://img.shields.io/nuget/vpre/nanoFramework.M2Mqtt.svg?label=NuGet&style=flat&logo=nuget)](https://www.nuget.org/packages/nanoFramework.M2Mqtt/) |
+| nanoFramework.M2Mqtt | [![Build Status](https://dev.azure.com/nanoframework/nanoFramework.m2mqtt/_apis/build/status/nanoframework.m2mqtt?repoName=nanoframework%2FnanoFramework.m2mqtt&branchName=main)](https://dev.azure.com/nanoframework/nanoFramework.m2mqtt/_build/latest?definitionId=56&repoName=nanoframework%2FnanoFramework.m2mqtt&branchName=main) | [![NuGet](https://img.shields.io/nuget/v/nanoFramework.M2Mqtt.svg?label=NuGet&style=flat&logo=nuget)](https://www.nuget.org/packages/nanoFramework.M2Mqtt/) |
+| nanoFramework.M2Mqtt (preview) | [![Build Status](https://dev.azure.com/nanoframework/nanoFramework.m2mqtt/_apis/build/status/nanoframework.m2mqtt?repoName=nanoframework%2FnanoFramework.m2mqtt&branchName=develop)](https://dev.azure.com/nanoframework/nanoFramework.m2mqtt/_build/latest?definitionId=56&repoName=nanoframework%2FnanoFramework.m2mqtt&branchName=develop) | [![NuGet](https://img.shields.io/nuget/vpre/nanoFramework.M2Mqtt.svg?label=NuGet&style=flat&logo=nuget)](https://www.nuget.org/packages/nanoFramework.M2Mqtt/) |
 
 ## Project Description
 
