@@ -9,7 +9,7 @@ Welcome to the MQTT Client Library for .NET **nanoFramework**. The current versi
 This is an initial port of the MQTT Client Library [M2Mqtt](https://github.com/eclipse/paho.mqtt.m2mqtt).
 The original project has an official website [here](https://m2mqtt.wordpress.com/).
 
-Since that time, the MQTT Client had some changes and has been adapted to .NET nanoFramework.
+Since that time, the MQTT Client had quite some changes and has been adapted to .NET nanoFramework.
 
 ## Build status
 
@@ -22,7 +22,7 @@ Since that time, the MQTT Client had some changes and has been adapted to .NET n
 
 M2Mqtt is a MQTT client for Internet of Things and M2M communication.
 
-MQTT, short for Message Queue Telemetry Transport, is a light weight messaging protocol that enables embedded devices with limited resources to perform asynchronous communication on a constrained network.
+[MQTT](https://mqtt.org/), short for Message Queue Telemetry Transport, is a light weight messaging protocol that enables embedded devices with limited resources to perform asynchronous communication on a constrained network.
 
 MQTT protocol is based on publish/subscribe pattern so that a client can subscribe to one or more topics and receive messages that other clients publish on these topics.
 
@@ -30,7 +30,7 @@ This library contains an sample MQTT client that you can use to connect to any M
 
 The binaries are available as a [NuGet package](https://www.nuget.org/packages/nanoframework.M2Mqtt).
 
-For all information about MQTT protocol, please visit official web site  http://mqtt.org/. It is recommended to have a good understanding of how MQTT protocol is working to properly use it. The mechanism of Quality of Service is an important one to understand.
+For all information about MQTT protocol, please visit MQTT official [web site](http://mqtt.org/). It is recommended to have a good understanding of how MQTT protocol is working to properly use it. The mechanism of Quality of Service is an important one to understand.
 
 ## Usage
 
