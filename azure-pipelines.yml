@@ -21,7 +21,7 @@ pool:
 
 variables:
   DOTNET_NOLOGO: true
-  solution: '**/nanoFramework.M2Mqtt.sln'
+  solution: 'nanoFramework.M2Mqtt.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   nugetPackageName: 'nanoFramework.M2Mqtt'
