@@ -33,6 +33,17 @@ steps:
 - template: azure-pipelines-templates/class-lib-build.yml@templates
   parameters:
     sonarCloudProject: 'nanoframework_paho.mqtt.m2mqtt'
+    
+# update dependencies
+- task: UpdatenFDependencies@1
+  inputs:
+    gitHubToken: $(GitHubToken)
+    repositoriesToUpdate: |
+      nanoFramework.Aws.IotCore.Devices
+      nanoFramework.Azure.Devices
+  condition: or( and( succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v'), eq(variables['StartReleaseCandidate'], 'false') ), and( succeeded(), contains(variables['getCommitMessage.COMMIT_MESSAGE'], '***UPDATE_DEPENDENTS***'), eq(variables['StartReleaseCandidate'], 'false') ), eq(variables['UPDATE_DEPENDENTS'], 'true') )
+  continueOnError: true
+  displayName: Update dependent class libs
 
 # step from template @ nf-tools repo
 # report error
