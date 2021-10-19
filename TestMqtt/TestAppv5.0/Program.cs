@@ -2,15 +2,14 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using nanoFramework.M2Mqtt;
-using System.Diagnostics;
-using System.Threading;
-using System.Security.Cryptography.X509Certificates;
 using nanoFramework.M2Mqtt.Messages;
 using nanoFramework.Networking;
-using System.Text;
 using System;
-using System.Web;
+using System.Diagnostics;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Threading;
 
 namespace TestAppv5._0
 {
