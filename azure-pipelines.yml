@@ -7,6 +7,8 @@ trigger:
     include: ["v*"]
 
 # PR always trigger build
+pr:
+  autoCancel: true
 
 # add nf-tools repo to resources (for Azure Pipelines templates)
 resources:
