@@ -32,11 +32,11 @@
       <SpecificVersion>True</SpecificVersion>
     </Reference>
     <Reference Include="nanoFramework.NetworkHelper, Version=1.3.4.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\..\packages\nanoFramework.NetWorkHelper.1.3.4-preview.10\lib\nanoFramework.NetworkHelper.dll</HintPath>
+      <HintPath>..\..\packages\nanoFramework.NetWorkHelper.1.3.4-preview.14\lib\nanoFramework.NetworkHelper.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="nanoFramework.Runtime.Events, Version=1.9.2.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\..\packages\nanoFramework.Runtime.Events.1.9.2-preview.5\lib\nanoFramework.Runtime.Events.dll</HintPath>
+      <HintPath>..\..\packages\nanoFramework.Runtime.Events.1.9.2-preview.8\lib\nanoFramework.Runtime.Events.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="nanoFramework.System.Collections, Version=1.2.0.3, Culture=neutral, PublicKeyToken=c07d481e9758c731">
@@ -50,7 +50,7 @@
       <SpecificVersion>True</SpecificVersion>
     </Reference>
     <Reference Include="System.Net, Version=1.7.1.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\..\packages\nanoFramework.System.Net.1.7.1-preview.6\lib\System.Net.dll</HintPath>
+      <HintPath>..\..\packages\nanoFramework.System.Net.1.7.1-preview.9\lib\System.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Net.Http, Version=1.3.5.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
@@ -63,7 +63,7 @@
       <SpecificVersion>True</SpecificVersion>
     </Reference>
     <Reference Include="Windows.Devices.Wifi, Version=1.3.4.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\..\packages\nanoFramework.Windows.Devices.Wifi.1.3.4-preview.6\lib\Windows.Devices.Wifi.dll</HintPath>
+      <HintPath>..\..\packages\nanoFramework.Windows.Devices.Wifi.1.3.4-preview.12\lib\Windows.Devices.Wifi.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
