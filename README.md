@@ -2,7 +2,7 @@
 
 # .NET **nanoFramework** M2Mqtt
 
-![.NET nanoFramework logo](images/M2Mqtt_Short_Logo.png)
+![nanoFramework logo](http://raw.githubusercontent.com/nanoframework/Home/main/resources/logo/nanoFramework-repo-logo.png)
 
 Welcome to the MQTT Client Library for .NET **nanoFramework**. The current version supports v3.1, v3.1.1 and v5.0.
 
@@ -72,7 +72,7 @@ The MQTT version 5.0 supports specific Authentication flow. After a Connect, the
 * Make sure you setup v5 as a protocol
 * Place the property `IsAuthenticationFlow` to true
 * Register to the `Authentication` event
-* Manage the answers accordingly by sending another Authentication message or anything that is needed regrding your case.
+* Manage the answers accordingly by sending another Authentication message or anything that is needed regarding your case.
 
 Note: the protocol is using the `AuthenticationMethod` and `AuthenticationData` as properties for this specific mechanism.
 
@@ -225,7 +225,7 @@ The **nanoFramework** Class Libraries are licensed under the [MIT license](LICEN
 
 ## Code of Conduct
 
-This project has adopted the code of conduct defined by the Contributor Covenant to clarify expected behavior in our community.
+This project has adopted the code of conduct defined by the Contributor Covenant to clarify expected behaviour in our community.
 For more information see the [.NET Foundation Code of Conduct](https://dotnetfoundation.org/code-of-conduct).
 
 ### .NET Foundation
