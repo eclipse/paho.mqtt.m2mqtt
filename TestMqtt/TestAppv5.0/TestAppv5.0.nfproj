@@ -31,7 +31,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="nanoFramework.NetworkHelper, Version=1.3.4.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\..\packages\nanoFramework.NetWorkHelper.1.3.4-preview.36\lib\nanoFramework.NetworkHelper.dll</HintPath>
+      <HintPath>..\..\packages\nanoFramework.NetWorkHelper.1.3.4-preview.40\lib\nanoFramework.NetworkHelper.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="nanoFramework.Runtime.Events, Version=1.10.0.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
