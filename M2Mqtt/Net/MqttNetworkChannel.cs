@@ -152,6 +152,7 @@ namespace nanoFramework.M2Mqtt
             {
                 // create SSL stream
                 _sslStream = new SslStream(_socket);
+                _sslStream.UseStoredDeviceCertificate = _clientCert is null;
 
                 // server authentication (SSL/TLS handshake)
                 _sslStream.AuthenticateAsClient(_remoteHostName,
