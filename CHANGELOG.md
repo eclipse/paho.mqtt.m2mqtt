@@ -2,7 +2,47 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.0.2-preview.39...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.0.2-preview.46...HEAD)
+
+**Documentation and other chores:**
+
+- Update 1 nuget dependencies [\#190](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/190)
+
+## [v5.0.2-preview.46](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/v5.0.2-preview.46) (2022-01-04)
+
+[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.0.2-preview.45...v5.0.2-preview.46)
+
+**Documentation and other chores:**
+
+- Update 2 nuget dependencies [\#189](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/189)
+
+## [v5.0.2-preview.45](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/v5.0.2-preview.45) (2021-12-31)
+
+[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.0.2-preview.44...v5.0.2-preview.45)
+
+**Fixed bugs:**
+
+- Use device cert when passing null client cert [\#188](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/188)
+
+## [v5.0.2-preview.44](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/v5.0.2-preview.44) (2021-12-31)
+
+[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.0.2-preview.43...v5.0.2-preview.44)
+
+**Documentation and other chores:**
+
+- Update 1 nuget dependencies [\#187](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/187)
+
+## [v5.0.2-preview.43](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/v5.0.2-preview.43) (2021-12-29)
+
+[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.0.2-preview.41...v5.0.2-preview.43)
+
+**Documentation and other chores:**
+
+- Update 3 nuget dependencies [\#186](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/186)
+
+## [v5.0.2-preview.41](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/v5.0.2-preview.41) (2021-12-17)
+
+[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.0.2-preview.39...v5.0.2-preview.41)
 
 **Documentation and other chores:**
 
