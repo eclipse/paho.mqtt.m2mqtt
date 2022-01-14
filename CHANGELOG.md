@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.0.2-preview.49...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.0.2-preview.53...HEAD)
+
+**Fixed bugs:**
+
+- Fix event not received in fast networks for publish in QoS 1 [\#194](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/194)
+
+## [v5.0.2-preview.53](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/v5.0.2-preview.53) (2022-01-14)
+
+[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.0.2-preview.49...v5.0.2-preview.53)
 
 **Documentation and other chores:**
 
