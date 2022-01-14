@@ -106,7 +106,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Net, Version=1.8.0.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.System.Net.1.8.0-preview.5\lib\System.Net.dll</HintPath>
+      <HintPath>..\packages\nanoFramework.System.Net.1.8.0-preview.9\lib\System.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Threading, Version=1.0.3.3, Culture=neutral, PublicKeyToken=c07d481e9758c731">
