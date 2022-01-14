@@ -1057,6 +1057,12 @@ namespace nanoFramework.M2Mqtt
                 {
                     enqueue = false;
                     _waitingForAnswer.Remove(msg.MessageId);
+                    // Send the event as when here, it won't be enqueued.
+                    if (msg.Type == MqttMessageType.PublishAck)
+                    {
+                        OnInternalEvent(new MsgInternalEvent(msg));
+                        return;
+                    }
                 }
             }
 
@@ -1648,6 +1654,7 @@ namespace nanoFramework.M2Mqtt
                                                         toEnqueue = false;
                                                     }
                                                 }
+
                                                 msgInflight.DupFlag = true;
                                             }
                                         }
