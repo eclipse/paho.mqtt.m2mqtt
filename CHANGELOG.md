@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.0.2-preview.59...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.0.2-preview.61...HEAD)
+
+**Documentation and other chores:**
+
+- Update 2 NuGet dependencies [\#200](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/200)
+
+## [v5.0.2-preview.61](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/v5.0.2-preview.61) (2022-01-21)
+
+[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.0.2-preview.59...v5.0.2-preview.61)
 
 **Documentation and other chores:**
 
