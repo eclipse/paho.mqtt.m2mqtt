@@ -4,8 +4,7 @@
     <id>nanoFramework.M2Mqtt</id>
     <version>$version$</version>
     <title>nanoFramework.M2Mqtt</title>
-    <authors>nanoFramework project contributors</authors>
-    <owners>nanoFramework,dotnetfoundation</owners>
+    <authors>nanoframework</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="file">LICENSE.md</license>
     <releaseNotes>
