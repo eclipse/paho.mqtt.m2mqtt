@@ -1,8 +1,8 @@
 # Changelog
 
-## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/HEAD)
+## [v5.0.2-preview.100](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/v5.0.2-preview.100) (2022-03-28)
 
-[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.0.2-preview.98...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.0.2-preview.98...v5.0.2-preview.100)
 
 **Documentation and other chores:**
 
