@@ -152,6 +152,11 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <summary>
         /// (QOS = 1), UNSUBSCRIBE sent, wait for UNSUBACK
         /// </summary>
-        WaitForUnsuback
+        WaitForUnsuback,
+
+        /// <summary>
+        /// After CONNECT if Authentication Method is not empty, v5.0 only
+        /// </summary>
+        WaitForAuthentication,
     }
 }

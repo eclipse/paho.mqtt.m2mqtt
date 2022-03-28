@@ -35,7 +35,7 @@ namespace nanoFramework.M2Mqtt
         /// <summary>
         /// Default timeout on receiving from client
         /// </summary>
-        public const int DefaultTimeout = 30000;
+        public const int DefaultTimeout = 30_000;
 
         /// <summary>
         /// Max publish, subscribe and unsubscribe retry for QoS Level 1 or 2
@@ -43,9 +43,10 @@ namespace nanoFramework.M2Mqtt
         public const int MaximumAttemptsRetry = 3;
 
         /// <summary>
-        /// Delay for retry publish, subscribe and unsubscribe for QoS Level 1 or 2
+        /// Delay for retry publish, subscribe and unsubscribe for QoS Level 1 or 2.
+        /// This is in ticks, equivalent of 1 second.
         /// </summary>
-        public const int DefaultDelayRetry = 10000;
+        public const int DefaultDelayRetry = 10_000_000;
 
         /// <summary>
         /// Connection Timeout
@@ -54,7 +55,7 @@ namespace nanoFramework.M2Mqtt
         /// The broker needs to receive the first message (CONNECT)
         /// within a reasonable amount of time after the initial TCP/IP connection 
         /// </remarks>
-        public const int ConnectTimeout = 30000;
+        public const int ConnectTimeout = 30_000;
 
         /// <summary>
         /// The default inflight queue size

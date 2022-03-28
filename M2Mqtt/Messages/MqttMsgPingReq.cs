@@ -29,7 +29,7 @@ namespace nanoFramework.M2Mqtt.Messages
         /// </summary>
         public MqttMsgPingReq()
         {
-            Type = MQTT_MSG_PINGREQ_TYPE;
+            Type = MqttMessageType.PingRequest;
         }
 
         /// <summary>
@@ -37,16 +37,13 @@ namespace nanoFramework.M2Mqtt.Messages
         /// </summary>
         /// <param name="protocolVersion">MQTT protocol version</param>
         /// <returns>An array of bytes that represents the current object.</returns>
-        public override byte[] GetBytes(byte protocolVersion)
+        public override byte[] GetBytes(MqttProtocolVersion protocolVersion)
         {
             byte[] buffer = new byte[2];
             int index = 0;
 
             // first fixed header byte
-            if (protocolVersion == MqttMsgConnect.PROTOCOL_VERSION_V3_1_1)
-                buffer[index++] = (MQTT_MSG_PINGREQ_TYPE << MSG_TYPE_OFFSET) | MQTT_MSG_PINGREQ_FLAG_BITS; // [v.3.1.1]
-            else
-                buffer[index++] = (MQTT_MSG_PINGREQ_TYPE << MSG_TYPE_OFFSET);
+            buffer[index++] = (byte)MqttMessageType.PingRequest << MSG_TYPE_OFFSET;
             buffer[index++] = 0x00;
 
             return buffer;
@@ -59,11 +56,11 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <param name="protocolVersion">MQTT Protocol Version</param>
         /// <param name="channel">Channel connected to the broker</param>
         /// <returns>PINGREQ message instance</returns>
-        public static MqttMsgPingReq Parse(byte fixedHeaderFirstByte, byte protocolVersion, IMqttNetworkChannel channel)
+        public static MqttMsgPingReq Parse(byte fixedHeaderFirstByte, MqttProtocolVersion protocolVersion, IMqttNetworkChannel channel)
         {
             MqttMsgPingReq msg = new MqttMsgPingReq();
 
-            if (protocolVersion == MqttMsgConnect.PROTOCOL_VERSION_V3_1_1)
+            if ((protocolVersion == MqttProtocolVersion.Version_3_1_1) || (protocolVersion == MqttProtocolVersion.Version_5))
             {
                 // [v3.1.1] check flag bits
                 if ((fixedHeaderFirstByte & MSG_FLAG_BITS_MASK) != MQTT_MSG_PINGREQ_FLAG_BITS)
@@ -74,7 +71,7 @@ namespace nanoFramework.M2Mqtt.Messages
 
             // already know remaininglength is zero (MQTT specification),
             // so it isn't necessary to read other data from socket
-            MqttMsgBase.DecodeRemainingLength(channel);
+            DecodeVariableByte(channel);
 
             return msg;
         }

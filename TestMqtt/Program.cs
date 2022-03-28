@@ -1,12 +1,13 @@
-﻿using System;
-using System.Threading;
-using System.Text;
-using System.Net.NetworkInformation;
-using System.Security.Cryptography.X509Certificates;
-using System.Diagnostics;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using nanoFramework.M2Mqtt;
 using nanoFramework.M2Mqtt.Messages;
+using System;
+using System.Diagnostics;
+using System.Net.NetworkInformation;
+using System.Text;
+using System.Threading;
 
 namespace TestMqtt
 {

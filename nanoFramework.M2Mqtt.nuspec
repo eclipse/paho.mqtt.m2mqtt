@@ -1,29 +1,28 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>nanoFramework.M2Mqtt</id>
     <version>$version$</version>
     <title>nanoFramework.M2Mqtt</title>
-    <authors>nanoFramework project contributors</authors>
-    <owners>nanoFramework project contributors,dotnetfoundation</owners>
-    <license type="file">LICENSE.md</license>
-    <projectUrl>https://github.com/nanoframework/paho.mqtt.m2mqtt</projectUrl>
-    <icon>images\nf-logo.png</icon>
-    <repository type="git" url="https://github.com/nanoframework/paho.mqtt.m2mqtt" commit="$commit$" />
+    <authors>nanoframework</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>M2Mqtt is a MQTT client available for .NET nanoFramework for M2M communication.</description>
-    <summary>M2Mqtt is a MQTT client available for .NET nanoFramework for M2M communication.</summary>
+    <license type="file">LICENSE.md</license>
     <releaseNotes>
     </releaseNotes>
+    <readme>docs\README.md</readme>
+    <developmentDependency>false</developmentDependency>
+    <projectUrl>https://github.com/nanoframework/nanoFramework.m2mqtt</projectUrl>
+    <icon>images\nf-logo.png</icon>
+    <repository type="git" url="https://github.com/nanoframework/nanoFramework.m2mqtt" commit="$commit$" />
     <copyright>Copyright (c) .NET Foundation, Paolo Patierno and the .NET nanoFramework project contributors</copyright>
+    <description>M2Mqtt is a MQTT client available for .NET nanoFramework for M2M communication.</description>
     <tags>m2m mqtt queue messaging internetofthings iot cloud netmf embedded micro netduino micro-framework hardware gadgeteer</tags>
     <dependencies>
-      <dependency id="nanoFramework.CoreLibrary" version="1.10.5" />
-      <dependency id="nanoFramework.Runtime.Events" version="1.9.1" />
-      <dependency id="nanoFramework.Runtime.Native" version="1.5.1" />
-      <dependency id="nanoFramework.System.Collections" version="1.2.0" />
-      <dependency id="nanoFramework.System.Net" version="1.7.0" />
-      <dependency id="nanoFramework.System.Text" version="1.1.1" />
+      <dependency id="nanoFramework.CoreLibrary" version="1.12.0" />
+      <dependency id="nanoFramework.Runtime.Events" version="1.10.0" />
+      <dependency id="nanoFramework.Runtime.Native" version="1.5.4" />
+      <dependency id="nanoFramework.System.Collections" version="1.4.0" />
+      <dependency id="nanoFramework.System.Net" version="1.8.1" />
     </dependencies>
   </metadata>
   <files>
@@ -33,6 +32,7 @@
     <file src="M2Mqtt\bin\Release\nanoFramework.M2Mqtt.pe" target="lib\nanoFramework.M2Mqtt.pe" />
     <file src="M2Mqtt\bin\Release\nanoFramework.M2Mqtt.xml" target="lib\nanoFramework.M2Mqtt.xml" />
     <file src="assets\readme.txt" target="" />
+    <file src="README.md" target="docs\" />
     <file src="assets\nf-logo.png" target="images" />
     <file src="LICENSE.md" target="" />
   </files>
