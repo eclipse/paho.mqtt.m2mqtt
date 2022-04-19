@@ -11,6 +11,8 @@ namespace MessageUnitTests
         private byte[] _mokData;
         private int _index = 0;
 
+        public bool ValidateServerCertificate { get; set; }
+
         public MokChannel(byte[] mokData)
         {
             _mokData = mokData;

@@ -209,6 +209,19 @@ client.Publish("/home/temperature", Encoding.UTF8.GetBytes(strValue), MqttQoSLev
 // More code goes here
 ```
 
+### Avoiding certificate check
+
+In some cases, it can be handy to avoid the certificate checks when connecting through TLS connection. While this scenario is **not** recommended, you can adjust for it like this:
+
+```csharp
+// You can specify no certificate at all
+MqttClient mqtt = new MqttClient(IoTHub, 8883, true, null, null, MqttSslProtocols.TLSv1_2);
+// And you have to setup the ValidateServerCertificate to false
+mqtt.Settings.ValidateServerCertificate = false;
+string clientId = Guid.NewGuid().ToString();
+client.Connect(clientId);
+```
+
 ## Feedback and documentation
 
 For documentation, providing feedback, issues and finding out how to contribute please refer to the [Home repo](https://github.com/nanoframework/Home).

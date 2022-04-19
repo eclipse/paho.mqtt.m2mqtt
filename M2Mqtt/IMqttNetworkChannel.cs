@@ -28,6 +28,13 @@ namespace nanoFramework.M2Mqtt
         bool DataAvailable { get; }
 
         /// <summary>
+        /// True to check the certificate when connecting using TLS.
+        /// Disabling this property will bypass the validation of the server root CA certificate.
+        /// Using the library this way it's unsecured and, therefore, not recommended.
+        /// </summary>
+        bool ValidateServerCertificate { get; set; }
+
+        /// <summary>
         /// Receive data from the network channel
         /// </summary>
         /// <param name="buffer">Data buffer for receiving data</param>
