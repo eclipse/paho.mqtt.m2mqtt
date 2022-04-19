@@ -1,5 +1,19 @@
 # Changelog
 
+## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/HEAD)
+
+[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.0.2...HEAD)
+
+**Implemented enhancements:**
+
+- Adjusting to add an option to avoid certificate checking when connecting using TLS [\#258](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/258)
+
+**Documentation and other chores:**
+
+- Update 1 NuGet dependencies [\#257](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/257)
+- Update 1 NuGet dependencies [\#256](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/256)
+- release-v5.0.2 [\#255](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/255)
+
 ## [v5.0.2](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/v5.0.2) (2022-03-28)
 
 [Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.0.2-preview.100...v5.0.2)
@@ -390,6 +404,11 @@
 ## [v5.0.0](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/v5.0.0) (2021-07-16)
 
 [Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.0.0-preview.3...v5.0.0)
+
+**Documentation and other chores:**
+
+- release-v5.0.0 [\#161](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/161)
+- Release v4.6.0 [\#64](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/64)
 
 ## [v5.0.0-preview.3](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/v5.0.0-preview.3) (2021-07-16)
 
@@ -1162,6 +1181,10 @@
 ## [v4.3.1](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/v4.3.1) (2019-10-15)
 
 [Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v4.3.1-preview.17...v4.3.1)
+
+**Documentation and other chores:**
+
+- Release v4.3.1 [\#9](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/9)
 
 ## [v4.3.1-preview.17](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/v4.3.1-preview.17) (2019-10-15)
 
