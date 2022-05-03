@@ -10,6 +10,7 @@
 
 **Documentation and other chores:**
 
+- Update 1 NuGet dependencies [\#259](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/259)
 - Update 1 NuGet dependencies [\#257](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/257)
 - Update 1 NuGet dependencies [\#256](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/256)
 - release-v5.0.2 [\#255](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/255)
