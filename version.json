@@ -6,7 +6,8 @@
   },
   "semVer1NumericIdentifierPadding": 3,
   "nuGetPackageVersion": {
-    "semVer": 2.0
+    "semVer": 2.0,
+    "precision": "revision"
   },
   "publicReleaseRefSpec": [
     "^refs/heads/main$",
