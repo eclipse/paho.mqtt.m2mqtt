@@ -12,21 +12,11 @@ on:
   repository_dispatch:
     types: update-dependencies
 
-defaults:
-  run:
-    shell: pwsh
-
 jobs:
-  update-nuget-dependencies:
-    name: Update .NET nanoFramework dependencies
-    timeout-minutes: 180 # Non default as IoT devices has lots of solutions to update!
-    runs-on: windows-latest
-    env:
-      GITHUB_TOKEN: ${{ github.token }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Update dependencies
-        uses: nanoframework/nanodu@v1
-        with:
-          solutionsToCheck: 'nanoFramework.M2mqtt.sln'
+  update-dependencies:
+    name: nanoFramework
+    uses: nanoframework/nf-tools/.github/workflows/update-dependencies.yml@main
+    with:
+      solutionsToCheck: 'nanoFramework.M2mqtt.sln'
+    secrets:
+      githubAuth: ${{ secrets.NFBOT_GITHUB_ACTIONS }}

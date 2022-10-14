@@ -1,0 +1,17 @@
+# Copyright (c) .NET Foundation and Contributors
+# See LICENSE file in the project root for full license information.
+
+name: PR Checks
+
+on:
+  pull_request:
+
+jobs:
+  check_package_lock:
+    name: nanoFramework
+    uses: nanoframework/nf-tools/.github/workflows/check-package-lock.yml@main
+  check_nuget_latest:
+    name: nanoFramework
+    uses: nanoframework/nf-tools/.github/workflows/check-packages-updated.yml@main
+    with:
+      solution: 'nanoFramework.M2mqtt.sln'
