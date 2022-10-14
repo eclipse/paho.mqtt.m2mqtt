@@ -64,7 +64,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="nano.runsettings" />
     <None Include="packages.config" />
     <None Include="packages.lock.json" />
   </ItemGroup>

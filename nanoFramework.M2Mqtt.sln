@@ -7,6 +7,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{06FC0A0E-446E-4173-88DA-535ECD697BE2}"
 	ProjectSection(SolutionItems) = preProject
 		M2Mqtt\nanoFramework.M2Mqtt.nuspec = M2Mqtt\nanoFramework.M2Mqtt.nuspec
+		.runsettings = .runsettings
 		NuGet.Config = NuGet.Config
 		version.json = version.json
 	EndProjectSection
