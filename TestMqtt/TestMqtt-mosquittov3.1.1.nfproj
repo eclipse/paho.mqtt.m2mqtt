@@ -15,6 +15,8 @@
     <RootNamespace>TestMqtt</RootNamespace>
     <AssemblyName>TestMqtt</AssemblyName>
     <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <RestoreLockedMode Condition="'$(TF_BUILD)' == 'True' or '$(ContinuousIntegrationBuild)' == 'True'">true</RestoreLockedMode>
   </PropertyGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
