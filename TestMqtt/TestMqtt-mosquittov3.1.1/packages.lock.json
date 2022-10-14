@@ -14,12 +14,6 @@
         "resolved": "1.11.1",
         "contentHash": "hHRPhNagq1T0oN9QJfPOqreuWUV42DJamT0f7GrPQvrOYcr9ne4YTZq8MIpudvKtSALs50iYqxJ+raOF2CiNsA=="
       },
-      "nanoFramework.Runtime.Native": {
-        "type": "Direct",
-        "requested": "[1.5.4, 1.5.4]",
-        "resolved": "1.5.4",
-        "contentHash": "qfaOY1O5TOEw//MO4AOWRq5CdZXTfd3KnsGTNU2yw+IEYKiQLPkJhtF3ufF/S04xfXL556S2kOFG3/RZrwQ4Qw=="
-      },
       "nanoFramework.System.IO.Streams": {
         "type": "Direct",
         "requested": "[1.1.15, 1.1.15]",
