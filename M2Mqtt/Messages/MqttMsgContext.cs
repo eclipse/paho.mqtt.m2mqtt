@@ -43,7 +43,7 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <summary>
         /// Timestamp in ticks (for retry)
         /// </summary>
-        public long Timestamp { get; set; }
+        public int Timestamp { get; set; }
 
         /// <summary>
         /// Attempt (for retry)
