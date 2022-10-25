@@ -2,7 +2,19 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.1.27...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.1.34...HEAD)
+
+**Fixed bugs:**
+
+- Revert "Replace `TickCount` with official `TickCount64` \(\#286\)" [\#296](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/296)
+
+**Documentation and other chores:**
+
+- Update 4 NuGet dependencies [\#303](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/303)
+
+## [v5.1.34](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/v5.1.34) (2022-10-14)
+
+[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.1.27...v5.1.34)
 
 **Fixed bugs:**
 
