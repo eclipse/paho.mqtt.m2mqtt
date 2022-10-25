@@ -19,6 +19,6 @@ jobs:
     with:
       solutionsToCheck: |
         nanoFramework.M2mqtt.sln
-        nanoFramework.M2mqtt.TestApps.sln
+        nanoFramework.Mqtt.TestApps.sln
     secrets:
       githubAuth: ${{ secrets.NFBOT_GITHUB_ACTIONS }}
