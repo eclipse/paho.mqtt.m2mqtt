@@ -34,7 +34,7 @@ namespace nanoFramework.M2Mqtt
     /// <summary>
     /// MQTT Client
     /// </summary>
-    public class MqttClient
+    public class MqttClient : IDisposable
     {
         // broker hostname (or ip address) and port
         private string _brokerHostName;
@@ -530,41 +530,57 @@ namespace nanoFramework.M2Mqtt
         /// <summary>
         /// Close client
         /// </summary>
-        private void Close()
+        public void Close()
         {
-            // stop receiving thread
-            _isRunning = false;
-
-            // wait end receive event thread
-            if (_receiveEventWaitHandle != null)
+            try
             {
-                _receiveEventWaitHandle.Set();
-            }
+                // stop receiving thread
+                _isRunning = false;
 
-            // wait end process inflight thread
-            if (_inflightWaitHandle != null)
+                // wait end receive event thread
+                if (_receiveEventWaitHandle != null)
+                {
+                    _receiveEventWaitHandle.Set();
+                }
+
+                // wait end process inflight thread
+                if (_inflightWaitHandle != null)
+                {
+                    _inflightWaitHandle.Set();
+                }
+
+                // unlock keep alive thread and wait
+                _keepAliveEvent.Set();
+
+                if (_keepAliveEventEnd != null)
+                {
+                    // We're waiting a bit but still we will exit not to block
+                    _keepAliveEventEnd.WaitOne(1000, true);
+                }
+
+                // clear all queues
+                _inflightQueue.Clear();
+                _internalQueue.Clear();
+                _waitingForAnswer.Clear();
+                _eventQueue.Clear();
+
+                // close network channel
+                _channel.Close();
+
+                IsConnected = false;
+
+            }
+            catch
             {
-                _inflightWaitHandle.Set();
+                // We are doing our best to close everything, even if there are issues
             }
+        }
 
-            // unlock keep alive thread and wait
-            _keepAliveEvent.Set();
-
-            if (_keepAliveEventEnd != null)
-            {
-                _keepAliveEventEnd.WaitOne();
-            }
-
-            // clear all queues
-            _inflightQueue.Clear();
-            _internalQueue.Clear();
-            _waitingForAnswer.Clear();
-            _eventQueue.Clear();
-
-            // close network channel
-            _channel.Close();
-
-            IsConnected = false;
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            OnConnectionClosing();
+            Close();
         }
 
         /// <summary>
@@ -990,7 +1006,7 @@ namespace nanoFramework.M2Mqtt
                     // check number of messages inside inflight queue 
                     enqueue = (_inflightQueue.Count < _settings.InflightQueueSize);
 #if DEBUG
-                    Debug.WriteLine($"_inflightQueue.Count  {_inflightQueue.Count }");
+                    Debug.WriteLine($"_inflightQueue.Count  {_inflightQueue.Count}");
 #endif
                 }
 
@@ -1131,6 +1147,7 @@ namespace nanoFramework.M2Mqtt
                 MqttMsgContext msgCtx = null;
                 lock (_inflightQueue)
                 {
+                    enqueue = true;
                     msgCtx = (MqttMsgContext)_inflightQueue.Get(msgCtxFinder.Find);
                 }
                 // the PUBLISH message isn't in the inflight queue, it was already sent so we need to ignore this PUBREC
@@ -1441,7 +1458,9 @@ namespace nanoFramework.M2Mqtt
                     lock (_eventQueue)
                     {
                         if (_eventQueue.Count > 0)
+                        {
                             internalEvent = (InternalEvent)_eventQueue.Dequeue();
+                        }
                     }
 
                     // it's an event with a message inside
