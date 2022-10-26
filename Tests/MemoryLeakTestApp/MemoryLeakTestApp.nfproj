@@ -36,8 +36,9 @@
     <Reference Include="nanoFramework.System.Collections">
       <HintPath>..\..\packages\nanoFramework.System.Collections.1.4.0\lib\nanoFramework.System.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="nanoFramework.System.Text">
-      <HintPath>..\..\packages\nanoFramework.System.Text.1.2.20\lib\nanoFramework.System.Text.dll</HintPath>
+    <Reference Include="nanoFramework.System.Text, Version=1.2.22.3995, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\..\packages\nanoFramework.System.Text.1.2.22\lib\nanoFramework.System.Text.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.IO.Streams">
       <HintPath>..\..\packages\nanoFramework.System.IO.Streams.1.1.24\lib\System.IO.Streams.dll</HintPath>
