@@ -1,8 +1,8 @@
 # Changelog
 
-## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/HEAD)
+## [v5.1.46](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/v5.1.46) (2022-10-26)
 
-[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.1.44...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.1.44...v5.1.46)
 
 **Documentation and other chores:**
 
