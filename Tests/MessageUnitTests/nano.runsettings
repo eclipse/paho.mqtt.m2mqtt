@@ -5,7 +5,8 @@
        <MaxCpuCount>1</MaxCpuCount>
        <ResultsDirectory>.\TestResults</ResultsDirectory><!-- Path relative to solution directory -->
        <TestSessionTimeout>120000</TestSessionTimeout><!-- Milliseconds -->
-       <TargetFrameworkVersion>Framework40</TargetFrameworkVersion>
+       <TargetFrameworkVersion>net48</TargetFrameworkVersion>
+       <TargetPlatform>x64</TargetPlatform>
    </RunConfiguration>
    <nanoFrameworkAdapter>
        <Logging>None</Logging>
