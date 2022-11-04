@@ -116,7 +116,7 @@ namespace nanoFramework.M2Mqtt.Messages
         /// <param name="protocolVersion">Protocol version</param>
         /// <returns>Bytes rapresentation</returns>
         public abstract byte[] GetBytes(MqttProtocolVersion protocolVersion);
-        
+
         /// <summary>
         /// Encode remaining length and insert it into message buffer
         /// </summary>
@@ -152,7 +152,11 @@ namespace nanoFramework.M2Mqtt.Messages
             do
             {
                 // next digit from stream
-                channel.Receive(nextByte);
+                if (channel is object)
+                {
+                    channel.Receive(nextByte);
+                }
+
                 digit = nextByte[0];
                 value += ((digit & 127) * multiplier);
                 multiplier *= 128;
@@ -172,7 +176,7 @@ namespace nanoFramework.M2Mqtt.Messages
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(name);
-            
+
             if ((fieldNames != null) && (fieldValues != null))
             {
                 sb.Append("(");
@@ -194,7 +198,7 @@ namespace nanoFramework.M2Mqtt.Messages
                 }
                 sb.Append(")");
             }
-            
+
             return sb.ToString();
         }
 

@@ -159,7 +159,7 @@ namespace nanoFramework.M2Mqtt
                 // create SSL stream
                 _sslStream = new SslStream(_socket);
                 _sslStream.UseStoredDeviceCertificate = _clientCert is null;
-                if(!ValidateServerCertificate)
+                if (!ValidateServerCertificate)
                 {
                     _sslStream.SslVerification = SslVerification.NoVerification;
                 }
@@ -200,14 +200,18 @@ namespace nanoFramework.M2Mqtt
         {
             // read all data needed (until fill buffer)
             int idx = 0;
-            int read;
+            int read = 0;
             if (_secure)
             {
                 while (idx < buffer.Length)
                 {
                     // fixed scenario with socket closed gracefully by peer/broker and
                     // Read return 0. Avoid infinite loop.
-                    read = _sslStream.Read(buffer, idx, buffer.Length - idx);
+                    if (_sslStream is object)
+                    {
+                        read = _sslStream.Read(buffer, idx, buffer.Length - idx);
+                    }
+
                     if (read == 0)
                     {
                         return 0;
@@ -223,7 +227,11 @@ namespace nanoFramework.M2Mqtt
                 {
                     // fixed scenario with socket closed gracefully by peer/broker and
                     // Read return 0. Avoid infinite loop.
-                    read = _socket.Receive(buffer, idx, buffer.Length - idx, SocketFlags.None);
+                    if (_socket is object)
+                    {
+                        read = _socket.Receive(buffer, idx, buffer.Length - idx, SocketFlags.None);
+                    }
+
                     if (read == 0)
                     {
                         return 0;

@@ -85,6 +85,7 @@ namespace nanoFramework.M2Mqtt
 
         // connection is closing due to peer
         private bool _isConnectionClosing;
+        private bool _isAlreadyClosing = false;
 
         /// <summary>
         /// Delegate that defines event handler for PUBLISH message received
@@ -534,6 +535,12 @@ namespace nanoFramework.M2Mqtt
         {
             try
             {
+                if(_isAlreadyClosing)
+                {
+                    return;
+                }
+
+                _isAlreadyClosing = true;
                 // stop receiving thread
                 _isRunning = false;
 
@@ -543,6 +550,9 @@ namespace nanoFramework.M2Mqtt
                     _receiveEventWaitHandle.Set();
                 }
 
+                // Just making sure we give time before cleaning the rest
+                Thread.Sleep(200);
+
                 // wait end process inflight thread
                 if (_inflightWaitHandle != null)
                 {
@@ -550,7 +560,10 @@ namespace nanoFramework.M2Mqtt
                 }
 
                 // unlock keep alive thread and wait
-                _keepAliveEvent.Set();
+                if (_keepAliveEvent != null)
+                {
+                    _keepAliveEvent.Set();
+                }
 
                 if (_keepAliveEventEnd != null)
                 {
@@ -559,16 +572,16 @@ namespace nanoFramework.M2Mqtt
                 }
 
                 // clear all queues
-                _inflightQueue.Clear();
-                _internalQueue.Clear();
-                _waitingForAnswer.Clear();
-                _eventQueue.Clear();
+                _inflightQueue?.Clear();
+                _internalQueue?.Clear();
+                _waitingForAnswer?.Clear();
+                _eventQueue?.Clear();
 
                 // close network channel
-                _channel.Close();
+                _channel?.Close();
 
                 IsConnected = false;
-
+                _isAlreadyClosing = false;
             }
             catch
             {
@@ -794,7 +807,10 @@ namespace nanoFramework.M2Mqtt
             try
             {
                 // send message
-                _channel.Send(msgBytes);
+                if (_channel is object)
+                {
+                    _channel.Send(msgBytes);
+                }
 
                 // update last message sent ticks
                 _lastCommTime = Environment.TickCount;
@@ -834,7 +850,10 @@ namespace nanoFramework.M2Mqtt
             try
             {
                 // send message
-                _channel.Send(msgBytes);
+                if (_channel is object)
+                {
+                    _channel.Send(msgBytes);
+                }
 
                 // update last message sent ticks
                 _lastCommTime = Environment.TickCount;
