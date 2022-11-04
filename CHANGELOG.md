@@ -1,5 +1,19 @@
 # Changelog
 
+## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/HEAD)
+
+[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.1.48...HEAD)
+
+**Documentation and other chores:**
+
+- Fix exceptions while closing a MQTT Connection [\#309](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/309)
+- Update 1 NuGet dependencies [\#308](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/308)
+- Update 1 NuGet dependencies [\#307](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/307)
+
+## [v5.1.48](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/v5.1.48) (2022-10-28)
+
+[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.1.46...v5.1.48)
+
 ## [v5.1.46](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/v5.1.46) (2022-10-26)
 
 [Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.1.44...v5.1.46)
