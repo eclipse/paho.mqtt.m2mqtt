@@ -2,7 +2,9 @@
 
 ![nanoFramework logo](https://raw.githubusercontent.com/nanoframework/Home/main/resources/logo/nanoFramework-repo-logo.png)
 
------
+---
+
+Document Language: [English](README.md) | [简体中文](README.zh-cn.md)
 
 # .NET **nanoFramework** M2Mqtt
 
@@ -15,8 +17,8 @@ Since that time, the MQTT Client had quite some changes and has been adapted to 
 
 ## Build status
 
-| Component | Build Status | NuGet Package |
-|:-|---|---|
+| Component            | Build Status                                                                                                                                                                                                                                                                                                                            | NuGet Package                                                                                                                                               |
+| :------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | nanoFramework.M2Mqtt | [![Build Status](https://dev.azure.com/nanoframework/nanoFramework.m2mqtt/_apis/build/status/nanoframework.m2mqtt?repoName=nanoframework%2FnanoFramework.m2mqtt&branchName=main)](https://dev.azure.com/nanoframework/nanoFramework.m2mqtt/_build/latest?definitionId=56&repoName=nanoframework%2FnanoFramework.m2mqtt&branchName=main) | [![NuGet](https://img.shields.io/nuget/v/nanoFramework.M2Mqtt.svg?label=NuGet&style=flat&logo=nuget)](https://www.nuget.org/packages/nanoFramework.M2Mqtt/) |
 
 ## Project Description
@@ -70,10 +72,10 @@ Note: in both example, a specific certificate is needed to connect to the Mosqui
 
 The MQTT version 5.0 supports specific Authentication flow. After a Connect, the Authentication mechanism can be used like a challenge request. In this case, you'll have to:
 
-* Make sure you setup v5 as a protocol
-* Place the property `IsAuthenticationFlow` to true
-* Register to the `Authentication` event
-* Manage the answers accordingly by sending another Authentication message or anything that is needed regarding your case.
+- Make sure you setup v5 as a protocol
+- Place the property `IsAuthenticationFlow` to true
+- Register to the `Authentication` event
+- Manage the answers accordingly by sending another Authentication message or anything that is needed regarding your case.
 
 Note: the protocol is using the `AuthenticationMethod` and `AuthenticationData` as properties for this specific mechanism.
 
@@ -81,19 +83,19 @@ Here are examples given by the specifications:
 
 Non-normative example showing a SCRAM challenge
 
-* Client to Server: CONNECT Authentication Method="SCRAM-SHA-1" Authentication Data=client-first-data
-* Server to Client: AUTH rc=0x18 Authentication Method="SCRAM-SHA-1" Authentication Data=server-first-data
-* Client to Server AUTH rc=0x18 Authentication Method="SCRAM-SHA-1" Authentication Data=client-final-data
-* Server to Client CONNACK rc=0 Authentication Method="SCRAM-SHA-1" Authentication Data=server-final-data
+- Client to Server: CONNECT Authentication Method="SCRAM-SHA-1" Authentication Data=client-first-data
+- Server to Client: AUTH rc=0x18 Authentication Method="SCRAM-SHA-1" Authentication Data=server-first-data
+- Client to Server AUTH rc=0x18 Authentication Method="SCRAM-SHA-1" Authentication Data=client-final-data
+- Server to Client CONNACK rc=0 Authentication Method="SCRAM-SHA-1" Authentication Data=server-final-data
 
 Non-normative example showing a Kerberos challenge
 
-* Client to Server CONNECT Authentication Method="GS2-KRB5"
-* Server to Client AUTH rc=0x18 Authentication Method="GS2-KRB5"
-* Client to Server AUTH rc=0x18 Authentication Method="GS2-KRB5" Authentication Data=initial context token
-* Server to Client AUTH rc=0x18 Authentication Method="GS2-KRB5" Authentication Data=reply context token
-* Client to Server AUTH rc=0x18 Authentication Method="GS2-KRB5"
-* Server to Client CONNACK rc=0 Authentication Method="GS2-KRB5" Authentication Data=outcome of authentication
+- Client to Server CONNECT Authentication Method="GS2-KRB5"
+- Server to Client AUTH rc=0x18 Authentication Method="GS2-KRB5"
+- Client to Server AUTH rc=0x18 Authentication Method="GS2-KRB5" Authentication Data=initial context token
+- Server to Client AUTH rc=0x18 Authentication Method="GS2-KRB5" Authentication Data=reply context token
+- Client to Server AUTH rc=0x18 Authentication Method="GS2-KRB5"
+- Server to Client CONNACK rc=0 Authentication Method="GS2-KRB5" Authentication Data=outcome of authentication
 
 In those mechanism, the `IsConnected` property will be setup only once a Connack with a success code will be received. As those authentication mechanism are specific and user setup, this specific `MqttClient` offers the ability to use this mechanism.
 
@@ -187,7 +189,7 @@ client.Subscribe(new string[] { "/home/temperature" }, new MqttQoSLevel[] { Mqtt
 
 static void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
 {
-// handle message received 
+// handle message received
 }
 ```
 
