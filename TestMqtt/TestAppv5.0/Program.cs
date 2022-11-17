@@ -24,7 +24,7 @@ namespace TestAppv5._0
 
         public static void Main()
         {
-            var success = NetworkHelper.ConnectWifiDhcp(Ssid, Paswword, token: new CancellationTokenSource(60000).Token);
+            var success = WifiNetworkHelper.ConnectDhcp(Ssid, Paswword, token: new CancellationTokenSource(60000).Token);
             if (!success)
             {
                 Debug.WriteLine("Can't connect to wifi");

@@ -20,11 +20,11 @@
         "resolved": "1.5.4",
         "contentHash": "qfaOY1O5TOEw//MO4AOWRq5CdZXTfd3KnsGTNU2yw+IEYKiQLPkJhtF3ufF/S04xfXL556S2kOFG3/RZrwQ4Qw=="
       },
-      "nanoFramework.System.Collections": {
+      "nanoFramework.System.Device.Wifi": {
         "type": "Direct",
-        "requested": "[1.4.0, 1.4.0]",
-        "resolved": "1.4.0",
-        "contentHash": "/yFwxtCFzi+24NuyxcwlH1YyBGOxRX4oHGLwVmFbgbvOyx3ny/Mwyk2YjHTzmTSgUg9C2XxPF+EkXWwCOAkytw=="
+        "requested": "[1.5.37, 1.5.37]",
+        "resolved": "1.5.37",
+        "contentHash": "cEw1fQSGeqTN5ziBb1GJiPPj+13f3/Sp6NpLud4tPCpEMhsibvlyDDvFmqbVI3nKBkcuMKSIxriEKQNEqEGShA=="
       },
       "nanoFramework.System.IO.Streams": {
         "type": "Direct",

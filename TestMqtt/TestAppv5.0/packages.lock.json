@@ -8,23 +8,17 @@
         "resolved": "1.12.0",
         "contentHash": "qQrFNXmJiStMC4VXk5cVMOJp23/qlT9FW5i9i+igwQVwraQTtvpkam8yK1hj992jqrbjoCIFZP4Hw9E8H0pB7w=="
       },
-      "nanoFramework.NetWorkHelper": {
-        "type": "Direct",
-        "requested": "[1.3.4-preview.40, 1.3.4-preview.40]",
-        "resolved": "1.3.4-preview.40",
-        "contentHash": "1F2pXcHL5mzyNAvwRwc4P0iMMwvY3eLoJ8ahHdYSUo/CzY3VyW7qMUlVPGEeaOGz3S6DgiBClv9osOM56AQ1BA=="
-      },
       "nanoFramework.Runtime.Events": {
         "type": "Direct",
         "requested": "[1.11.1, 1.11.1]",
         "resolved": "1.11.1",
         "contentHash": "hHRPhNagq1T0oN9QJfPOqreuWUV42DJamT0f7GrPQvrOYcr9ne4YTZq8MIpudvKtSALs50iYqxJ+raOF2CiNsA=="
       },
-      "nanoFramework.System.Collections": {
+      "nanoFramework.System.Device.Wifi": {
         "type": "Direct",
-        "requested": "[1.4.0, 1.4.0]",
-        "resolved": "1.4.0",
-        "contentHash": "/yFwxtCFzi+24NuyxcwlH1YyBGOxRX4oHGLwVmFbgbvOyx3ny/Mwyk2YjHTzmTSgUg9C2XxPF+EkXWwCOAkytw=="
+        "requested": "[1.5.37, 1.5.37]",
+        "resolved": "1.5.37",
+        "contentHash": "cEw1fQSGeqTN5ziBb1GJiPPj+13f3/Sp6NpLud4tPCpEMhsibvlyDDvFmqbVI3nKBkcuMKSIxriEKQNEqEGShA=="
       },
       "nanoFramework.System.IO.Streams": {
         "type": "Direct",
@@ -49,12 +43,6 @@
         "requested": "[1.1.8, 1.1.8]",
         "resolved": "1.1.8",
         "contentHash": "oES5GN3KHoDzifRNr06WM7P9NaQf+kDmIYkr1ETR2awmERHz4sRpECduGEatwyo1vMhMvZY/KoBcEpAyKNbDgQ=="
-      },
-      "nanoFramework.Windows.Devices.Wifi": {
-        "type": "Direct",
-        "requested": "[1.3.4-preview.39, 1.3.4-preview.39]",
-        "resolved": "1.3.4-preview.39",
-        "contentHash": "CB17iLS9kaJe7hzGNAMhRo0H5ZwL0cjAvKE5nn9Sfk63YSDSzhpaMZ9DToCrvSAvg1VjAo9kIawa4bXdHeke5A=="
       }
     }
   }

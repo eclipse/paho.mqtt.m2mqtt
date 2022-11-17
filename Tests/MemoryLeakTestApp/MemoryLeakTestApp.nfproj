@@ -24,6 +24,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\M2Mqtt\nanoFramework.M2Mqtt.nfproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.lock.json" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="mscorlib">
       <HintPath>..\..\packages\nanoFramework.CoreLibrary.1.12.0\lib\mscorlib.dll</HintPath>
     </Reference>
@@ -33,20 +39,17 @@
     <Reference Include="nanoFramework.Runtime.Native">
       <HintPath>..\..\packages\nanoFramework.Runtime.Native.1.5.4\lib\nanoFramework.Runtime.Native.dll</HintPath>
     </Reference>
-    <Reference Include="nanoFramework.System.Collections">
-      <HintPath>..\..\packages\nanoFramework.System.Collections.1.4.0\lib\nanoFramework.System.Collections.dll</HintPath>
-    </Reference>
-    <Reference Include="nanoFramework.System.Text, Version=1.2.22.3995, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+    <Reference Include="nanoFramework.System.Text">
       <HintPath>..\..\packages\nanoFramework.System.Text.1.2.22\lib\nanoFramework.System.Text.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="System.IO.Streams, Version=1.1.27.27650, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+    <Reference Include="System.Device.Wifi">
+      <HintPath>..\..\packages\nanoFramework.System.Device.Wifi.1.5.37\lib\System.Device.Wifi.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Streams">
       <HintPath>..\..\packages\nanoFramework.System.IO.Streams.1.1.27\lib\System.IO.Streams.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="System.Net, Version=1.10.38.33445, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+    <Reference Include="System.Net">
       <HintPath>..\..\packages\nanoFramework.System.Net.1.10.38\lib\System.Net.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System.Threading">
       <HintPath>..\..\packages\nanoFramework.System.Threading.1.1.8\lib\System.Threading.dll</HintPath>
@@ -54,9 +57,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\M2Mqtt\nanoFramework.M2Mqtt.nfproj" />
   </ItemGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets')" />
   <ProjectExtensions>
