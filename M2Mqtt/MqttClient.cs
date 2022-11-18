@@ -663,31 +663,66 @@ namespace nanoFramework.M2Mqtt
         }
 
         /// <summary>
-        /// Publish a message asynchronously (QoS Level 0 and not retained)
+        /// Publish a message asynchronously (QoS Level <see cref="MqttQoSLevel.AtMostOnce"/> and not retained).
         /// </summary>
-        /// <param name="topic">Message topic</param>
-        /// <param name="message">Message data (payload)</param>
-        /// <returns>Message Id related to PUBLISH message</returns>
-        public ushort Publish(string topic, byte[] message)
+        /// <param name="topic">Message topic.</param>
+        /// <param name="message">Message data (payload).</param>
+        /// <returns>Message Id related to PUBLISH message.</returns>
+        public ushort Publish(
+            string topic,
+            byte[] message)
         {
-            return Publish(topic, message, MqttQoSLevel.AtMostOnce, false);
+            return Publish(
+                topic,
+                message,
+                null,
+                MqttQoSLevel.AtMostOnce,
+                false);
         }
 
         /// <summary>
-        /// Publish a message asynchronously
+        /// Publish a message asynchronously (QoS Level <see cref="MqttQoSLevel.AtMostOnce"/> and not retained).
         /// </summary>
-        /// <param name="topic">Message topic</param>
-        /// <param name="message">Message data (payload)</param>
-        /// <param name="qosLevel">QoS Level</param>
-        /// <param name="retain">Retain flag</param>
-        /// <returns>Message Id related to PUBLISH message</returns>
-        public ushort Publish(string topic, byte[] message, MqttQoSLevel qosLevel, bool retain)
+        /// <param name="topic">Message topic.</param>
+        /// <param name="message">Message data (payload).</param>
+        /// <param name="contentType">Content of the application message. This is only available for MQTT v5.0.</param>
+        /// <returns>Message Id related to PUBLISH message.</returns>
+        public ushort Publish(
+            string topic,
+            byte[] message,
+            string contentType)
+        {
+            return Publish(
+                topic,
+                message,
+                contentType,
+                MqttQoSLevel.AtMostOnce,
+                false);
+        }
+
+        /// <summary>
+        /// Publish a message asynchronously.
+        /// </summary>
+        /// <param name="topic">Message topic.</param>
+        /// <param name="message">Message data (payload).</param>
+        /// <param name="contentType">Content of the application message. This is only available for MQTT v5.0.</param>
+        /// <param name="qosLevel">QoS Level.</param>
+        /// <param name="retain">Retain flag.</param>
+        /// <returns>Message Id related to PUBLISH message.</returns>
+        public ushort Publish(
+            string topic,
+            byte[] message,
+            string contentType,
+            MqttQoSLevel qosLevel,
+            bool retain)
         {
             MqttMsgPublish publish =
                     new MqttMsgPublish(topic, message, false, qosLevel, retain)
                     {
                         MessageId = GetMessageId()
                     };
+
+            publish.ContentType = contentType;
 
             // enqueue message to publish into the inflight queue
             if (publish.QosLevel != MqttQoSLevel.AtMostOnce)
