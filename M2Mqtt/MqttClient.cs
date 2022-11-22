@@ -692,6 +692,7 @@ namespace nanoFramework.M2Mqtt
         /// <param name="message">Message data (payload).</param>
         /// <param name="contentType">Content of the application message. This is only available for MQTT v5.0.</param>
         /// <returns>Message Id related to PUBLISH message.</returns>
+        /// <exception cref="NotSupportedException">If setting a parameter that is not supported in the MQTT version set for this <see cref="MqttClient"/>.</exception>
         public ushort Publish(
             string topic,
             byte[] message,
@@ -2508,6 +2509,12 @@ namespace nanoFramework.M2Mqtt
             {
                 MessageId = GetMessageId()
             };
+
+            if (!string.IsNullOrEmpty(contentType) && ProtocolVersion < MqttProtocolVersion.Version_5)
+            {
+                // setting content type is only supported in v5
+                throw new NotSupportedException();
+            }
 
             mqttMsgPublish.ContentType = contentType;
 
