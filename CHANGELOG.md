@@ -2,7 +2,21 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.1.48...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.1.53...HEAD)
+
+**Implemented enhancements:**
+
+- Add check for v5 when processing Content Type [\#314](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/314)
+- Add new `Publish` method accepting user properties [\#313](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/313)
+- Add new `Publish` method accepting content type parameter [\#312](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/312)
+
+**Documentation and other chores:**
+
+- Adding Chinese version of README [\#310](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/310)
+
+## [v5.1.53](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/v5.1.53) (2022-11-04)
+
+[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.1.48...v5.1.53)
 
 **Documentation and other chores:**
 
