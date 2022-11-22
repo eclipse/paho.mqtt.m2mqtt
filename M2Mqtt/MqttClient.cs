@@ -264,6 +264,10 @@ namespace nanoFramework.M2Mqtt
         /// </summary>
         public MqttSettings Settings => _settings;
 
+        internal MqttClient()
+        {
+            // empty constructor, required for Unit Tests
+        }
 
         /// <summary>
         /// Constructor
@@ -676,6 +680,7 @@ namespace nanoFramework.M2Mqtt
                 topic,
                 message,
                 null,
+                null,
                 MqttQoSLevel.AtMostOnce,
                 false);
         }
@@ -696,33 +701,62 @@ namespace nanoFramework.M2Mqtt
                 topic,
                 message,
                 contentType,
+                null,
                 MqttQoSLevel.AtMostOnce,
                 false);
         }
 
+        /// <summary>
+        /// Publish a message asynchronously (QoS Level <see cref="MqttQoSLevel.AtMostOnce"/> and not retained).
+        /// </summary>
+        /// <param name="topic">Message topic.</param>
+        /// <param name="message">Message data (payload).</param>
+        /// <param name="contentType">Content of the application message. This is only available for MQTT v5.0.</param>
+        /// <param name="userProperties">User properties for the application message. This is only available for MQTT v5.0</param>
+        /// <returns>Message Id related to PUBLISH message.</returns>
+        /// <exception cref="ArgumentException">If <paramref name="userProperties"/> elements aren't of type <see cref="UserProperty"/>.</exception>
+        /// <exception cref="NotSupportedException">If setting a parameter that is not supported in the MQTT version set for this <see cref="MqttClient"/>.</exception>
+        public ushort Publish(
+            string topic,
+            byte[] message,
+            string contentType,
+            ArrayList userProperties)
+        {
+            return Publish(
+                topic,
+                message,
+                contentType,
+                userProperties,
+                MqttQoSLevel.AtMostOnce,
+                false);
+        }
         /// <summary>
         /// Publish a message asynchronously.
         /// </summary>
         /// <param name="topic">Message topic.</param>
         /// <param name="message">Message data (payload).</param>
         /// <param name="contentType">Content of the application message. This is only available for MQTT v5.0.</param>
+        /// <param name="userProperties">User properties for the application message. This is only available for MQTT v5.0</param>
         /// <param name="qosLevel">QoS Level.</param>
         /// <param name="retain">Retain flag.</param>
         /// <returns>Message Id related to PUBLISH message.</returns>
+        /// <exception cref="ArgumentException">If <paramref name="userProperties"/> elements aren't of type <see cref="UserProperty"/>.</exception>
+        /// <exception cref="NotSupportedException">If setting a parameter that is not supported in the MQTT version set for this <see cref="MqttClient"/>.</exception>
         public ushort Publish(
             string topic,
             byte[] message,
             string contentType,
+            ArrayList userProperties,
             MqttQoSLevel qosLevel,
             bool retain)
         {
-            MqttMsgPublish publish =
-                    new MqttMsgPublish(topic, message, false, qosLevel, retain)
-                    {
-                        MessageId = GetMessageId()
-                    };
-
-            publish.ContentType = contentType;
+            MqttMsgPublish publish = ComposeMqttMsgPublish(
+                topic,
+                message,
+                contentType,
+                userProperties,
+                qosLevel,
+                retain);
 
             // enqueue message to publish into the inflight queue
             if (publish.QosLevel != MqttQoSLevel.AtMostOnce)
@@ -2454,6 +2488,52 @@ namespace nanoFramework.M2Mqtt
                         msgCtx.Flow == Flow);
 
             }
+        }
+
+        internal MqttMsgPublish ComposeMqttMsgPublish(
+            string topic,
+            byte[] message,
+            string contentType,
+            ArrayList userProperties,
+            MqttQoSLevel qosLevel,
+            bool retain)
+        {
+
+            MqttMsgPublish mqttMsgPublish = new(
+                topic,
+                message,
+                false,
+                qosLevel,
+                retain)
+            {
+                MessageId = GetMessageId()
+            };
+
+            mqttMsgPublish.ContentType = contentType;
+
+            if (userProperties != null)
+            {
+                if (ProtocolVersion < MqttProtocolVersion.Version_5)
+                {
+                    // user properties are only supported in v5
+                    throw new NotSupportedException();
+                }
+
+                // performs validation of collection items
+                foreach (var property in userProperties)
+                {
+                    if (!property.GetType().Equals(typeof(UserProperty)))
+                    {
+#pragma warning disable S3928 // OK to use this in .NET nanoFramework without the argument name
+                        throw new ArgumentException();
+#pragma warning restore S3928 // Parameter names used into ArgumentException constructors should match an existing one 
+                    }
+                }
+
+                mqttMsgPublish.UserProperties = userProperties;
+            }
+
+            return mqttMsgPublish;
         }
     }
 

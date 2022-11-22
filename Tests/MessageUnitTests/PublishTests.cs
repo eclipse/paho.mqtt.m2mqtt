@@ -1,6 +1,8 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System;
+using System.Collections;
 using System.Text;
 using nanoFramework.M2Mqtt;
 using nanoFramework.M2Mqtt.Exceptions;
@@ -80,6 +82,100 @@ namespace MessageUnitTests
             // Assert
             Assert.Equal(encodedCorrect, encoded);
         }
+
+        [TestMethod]
+        public void PublishUserPropertiesTest()
+        {
+            // Can't call Publish() because it will try to enqueue the message and this will fail.
+            // Instead call ComposeMqttMsgPublish() which will be calling the constructor and perform the validations.
+
+            // Arrange
+            var client = new MqttClient();
+
+            OutputHelper.WriteLine("");
+            OutputHelper.WriteLine("== Testing Publish with user properties. ==");
+            OutputHelper.WriteLine("");
+
+            // OK adding a null to user properties
+            OutputHelper.WriteLine("Adding a null to user properties collection.");
+
+            _ = client.ComposeMqttMsgPublish(
+                Topic,
+                Encoding.UTF8.GetBytes(MessageString),
+                null,
+                null,
+                MqttQoSLevel.ExactlyOnce,
+                false);
+
+            // OK adding an empty collection to user properties
+            OutputHelper.WriteLine("Adding an empty collection to user properties collection.");
+
+            _ = client.ComposeMqttMsgPublish(
+                Topic,
+                Encoding.UTF8.GetBytes(MessageString),
+                null,
+                new ArrayList(),
+                MqttQoSLevel.ExactlyOnce,
+                false);
+
+            // add invalid user properties
+            OutputHelper.WriteLine("Adding a collection of strings to user properties collection, which is not valid.");
+
+            Assert.Throws(typeof(ArgumentException), () =>
+            {
+                _ = client.ComposeMqttMsgPublish(
+                    Topic,
+                    Encoding.UTF8.GetBytes(MessageString),
+                    null,
+                    new ArrayList()
+                    {
+                        "I'm a fake user property",
+                        "I'm another fake user property"
+                    },
+                    MqttQoSLevel.ExactlyOnce,
+                    false);
+            },
+            "Adding array of strings to user properties should throw ArgumentException."
+            );
+
+            // add invalid user properties
+            OutputHelper.WriteLine("Adding a collection of integers to user properties collection, which is not valid.");
+
+            Assert.Throws(typeof(ArgumentException), () =>
+            {
+                _ = client.ComposeMqttMsgPublish(
+                    Topic,
+                    Encoding.UTF8.GetBytes(MessageString),
+                    null,
+                    new ArrayList()
+                    {
+                        777,
+                        888,
+                        999
+                    },
+                    MqttQoSLevel.ExactlyOnce,
+                    false
+                    );
+            },
+            "Adding array of integers to user properties should throw ArgumentException."
+            );
+
+            // add proper user properties
+            OutputHelper.WriteLine("Adding a valid collection of user properties.");
+
+            _ = client.ComposeMqttMsgPublish(
+                Topic,
+                Encoding.UTF8.GetBytes(MessageString),
+                null,
+                new ArrayList()
+                {
+                    new UserProperty("property1", "property1_value"),
+                    new UserProperty("property2", "property2_value")
+                },
+                MqttQoSLevel.ExactlyOnce,
+                false);
+        }
+
 
         [TestMethod]
         public void PublishAdvancedEncodeTestv5_00()
