@@ -2518,7 +2518,8 @@ namespace nanoFramework.M2Mqtt
 
             mqttMsgPublish.ContentType = contentType;
 
-            if (userProperties != null)
+            if (userProperties != null
+                && userProperties.Count > 0)
             {
                 if (ProtocolVersion < MqttProtocolVersion.Version_5)
                 {
