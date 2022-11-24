@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.1.53...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.1.59...HEAD)
+
+**Fixed bugs:**
+
+- Fix check for empty user properties [\#315](https://github.com/nanoframework/nanoFramework.m2mqtt/pull/315)
+
+## [v5.1.59](https://github.com/nanoframework/nanoFramework.m2mqtt/tree/v5.1.59) (2022-11-22)
+
+[Full Changelog](https://github.com/nanoframework/nanoFramework.m2mqtt/compare/v5.1.53...v5.1.59)
 
 **Implemented enhancements:**
 
