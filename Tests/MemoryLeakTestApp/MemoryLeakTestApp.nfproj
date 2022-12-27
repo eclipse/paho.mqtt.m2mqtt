@@ -51,8 +51,9 @@
     <Reference Include="System.IO.Streams">
       <HintPath>..\..\packages\nanoFramework.System.IO.Streams.1.1.27\lib\System.IO.Streams.dll</HintPath>
     </Reference>
-    <Reference Include="System.Net">
-      <HintPath>..\..\packages\nanoFramework.System.Net.1.10.38\lib\System.Net.dll</HintPath>
+    <Reference Include="System.Net, Version=1.10.46.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\..\packages\nanoFramework.System.Net.1.10.46\lib\System.Net.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Threading, Version=1.1.19.33722, Culture=neutral, PublicKeyToken=c07d481e9758c731">
       <HintPath>..\..\packages\nanoFramework.System.Threading.1.1.19\lib\System.Threading.dll</HintPath>
