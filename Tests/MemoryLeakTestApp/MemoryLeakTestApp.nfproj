@@ -45,8 +45,9 @@
     <Reference Include="nanoFramework.System.Text">
       <HintPath>..\..\packages\nanoFramework.System.Text.1.2.22\lib\nanoFramework.System.Text.dll</HintPath>
     </Reference>
-    <Reference Include="System.Device.Wifi">
-      <HintPath>..\..\packages\nanoFramework.System.Device.Wifi.1.5.37\lib\System.Device.Wifi.dll</HintPath>
+    <Reference Include="System.Device.Wifi, Version=1.5.46.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\..\packages\nanoFramework.System.Device.Wifi.1.5.46\lib\System.Device.Wifi.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.IO.Streams">
       <HintPath>..\..\packages\nanoFramework.System.IO.Streams.1.1.27\lib\System.IO.Streams.dll</HintPath>
