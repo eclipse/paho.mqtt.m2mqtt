@@ -15,5 +15,6 @@ jobs:
   check_nuget_latest:
     name: nanoFramework
     uses: nanoframework/nf-tools/.github/workflows/check-packages-updated.yml@main
+    secrets: inherit
     with:
       solution: 'nanoFramework.M2mqtt.sln'
