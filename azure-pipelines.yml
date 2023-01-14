@@ -56,7 +56,10 @@ steps:
   # update dependents
   - template: azure-pipelines-templates/update-dependents.yml@templates  
     parameters:
-      waitBeforeUpdate: eq(variables['UPDATE_DEPENDENTS'], 'false')
+      ${{ if eq(variables['UPDATE_DEPENDENTS'], 'false') }}:
+        waitBeforeUpdate: false
+      ${{ else }}:
+        waitBeforeUpdate: true
       repositoriesToUpdate: |
         nanoFramework.Aws.IotCore.Devices
         nanoFramework.Azure.Devices
