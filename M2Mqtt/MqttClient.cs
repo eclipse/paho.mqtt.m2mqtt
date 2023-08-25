@@ -34,7 +34,7 @@ namespace nanoFramework.M2Mqtt
     /// <summary>
     /// MQTT Client
     /// </summary>
-    public class MqttClient : IDisposable
+    public class MqttClient : IMqttClient, IDisposable
     {
         // broker hostname (or ip address) and port
         private string _brokerHostName;
@@ -130,19 +130,19 @@ namespace nanoFramework.M2Mqtt
         /// <summary>
         /// The event for PUBLISH message received
         /// </summary>
-        public event MqttMsgPublishEventHandler MqttMsgPublishReceived;
+        public event IMqttClient.MqttMsgPublishEventHandler MqttMsgPublishReceived;
         /// <summary>
         /// The event for published message
         /// </summary>
-        public event MqttMsgPublishedEventHandler MqttMsgPublished;
+        public event IMqttClient.MqttMsgPublishedEventHandler MqttMsgPublished;
         /// <summary>
         /// The event for subscribed topic
         /// </summary>
-        public event MqttMsgSubscribedEventHandler MqttMsgSubscribed;
+        public event IMqttClient.MqttMsgSubscribedEventHandler MqttMsgSubscribed;
         /// <summary>
         /// The event for unsubscribed topic
         /// </summary>
-        public event MqttMsgUnsubscribedEventHandler MqttMsgUnsubscribed;
+        public event IMqttClient.MqttMsgUnsubscribedEventHandler MqttMsgUnsubscribed;
 
         /// <summary>
         /// The event for peer/client disconnection
@@ -152,7 +152,7 @@ namespace nanoFramework.M2Mqtt
         /// <summary>
         /// The event for peer/client disconnection
         /// </summary>
-        public event ConnectionClosedEventHandler ConnectionClosed;
+        public event IMqttClient.ConnectionClosedEventHandler ConnectionClosed;
 
         /// <summary>
         /// The event for peer/client disconnection
@@ -291,6 +291,10 @@ namespace nanoFramework.M2Mqtt
         {
             Init(brokerHostName, brokerPort, secure, caCert, clientCert, sslProtocol);
         }
+
+        /// <inheritdoc/>
+        public void Init(string brokerHostName, int brokerPort, bool secure, byte[] caCert, byte[] clientCert, MqttSslProtocols sslProtocol) =>
+            Init(brokerHostName, brokerPort, secure, caCert == null ? null : new X509Certificate(caCert), clientCert == null ? null : new X509Certificate(clientCert), sslProtocol);
 
         /// <summary>
         /// MqttClient initialization

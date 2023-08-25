@@ -46,7 +46,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = publish.GetBytes(MqttProtocolVersion.Version_3_1_1);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -60,12 +60,12 @@ namespace MessageUnitTests
             // Act
             MqttMsgPublish publish = MqttMsgPublish.Parse(60, MqttProtocolVersion.Version_3_1_1, mokChannel);
             // Assert
-            Assert.Equal(Topic, publish.Topic);
-            Assert.Equal(MessageId, publish.MessageId);
-            Assert.Equal(MessageString, Encoding.UTF8.GetString(publish.Message, 0, publish.Message.Length));
-            Assert.Equal((byte)MqttQoSLevel.ExactlyOnce, (byte)publish.QosLevel);
-            Assert.Equal(true, publish.DupFlag);
-            Assert.Equal(false, publish.Retain);
+            Assert.AreEqual(Topic, publish.Topic);
+            Assert.AreEqual(MessageId, publish.MessageId);
+            Assert.AreEqual(MessageString, Encoding.UTF8.GetString(publish.Message, 0, publish.Message.Length));
+            Assert.AreEqual((byte)MqttQoSLevel.ExactlyOnce, (byte)publish.QosLevel);
+            Assert.AreEqual(true, publish.DupFlag);
+            Assert.AreEqual(false, publish.Retain);
         }
 
         [TestMethod]
@@ -80,7 +80,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = publish.GetBytes(MqttProtocolVersion.Version_5);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -121,7 +121,7 @@ namespace MessageUnitTests
             // add invalid user properties
             OutputHelper.WriteLine("Adding a collection of strings to user properties collection, which is not valid.");
 
-            Assert.Throws(typeof(ArgumentException), () =>
+            Assert.ThrowsException(typeof(ArgumentException), () =>
             {
                 _ = client.ComposeMqttMsgPublish(
                     Topic,
@@ -141,7 +141,7 @@ namespace MessageUnitTests
             // add invalid user properties
             OutputHelper.WriteLine("Adding a collection of integers to user properties collection, which is not valid.");
 
-            Assert.Throws(typeof(ArgumentException), () =>
+            Assert.ThrowsException(typeof(ArgumentException), () =>
             {
                 _ = client.ComposeMqttMsgPublish(
                     Topic,
@@ -201,7 +201,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = publish.GetBytes(MqttProtocolVersion.Version_5);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -247,7 +247,7 @@ namespace MessageUnitTests
             byte[] encoded = publish.GetBytes(MqttProtocolVersion.Version_5);
 
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
 
@@ -275,7 +275,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = publish.GetBytes(MqttProtocolVersion.Version_5);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
         [TestMethod]
         public void PublishAdvancedBinaryDecodeTestv5()
@@ -290,26 +290,26 @@ namespace MessageUnitTests
             // Act
             MqttMsgPublish publish = MqttMsgPublish.Parse(60, MqttProtocolVersion.Version_5, mokChannel);
             // Assert
-            Assert.Equal(Topic, publish.Topic);
-            Assert.Equal(MessageId, publish.MessageId);
-            Assert.Equal(new byte[] { 6, 5, 4, 3, 2, 1 }, publish.Message);
-            Assert.Equal((byte)MqttQoSLevel.ExactlyOnce, (byte)publish.QosLevel);
-            Assert.Equal(true, publish.DupFlag);
-            Assert.Equal(false, publish.Retain);
-            Assert.Equal(publish.ContentType, "binary");
-            Assert.Equal(publish.IsPayloadUTF8, false);
-            Assert.Equal(publish.SubscriptionIdentifier, 268435454);
-            Assert.Equal(publish.UserProperties.Count, 2);
+            Assert.AreEqual(Topic, publish.Topic);
+            Assert.AreEqual(MessageId, publish.MessageId);
+            CollectionAssert.AreEqual(new byte[] { 6, 5, 4, 3, 2, 1 }, publish.Message);
+            Assert.AreEqual((byte)MqttQoSLevel.ExactlyOnce, (byte)publish.QosLevel);
+            Assert.AreEqual(true, publish.DupFlag);
+            Assert.AreEqual(false, publish.Retain);
+            Assert.AreEqual(publish.ContentType, "binary");
+            Assert.AreEqual(publish.IsPayloadUTF8, false);
+            Assert.AreEqual(publish.SubscriptionIdentifier, 268435454);
+            Assert.AreEqual(publish.UserProperties.Count, 2);
             var prop = new UserProperty("One", "prop");
-            Assert.Equal(((UserProperty)publish.UserProperties[0]).Name, prop.Name);
-            Assert.Equal(((UserProperty)publish.UserProperties[0]).Value, prop.Value);
+            Assert.AreEqual(((UserProperty)publish.UserProperties[0]).Name, prop.Name);
+            Assert.AreEqual(((UserProperty)publish.UserProperties[0]).Value, prop.Value);
             prop = new UserProperty("second", "property");
-            Assert.Equal(((UserProperty)publish.UserProperties[1]).Name, prop.Name);
-            Assert.Equal(((UserProperty)publish.UserProperties[1]).Value, prop.Value);
-            Assert.Equal(publish.CorrelationData, new byte[] { 1, 2, 3, 4, 5, 6 });
-            Assert.Equal(publish.ResponseTopic, "response topic");
-            Assert.Equal(publish.TopicAlias, (ushort)33);
-            Assert.Equal(publish.MessageExpiryInterval, 12345);
+            Assert.AreEqual(((UserProperty)publish.UserProperties[1]).Name, prop.Name);
+            Assert.AreEqual(((UserProperty)publish.UserProperties[1]).Value, prop.Value);
+            CollectionAssert.AreEqual(publish.CorrelationData, new byte[] { 1, 2, 3, 4, 5, 6 });
+            Assert.AreEqual(publish.ResponseTopic, "response topic");
+            Assert.AreEqual(publish.TopicAlias, (ushort)33);
+            Assert.AreEqual(publish.MessageExpiryInterval, 12345);
         }
 
         [TestMethod]
@@ -326,26 +326,26 @@ namespace MessageUnitTests
             // Act
             MqttMsgPublish publish = MqttMsgPublish.Parse(60, MqttProtocolVersion.Version_5, mokChannel);
             // Assert
-            Assert.Equal(Topic, publish.Topic);
-            Assert.Equal(MessageId, publish.MessageId);
-            Assert.Equal(MessageString, Encoding.UTF8.GetString(publish.Message, 0, publish.Message.Length));
-            Assert.Equal((byte)MqttQoSLevel.ExactlyOnce, (byte)publish.QosLevel);
-            Assert.Equal(true, publish.DupFlag);
-            Assert.Equal(false, publish.Retain);
-            Assert.Equal(publish.ContentType, "UTF8");
-            Assert.Equal(publish.IsPayloadUTF8, true);
-            Assert.Equal(publish.SubscriptionIdentifier, 268435454);
-            Assert.Equal(publish.UserProperties.Count, 2);
+            Assert.AreEqual(Topic, publish.Topic);
+            Assert.AreEqual(MessageId, publish.MessageId);
+            Assert.AreEqual(MessageString, Encoding.UTF8.GetString(publish.Message, 0, publish.Message.Length));
+            Assert.AreEqual((byte)MqttQoSLevel.ExactlyOnce, (byte)publish.QosLevel);
+            Assert.AreEqual(true, publish.DupFlag);
+            Assert.AreEqual(false, publish.Retain);
+            Assert.AreEqual(publish.ContentType, "UTF8");
+            Assert.AreEqual(publish.IsPayloadUTF8, true);
+            Assert.AreEqual(publish.SubscriptionIdentifier, 268435454);
+            Assert.AreEqual(publish.UserProperties.Count, 2);
             var prop = new UserProperty("One", "prop");
-            Assert.Equal(((UserProperty)publish.UserProperties[0]).Name, prop.Name);
-            Assert.Equal(((UserProperty)publish.UserProperties[0]).Value, prop.Value);
+            Assert.AreEqual(((UserProperty)publish.UserProperties[0]).Name, prop.Name);
+            Assert.AreEqual(((UserProperty)publish.UserProperties[0]).Value, prop.Value);
             prop = new UserProperty("second", "property");
-            Assert.Equal(((UserProperty)publish.UserProperties[1]).Name, prop.Name);
-            Assert.Equal(((UserProperty)publish.UserProperties[1]).Value, prop.Value);
-            Assert.Equal(publish.CorrelationData, new byte[] { 1, 2, 3, 4, 5, 6 });
-            Assert.Equal(publish.ResponseTopic, "response topic");
-            Assert.Equal(publish.TopicAlias, (ushort)33);
-            Assert.Equal(publish.MessageExpiryInterval, 12345);
+            Assert.AreEqual(((UserProperty)publish.UserProperties[1]).Name, prop.Name);
+            Assert.AreEqual(((UserProperty)publish.UserProperties[1]).Value, prop.Value);
+            CollectionAssert.AreEqual(publish.CorrelationData, new byte[] { 1, 2, 3, 4, 5, 6 });
+            Assert.AreEqual(publish.ResponseTopic, "response topic");
+            Assert.AreEqual(publish.TopicAlias, (ushort)33);
+            Assert.AreEqual(publish.MessageExpiryInterval, 12345);
         }
 
         [TestMethod]
@@ -359,18 +359,18 @@ namespace MessageUnitTests
             // Act
             MqttMsgPublish publish = MqttMsgPublish.Parse(60, MqttProtocolVersion.Version_5, mokChannel);
             // Assert
-            Assert.Equal(Topic, publish.Topic);
-            Assert.Equal(MessageId, publish.MessageId);
-            Assert.Equal(MessageString, Encoding.UTF8.GetString(publish.Message, 0, publish.Message.Length));
-            Assert.Equal((byte)MqttQoSLevel.ExactlyOnce, (byte)publish.QosLevel);
-            Assert.Equal(true, publish.DupFlag);
-            Assert.Equal(false, publish.Retain);
+            Assert.AreEqual(Topic, publish.Topic);
+            Assert.AreEqual(MessageId, publish.MessageId);
+            Assert.AreEqual(MessageString, Encoding.UTF8.GetString(publish.Message, 0, publish.Message.Length));
+            Assert.AreEqual((byte)MqttQoSLevel.ExactlyOnce, (byte)publish.QosLevel);
+            Assert.AreEqual(true, publish.DupFlag);
+            Assert.AreEqual(false, publish.Retain);
         }
 
         [TestMethod]
         public void PublishBasicEncodeExceptionTestv311()
         {
-            Assert.Throws(typeof(MqttClientException), () =>
+            Assert.ThrowsException(typeof(MqttClientException), () =>
             {
                 // Arrange
                 MqttMsgPublish publish = new(TopicWildcard, Encoding.UTF8.GetBytes(MessageString), true, MqttQoSLevel.ExactlyOnce, false);

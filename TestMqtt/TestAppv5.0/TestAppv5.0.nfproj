@@ -26,6 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\M2Mqtt\nanoFramework.M2Mqtt.nfproj" />
+    <ProjectReference Include="..\..\nanoFramework.M2Mqtt.Core\nanoFramework.M2Mqtt.Core.nfproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib, Version=1.14.3.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">

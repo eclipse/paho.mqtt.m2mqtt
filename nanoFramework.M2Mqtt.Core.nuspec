@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
-    <id>nanoFramework.M2Mqtt</id>
+    <id>nanoFramework.M2Mqtt.Core</id>
     <version>$version$</version>
-    <title>nanoFramework.M2Mqtt</title>
+    <title>nanoFramework.M2Mqtt.Core</title>
     <authors>nanoframework</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="file">LICENSE.md</license>
@@ -26,17 +26,12 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="M2Mqtt\bin\Release\nanoFramework.M2Mqtt.dll" target="lib\nanoFramework.M2Mqtt.dll" />
-    <file src="M2Mqtt\bin\Release\nanoFramework.M2Mqtt.pdb" target="lib\nanoFramework.M2Mqtt.pdb" />
-    <file src="M2Mqtt\bin\Release\nanoFramework.M2Mqtt.pdbx" target="lib\nanoFramework.M2Mqtt.pdbx" />
-    <file src="M2Mqtt\bin\Release\nanoFramework.M2Mqtt.pe" target="lib\nanoFramework.M2Mqtt.pe" />
-    <file src="M2Mqtt\bin\Release\nanoFramework.M2Mqtt.xml" target="lib\nanoFramework.M2Mqtt.xml" />
-     <file src="nanoFramework.M2Mqtt.Core\bin\Release\nanoFramework.M2Mqtt.Core.dll" target="lib\nanoFramework.M2Mqtt.Core.dll" />
+    <file src="nanoFramework.M2Mqtt.Core\bin\Release\nanoFramework.M2Mqtt.Core.dll" target="lib\nanoFramework.M2Mqtt.Core.dll" />
     <file src="nanoFramework.M2Mqtt.Core\bin\Release\nanoFramework.M2Mqtt.Core.pdb" target="lib\nanoFramework.M2Mqtt.Core.pdb" />
     <file src="nanoFramework.M2Mqtt.Core\bin\Release\nanoFramework.M2Mqtt.Core.pdbx" target="lib\nanoFramework.M2Mqtt.Core.pdbx" />
     <file src="nanoFramework.M2Mqtt.Core\bin\Release\nanoFramework.M2Mqtt.Core.pe" target="lib\nanoFramework.M2Mqtt.Core.pe" />
     <file src="nanoFramework.M2Mqtt.Core\bin\Release\nanoFramework.M2Mqtt.Core.xml" target="lib\nanoFramework.M2Mqtt.Core.xml" />
-   <file src="assets\readme.txt" target="" />
+    <file src="assets\readme.txt" target="" />
     <file src="README.md" target="docs\" />
     <file src="assets\nf-logo.png" target="images" />
     <file src="LICENSE.md" target="" />

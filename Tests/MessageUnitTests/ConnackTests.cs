@@ -22,7 +22,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = connack.GetBytes(MqttProtocolVersion.Version_3_1_1);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -36,7 +36,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = connack.GetBytes(MqttProtocolVersion.Version_5);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -51,8 +51,8 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = connack.GetBytes(MqttProtocolVersion.Version_5);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
-            Assert.Equal("Tagada", connack.AssignedClientIdentifier);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
+            Assert.AreEqual("Tagada", connack.AssignedClientIdentifier);
         }
 
         [TestMethod]
@@ -89,7 +89,7 @@ namespace MessageUnitTests
             byte[] encoded = connack.GetBytes(MqttProtocolVersion.Version_5);
             Helpers.DumpBuffer(encoded);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -105,31 +105,31 @@ namespace MessageUnitTests
             // Act
             MqttMsgConnack connack = MqttMsgConnack.Parse((byte)(MqttMessageType.ConnectAck) << 4, MqttProtocolVersion.Version_5, mokChannel);
             // Assert
-            Assert.Equal(true, connack.SessionPresent);
-            Assert.Equal((byte)MqttReasonCode.Banned, (byte)connack.ReturnCode);
-            Assert.Equal(connack.AssignedClientIdentifier, "Tagada");
-            Assert.Equal(connack.AuthenticationData, new byte[] { 1, 2, 3, 4 });
-            Assert.Equal(connack.AuthenticationMethod, "method");
-            Assert.Equal(connack.MaximumPacketSize, 4567);
-            Assert.Equal(connack.MaximumQoS, true);
-            Assert.Equal(connack.Reason, "none");
-            Assert.Equal(connack.ReceiveMaximum, (ushort)89);
-            Assert.Equal(connack.ResponseInformation, "infromation");
-            Assert.Equal(connack.RetainAvailable, true);
-            Assert.Equal(connack.ServerKeepAlive, (ushort)1357);
-            Assert.Equal(connack.ServerReference, "reference");
-            Assert.Equal(connack.SessionExpiryInterval, 2468);
-            Assert.Equal(connack.SharedSubscriptionAvailable, true);
-            Assert.Equal(connack.SubscriptionIdentifiersAvailable, true);
-            Assert.Equal(connack.TopicAliasMaximum, (ushort)148);
-            Assert.Equal(connack.UserProperties.Count, 2);
+            Assert.AreEqual(true, connack.SessionPresent);
+            Assert.AreEqual((byte)MqttReasonCode.Banned, (byte)connack.ReturnCode);
+            Assert.AreEqual(connack.AssignedClientIdentifier, "Tagada");
+            CollectionAssert.AreEqual(connack.AuthenticationData, new byte[] { 1, 2, 3, 4 });
+            Assert.AreEqual(connack.AuthenticationMethod, "method");
+            Assert.AreEqual(connack.MaximumPacketSize, 4567);
+            Assert.AreEqual(connack.MaximumQoS, true);
+            Assert.AreEqual(connack.Reason, "none");
+            Assert.AreEqual(connack.ReceiveMaximum, (ushort)89);
+            Assert.AreEqual(connack.ResponseInformation, "infromation");
+            Assert.AreEqual(connack.RetainAvailable, true);
+            Assert.AreEqual(connack.ServerKeepAlive, (ushort)1357);
+            Assert.AreEqual(connack.ServerReference, "reference");
+            Assert.AreEqual(connack.SessionExpiryInterval, 2468);
+            Assert.AreEqual(connack.SharedSubscriptionAvailable, true);
+            Assert.AreEqual(connack.SubscriptionIdentifiersAvailable, true);
+            Assert.AreEqual(connack.TopicAliasMaximum, (ushort)148);
+            Assert.AreEqual(connack.UserProperties.Count, 2);
             var prop = new UserProperty("One", "Property");
-            Assert.Equal(((UserProperty)connack.UserProperties[0]).Name, prop.Name);
-            Assert.Equal(((UserProperty)connack.UserProperties[0]).Value, prop.Value);
+            Assert.AreEqual(((UserProperty)connack.UserProperties[0]).Name, prop.Name);
+            Assert.AreEqual(((UserProperty)connack.UserProperties[0]).Value, prop.Value);
             prop = new UserProperty("Two", "Properties");
-            Assert.Equal(((UserProperty)connack.UserProperties[1]).Name, prop.Name);
-            Assert.Equal(((UserProperty)connack.UserProperties[1]).Value, prop.Value);
-            Assert.Equal(connack.WildcardSubscriptionAvailable, true);
+            Assert.AreEqual(((UserProperty)connack.UserProperties[1]).Name, prop.Name);
+            Assert.AreEqual(((UserProperty)connack.UserProperties[1]).Value, prop.Value);
+            Assert.AreEqual(connack.WildcardSubscriptionAvailable, true);
         }
 
         [TestMethod]
@@ -141,8 +141,8 @@ namespace MessageUnitTests
             // Act
             MqttMsgConnack connack = MqttMsgConnack.Parse((byte)(MqttMessageType.ConnectAck) << 4, MqttProtocolVersion.Version_3_1_1, mokChannel);
             // Assert
-            Assert.Equal(true, connack.SessionPresent);
-            Assert.Equal((byte)MqttReasonCode.Banned, (byte)connack.ReturnCode);
+            Assert.AreEqual(true, connack.SessionPresent);
+            Assert.AreEqual((byte)MqttReasonCode.Banned, (byte)connack.ReturnCode);
         }
 
         [TestMethod]
@@ -154,8 +154,8 @@ namespace MessageUnitTests
             // Act
             MqttMsgConnack connack = MqttMsgConnack.Parse((byte)(MqttMessageType.ConnectAck) << 4, MqttProtocolVersion.Version_5, mokChannel);
             // Assert
-            Assert.Equal(true, connack.SessionPresent);
-            Assert.Equal((byte)MqttReasonCode.Banned, (byte)connack.ReturnCode);
+            Assert.AreEqual(true, connack.SessionPresent);
+            Assert.AreEqual((byte)MqttReasonCode.Banned, (byte)connack.ReturnCode);
         }
 
     }

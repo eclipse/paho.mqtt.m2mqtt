@@ -29,8 +29,8 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = connect.GetBytes(connect.ProtocolVersion);
             // Assert
-            Assert.Equal(correctEncoded.Length, encoded.Length);
-            Assert.Equal(correctEncoded, encoded);
+            Assert.AreEqual(correctEncoded.Length, encoded.Length);
+            CollectionAssert.AreEqual(correctEncoded, encoded);
         }
 
         [TestMethod]
@@ -45,8 +45,8 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = connect.GetBytes(connect.ProtocolVersion);
             // Assert
-            Assert.Equal(correctEncoded.Length, encoded.Length);
-            Assert.Equal(correctEncoded, encoded);
+            Assert.AreEqual(correctEncoded.Length, encoded.Length);
+            CollectionAssert.AreEqual(correctEncoded, encoded);
         }
 
         [TestMethod]
@@ -70,8 +70,8 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = connect.GetBytes(connect.ProtocolVersion);
             // Assert
-            Assert.Equal(correctEncoded.Length, encoded.Length);
-            Assert.Equal(correctEncoded, encoded);
+            Assert.AreEqual(correctEncoded.Length, encoded.Length);
+            CollectionAssert.AreEqual(correctEncoded, encoded);
         }
 
         [TestMethod]
@@ -90,8 +90,8 @@ namespace MessageUnitTests
             byte[] encoded = connect.GetBytes(connect.ProtocolVersion);
             Helpers.DumpBuffer(encoded);
             // Assert
-            Assert.Equal(correctEncoded.Length, encoded.Length);
-            Assert.Equal(correctEncoded, encoded);
+            Assert.AreEqual(correctEncoded.Length, encoded.Length);
+            CollectionAssert.AreEqual(correctEncoded, encoded);
         }
 
         [TestMethod]
@@ -107,21 +107,21 @@ namespace MessageUnitTests
             // Act
             MqttMsgConnect connect = MqttMsgConnect.Parse((byte)MqttMessageType.Connect << 4, MqttProtocolVersion.Version_5, mokChannel);
             // Assert
-            Assert.Equal((byte)MqttProtocolVersion.Version_5, (byte)connect.ProtocolVersion);
-            Assert.Equal(ClientID, connect.ClientId);
-            Assert.Equal(UserName, connect.Username);
-            Assert.Equal(Password, connect.Password);
-            Assert.Equal(WillTopic, connect.WillTopic);
-            Assert.Equal(WillMessage, connect.WillMessage);
-            Assert.Equal(KeepAlivePeriod, connect.KeepAlivePeriod);
-            Assert.Equal(true, connect.CleanSession);
-            Assert.Equal(2, connect.UserProperties.Count);
+            Assert.AreEqual((byte)MqttProtocolVersion.Version_5, (byte)connect.ProtocolVersion);
+            Assert.AreEqual(ClientID, connect.ClientId);
+            Assert.AreEqual(UserName, connect.Username);
+            Assert.AreEqual(Password, connect.Password);
+            Assert.AreEqual(WillTopic, connect.WillTopic);
+            Assert.AreEqual(WillMessage, connect.WillMessage);
+            Assert.AreEqual(KeepAlivePeriod, connect.KeepAlivePeriod);
+            Assert.AreEqual(true, connect.CleanSession);
+            Assert.AreEqual(2, connect.UserProperties.Count);
             var prop = new UserProperty("One", "Property");
-            Assert.Equal(((UserProperty)connect.UserProperties[0]).Name, prop.Name);
-            Assert.Equal(((UserProperty)connect.UserProperties[0]).Value, prop.Value);
+            Assert.AreEqual(((UserProperty)connect.UserProperties[0]).Name, prop.Name);
+            Assert.AreEqual(((UserProperty)connect.UserProperties[0]).Value, prop.Value);
             prop = new UserProperty("Two", "Properties");
-            Assert.Equal(((UserProperty)connect.UserProperties[1]).Name, prop.Name);
-            Assert.Equal(((UserProperty)connect.UserProperties[1]).Value, prop.Value);
+            Assert.AreEqual(((UserProperty)connect.UserProperties[1]).Name, prop.Name);
+            Assert.AreEqual(((UserProperty)connect.UserProperties[1]).Value, prop.Value);
         }
 
         [TestMethod]
@@ -137,22 +137,22 @@ namespace MessageUnitTests
             // Act
             MqttMsgConnect connect = MqttMsgConnect.Parse((byte)MqttMessageType.Connect << 4, MqttProtocolVersion.Version_5, mokChannel);
             // Assert
-            Assert.Equal((byte)MqttProtocolVersion.Version_5, (byte)connect.ProtocolVersion);
-            Assert.Equal(ClientID, connect.ClientId);
-            Assert.Equal(UserName, connect.Username);
-            Assert.Equal(Password, connect.Password);
-            Assert.Equal(WillTopic, connect.WillTopic);
-            Assert.Equal(WillMessage, connect.WillMessage);
-            Assert.Equal(KeepAlivePeriod, connect.KeepAlivePeriod);
-            Assert.Equal(true, connect.CleanSession);
-            Assert.Equal(new byte[5] { 0, 1, 2, 3, 4 }, connect.AuthenticationData);
-            Assert.Equal("Wowo, cool", connect.AuthenticationMethod);
-            Assert.Equal(uint.MaxValue - 100, connect.MaximumPacketSize);
-            Assert.Equal((ushort)(ushort.MaxValue - 10), connect.TopicAliasMaximum);
-            Assert.Equal((ushort)(ushort.MaxValue - 150), connect.ReceiveMaximum);
-            Assert.Equal(true, connect.RequestProblemInformation);
-            Assert.Equal(true, connect.RequestResponseInformation);
-            Assert.Equal(54321, connect.SessionExpiryInterval);
+            Assert.AreEqual((byte)MqttProtocolVersion.Version_5, (byte)connect.ProtocolVersion);
+            Assert.AreEqual(ClientID, connect.ClientId);
+            Assert.AreEqual(UserName, connect.Username);
+            Assert.AreEqual(Password, connect.Password);
+            Assert.AreEqual(WillTopic, connect.WillTopic);
+            Assert.AreEqual(WillMessage, connect.WillMessage);
+            Assert.AreEqual(KeepAlivePeriod, connect.KeepAlivePeriod);
+            Assert.AreEqual(true, connect.CleanSession);
+            CollectionAssert.AreEqual(new byte[5] { 0, 1, 2, 3, 4 }, connect.AuthenticationData);
+            Assert.AreEqual("Wowo, cool", connect.AuthenticationMethod);
+            Assert.AreEqual(uint.MaxValue - 100, connect.MaximumPacketSize);
+            Assert.AreEqual((ushort)(ushort.MaxValue - 10), connect.TopicAliasMaximum);
+            Assert.AreEqual((ushort)(ushort.MaxValue - 150), connect.ReceiveMaximum);
+            Assert.AreEqual(true, connect.RequestProblemInformation);
+            Assert.AreEqual(true, connect.RequestResponseInformation);
+            Assert.AreEqual(54321, connect.SessionExpiryInterval);
         }
 
         [TestMethod]
@@ -165,14 +165,14 @@ namespace MessageUnitTests
             // Act
             MqttMsgConnect connect = MqttMsgConnect.Parse((byte)MqttMessageType.Connect << 4, MqttProtocolVersion.Version_5, mokChannel);
             // Assert
-            Assert.Equal((byte)MqttProtocolVersion.Version_5, (byte)connect.ProtocolVersion);
-            Assert.Equal(ClientID, connect.ClientId);
-            Assert.Equal(UserName, connect.Username);
-            Assert.Equal(Password, connect.Password);
-            Assert.Equal(WillTopic, connect.WillTopic);
-            Assert.Equal(WillMessage, connect.WillMessage);
-            Assert.Equal(KeepAlivePeriod, connect.KeepAlivePeriod);
-            Assert.Equal(true, connect.CleanSession);
+            Assert.AreEqual((byte)MqttProtocolVersion.Version_5, (byte)connect.ProtocolVersion);
+            Assert.AreEqual(ClientID, connect.ClientId);
+            Assert.AreEqual(UserName, connect.Username);
+            Assert.AreEqual(Password, connect.Password);
+            Assert.AreEqual(WillTopic, connect.WillTopic);
+            Assert.AreEqual(WillMessage, connect.WillMessage);
+            Assert.AreEqual(KeepAlivePeriod, connect.KeepAlivePeriod);
+            Assert.AreEqual(true, connect.CleanSession);
         }
 
         [TestMethod]
@@ -187,14 +187,14 @@ namespace MessageUnitTests
             // Act
             MqttMsgConnect connect = MqttMsgConnect.Parse((byte)MqttMessageType.Connect << 4, MqttProtocolVersion.Version_3_1_1, mokChannel);
             // Assert
-            Assert.Equal((byte)MqttProtocolVersion.Version_3_1_1, (byte)connect.ProtocolVersion);
-            Assert.Equal(ClientID, connect.ClientId);
-            Assert.Equal(UserName, connect.Username);
-            Assert.Equal(Password, connect.Password);
-            Assert.Equal(WillTopic, connect.WillTopic);
-            Assert.Equal(WillMessage, connect.WillMessage);
-            Assert.Equal(KeepAlivePeriod, connect.KeepAlivePeriod);
-            Assert.Equal(true, connect.CleanSession);
+            Assert.AreEqual((byte)MqttProtocolVersion.Version_3_1_1, (byte)connect.ProtocolVersion);
+            Assert.AreEqual(ClientID, connect.ClientId);
+            Assert.AreEqual(UserName, connect.Username);
+            Assert.AreEqual(Password, connect.Password);
+            Assert.AreEqual(WillTopic, connect.WillTopic);
+            Assert.AreEqual(WillMessage, connect.WillMessage);
+            Assert.AreEqual(KeepAlivePeriod, connect.KeepAlivePeriod);
+            Assert.AreEqual(true, connect.CleanSession);
         }
     }
 }

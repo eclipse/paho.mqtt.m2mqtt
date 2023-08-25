@@ -22,7 +22,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = subscribe.GetBytes(MqttProtocolVersion.Version_3_1_1);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -37,7 +37,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = subscribe.GetBytes(MqttProtocolVersion.Version_5);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -65,7 +65,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = subscribe.GetBytes(MqttProtocolVersion.Version_5);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -77,9 +77,9 @@ namespace MessageUnitTests
             // Act
             MqttMsgSubscribe subscribe = MqttMsgSubscribe.Parse(130, MqttProtocolVersion.Version_3_1_1, mokChannel);
             // Assert
-            Assert.Equal(subscribe.MessageId, (ushort)42);
-            Assert.Equal(subscribe.QoSLevels, new MqttQoSLevel[] { MqttQoSLevel.AtLeastOnce, MqttQoSLevel.ExactlyOnce });
-            Assert.Equal(subscribe.Topics, new string[] { "first", "second" });
+            Assert.AreEqual(subscribe.MessageId, (ushort)42);
+            CollectionAssert.AreEqual(subscribe.QoSLevels, new MqttQoSLevel[] { MqttQoSLevel.AtLeastOnce, MqttQoSLevel.ExactlyOnce });
+            CollectionAssert.AreEqual(subscribe.Topics, new string[] { "first", "second" });
         }
 
         [TestMethod]
@@ -91,9 +91,9 @@ namespace MessageUnitTests
             // Act
             MqttMsgSubscribe subscribe = MqttMsgSubscribe.Parse(130, MqttProtocolVersion.Version_5, mokChannel);
             // Assert
-            Assert.Equal(subscribe.MessageId, (ushort)42);
-            Assert.Equal(subscribe.QoSLevels, new MqttQoSLevel[] { MqttQoSLevel.AtLeastOnce, MqttQoSLevel.ExactlyOnce });
-            Assert.Equal(subscribe.Topics, new string[] { "first", "second" });
+            Assert.AreEqual(subscribe.MessageId, (ushort)42);
+            CollectionAssert.AreEqual(subscribe.QoSLevels, new MqttQoSLevel[] { MqttQoSLevel.AtLeastOnce, MqttQoSLevel.ExactlyOnce });
+            CollectionAssert.AreEqual(subscribe.Topics, new string[] { "first", "second" });
         }
 
         [TestMethod]
@@ -116,13 +116,13 @@ namespace MessageUnitTests
             // Act
             MqttMsgSubscribe subscribe = MqttMsgSubscribe.Parse(130, MqttProtocolVersion.Version_5, mokChannel);
             // Assert
-            Assert.Equal(subscribe.MessageId, (ushort)42);
-            Assert.Equal(subscribe.QoSLevels, new MqttQoSLevel[] { MqttQoSLevel.AtLeastOnce, MqttQoSLevel.ExactlyOnce });
-            Assert.Equal(subscribe.Topics, new string[] { "first", "second" });
-            Assert.Equal(subscribe.SubscriptionIdentifier, 268435453);
+            Assert.AreEqual(subscribe.MessageId, (ushort)42);
+            CollectionAssert.AreEqual(subscribe.QoSLevels, new MqttQoSLevel[] { MqttQoSLevel.AtLeastOnce, MqttQoSLevel.ExactlyOnce });
+            CollectionAssert.AreEqual(subscribe.Topics, new string[] { "first", "second" });
+            Assert.AreEqual(subscribe.SubscriptionIdentifier, 268435453);
             var prop = new UserProperty("long one", "one very long one to test for once how this will encode and make it reallllllyyyyyyy soooooooooooo soooooooooooooo soooooooooooooooo sooooooooo long. Yea, that should be tested for real in the real life as well");
-            Assert.Equal(((UserProperty)subscribe.UserProperties[0]).Name, prop.Name);
-            Assert.Equal(((UserProperty)subscribe.UserProperties[0]).Value, prop.Value);
+            Assert.AreEqual(((UserProperty)subscribe.UserProperties[0]).Name, prop.Name);
+            Assert.AreEqual(((UserProperty)subscribe.UserProperties[0]).Value, prop.Value);
         }
     }
 }

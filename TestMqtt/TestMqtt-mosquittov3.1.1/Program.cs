@@ -51,7 +51,7 @@ namespace TestMqtt
                     //     client.Subscribe(new string[] { "Test1", "Test2" }, new MqttQoSLevel[] { MqttQoSLevel.ExactlyOnce, MqttQoSLevel.ExactlyOnce });
 
                     byte[] message = Encoding.UTF8.GetBytes("Test message");
-                    client.Publish("/Esp32/Test1", message, MqttQoSLevel.ExactlyOnce, false);
+                    client.Publish("/Esp32/Test1", message, null, null, MqttQoSLevel.ExactlyOnce, false);
 
                     string[] SubTopics = new string[]
                     {
@@ -65,7 +65,7 @@ namespace TestMqtt
                     while (running)
                     {
                         Thread.Sleep(10000);
-                        client.Publish("/Esp32/Test1", message, MqttQoSLevel.ExactlyOnce, false);
+                        client.Publish("/Esp32/Test1", message, null, null, MqttQoSLevel.ExactlyOnce, false);
                     }
 
                     client.Disconnect();

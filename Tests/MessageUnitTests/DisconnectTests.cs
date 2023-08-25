@@ -19,7 +19,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = disconnect.GetBytes(MqttProtocolVersion.Version_3_1_1);
             //Asserts
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -31,7 +31,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = disconnect.GetBytes(MqttProtocolVersion.Version_5);
             //Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -44,7 +44,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = disconnect.GetBytes(MqttProtocolVersion.Version_5);
             //Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -64,7 +64,7 @@ namespace MessageUnitTests
             byte[] encoded = disconnect.GetBytes(MqttProtocolVersion.Version_5);
             Helpers.DumpBuffer(encoded);
             //Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -99,7 +99,7 @@ namespace MessageUnitTests
             // Act
             MqttMsgDisconnect disconnect = MqttMsgDisconnect.Parse(224, MqttProtocolVersion.Version_5, mokChannel);
             // Assert
-            Assert.Equal((byte)disconnect.ResonCode, (byte)MqttReasonCode.TopicFilterInvalid);
+            Assert.AreEqual((byte)disconnect.ResonCode, (byte)MqttReasonCode.TopicFilterInvalid);
         }
 
         [TestMethod]
@@ -113,13 +113,13 @@ namespace MessageUnitTests
             // Act
             MqttMsgDisconnect disconnect = MqttMsgDisconnect.Parse(224, MqttProtocolVersion.Version_5, mokChannel);
             // Assert
-            Assert.Equal((byte)disconnect.ResonCode, (byte)MqttReasonCode.TopicFilterInvalid);
-            Assert.Equal(disconnect.SessionExpiryInterval, 12345);
-            Assert.Equal(disconnect.Reason, "Invalid topic");
-            Assert.Equal(disconnect.ServerReference, "newserver.somthing.net");
+            Assert.AreEqual((byte)disconnect.ResonCode, (byte)MqttReasonCode.TopicFilterInvalid);
+            Assert.AreEqual(disconnect.SessionExpiryInterval, 12345);
+            Assert.AreEqual(disconnect.Reason, "Invalid topic");
+            Assert.AreEqual(disconnect.ServerReference, "newserver.somthing.net");
             var prop = new UserProperty("status", "101");
-            Assert.Equal(((UserProperty)disconnect.UserProperties[0]).Name, prop.Name);
-            Assert.Equal(((UserProperty)disconnect.UserProperties[0]).Value, prop.Value);
+            Assert.AreEqual(((UserProperty)disconnect.UserProperties[0]).Name, prop.Name);
+            Assert.AreEqual(((UserProperty)disconnect.UserProperties[0]).Value, prop.Value);
         }
     }
 }

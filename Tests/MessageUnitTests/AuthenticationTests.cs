@@ -25,28 +25,28 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = authentication.GetBytes(MqttProtocolVersion.Version_5);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
         public void AuthenticationExceptionTestsv311()
         {
-            Assert.Throws(typeof(NotSupportedException), () =>
+            Assert.ThrowsException(typeof(NotSupportedException), () =>
             {
                 MqttMsgAuthentication authentication = new();
                 authentication.GetBytes(MqttProtocolVersion.Version_3_1_1);
             });
-            Assert.Throws(typeof(NotSupportedException), () =>
+            Assert.ThrowsException(typeof(NotSupportedException), () =>
             {
                 MqttMsgAuthentication authentication = new();
                 authentication.GetBytes(MqttProtocolVersion.Version_3_1);
             });
-            Assert.Throws(typeof(NotSupportedException), () =>
+            Assert.ThrowsException(typeof(NotSupportedException), () =>
             {
                 MokChannel mokChannel = new MokChannel(new byte[1] { 42 });
                 MqttMsgAuthentication authentication = MqttMsgAuthentication.Parse(42, MqttProtocolVersion.Version_3_1_1, mokChannel);
             });
-            Assert.Throws(typeof(NotSupportedException), () =>
+            Assert.ThrowsException(typeof(NotSupportedException), () =>
             {
                 MokChannel mokChannel = new MokChannel(new byte[1] { 42 });
                 MqttMsgAuthentication authentication = MqttMsgAuthentication.Parse(42, MqttProtocolVersion.Version_3_1, mokChannel);
@@ -63,10 +63,10 @@ namespace MessageUnitTests
             // Act
             MqttMsgAuthentication authentication = MqttMsgAuthentication.Parse(240, MqttProtocolVersion.Version_5, mokChannel);
             // Assert
-            Assert.Equal(authentication.AuthenticationMethod, "Something");
-            Assert.Equal(authentication.AuthenticationData, new byte[] { 1, 2, 3, 4, 5 });
-            Assert.Equal((byte)authentication.ReasonCode, (byte)MqttReasonCode.ContinueAuthentication);
-            Assert.Equal(authentication.Reason, "Because it's like that");
+            Assert.AreEqual(authentication.AuthenticationMethod, "Something");
+            CollectionAssert.AreEqual(authentication.AuthenticationData, new byte[] { 1, 2, 3, 4, 5 });
+            Assert.AreEqual((byte)authentication.ReasonCode, (byte)MqttReasonCode.ContinueAuthentication);
+            Assert.AreEqual(authentication.Reason, "Because it's like that");
         }
     }
 }

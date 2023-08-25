@@ -21,7 +21,7 @@ namespace MessageUnitTests
             byte[] encoded = pubrel.GetBytes(MqttProtocolVersion.Version_3_1_1);
             Helpers.DumpBuffer(encoded);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -34,7 +34,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = pubrel.GetBytes(MqttProtocolVersion.Version_5);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -54,7 +54,7 @@ namespace MessageUnitTests
             byte[] encoded = pubrel.GetBytes(MqttProtocolVersion.Version_5);
             Helpers.DumpBuffer(encoded);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -73,7 +73,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = pubrel.GetBytes(MqttProtocolVersion.Version_5);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -85,7 +85,7 @@ namespace MessageUnitTests
             // Act
             MqttMsgPubrel pubrel = MqttMsgPubrel.Parse(98, MqttProtocolVersion.Version_3_1_1, mokChannel);
             // Assert
-            Assert.Equal((ushort)42, pubrel.MessageId);
+            Assert.AreEqual((ushort)42, pubrel.MessageId);
         }
 
         [TestMethod]
@@ -97,8 +97,8 @@ namespace MessageUnitTests
             // Act
             MqttMsgPubrel pubrel = MqttMsgPubrel.Parse(98, MqttProtocolVersion.Version_5, mokChannel);
             // Assert
-            Assert.Equal((ushort)42, pubrel.MessageId);
-            Assert.Equal((byte)0x97, (byte)pubrel.ReasonCode);
+            Assert.AreEqual((ushort)42, pubrel.MessageId);
+            Assert.AreEqual((byte)0x97, (byte)pubrel.ReasonCode);
         }
 
         [TestMethod]
@@ -112,16 +112,16 @@ namespace MessageUnitTests
             // Act
             MqttMsgPubrel pubrel = MqttMsgPubrel.Parse(98, MqttProtocolVersion.Version_5, mokChannel);
             // Assert
-            Assert.Equal((ushort)42, pubrel.MessageId);
-            Assert.Equal((byte)pubrel.ReasonCode, (byte)MqttReasonCode.QuotaExceeded);
-            Assert.Equal(pubrel.Reason, "You have exceed your quota");
-            Assert.Equal(pubrel.UserProperties.Count, 2);
+            Assert.AreEqual((ushort)42, pubrel.MessageId);
+            Assert.AreEqual((byte)pubrel.ReasonCode, (byte)MqttReasonCode.QuotaExceeded);
+            Assert.AreEqual(pubrel.Reason, "You have exceed your quota");
+            Assert.AreEqual(pubrel.UserProperties.Count, 2);
             var prop = new UserProperty("Prop", "1");
-            Assert.Equal(((UserProperty)pubrel.UserProperties[0]).Name, prop.Name);
-            Assert.Equal(((UserProperty)pubrel.UserProperties[0]).Value, prop.Value);
+            Assert.AreEqual(((UserProperty)pubrel.UserProperties[0]).Name, prop.Name);
+            Assert.AreEqual(((UserProperty)pubrel.UserProperties[0]).Value, prop.Value);
             prop = new UserProperty("Prop", "2");
-            Assert.Equal(((UserProperty)pubrel.UserProperties[1]).Name, prop.Name);
-            Assert.Equal(((UserProperty)pubrel.UserProperties[1]).Value, prop.Value);
+            Assert.AreEqual(((UserProperty)pubrel.UserProperties[1]).Name, prop.Name);
+            Assert.AreEqual(((UserProperty)pubrel.UserProperties[1]).Value, prop.Value);
         }
     }
 }

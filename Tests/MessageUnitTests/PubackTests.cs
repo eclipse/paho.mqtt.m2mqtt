@@ -20,7 +20,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = puback.GetBytes(MqttProtocolVersion.Version_3_1_1);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -33,7 +33,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = puback.GetBytes(MqttProtocolVersion.Version_5);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -52,7 +52,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = puback.GetBytes(MqttProtocolVersion.Version_5);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -71,7 +71,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = puback.GetBytes(MqttProtocolVersion.Version_5);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -83,7 +83,7 @@ namespace MessageUnitTests
             // Act
             MqttMsgPuback puback = MqttMsgPuback.Parse(64, MqttProtocolVersion.Version_3_1_1, mokChannel);
             // Assert
-            Assert.Equal((ushort)42, puback.MessageId);
+            Assert.AreEqual((ushort)42, puback.MessageId);
         }
 
         [TestMethod]
@@ -95,7 +95,7 @@ namespace MessageUnitTests
             // Act
             MqttMsgPuback puback = MqttMsgPuback.Parse(64, MqttProtocolVersion.Version_5, mokChannel);
             // Assert
-            Assert.Equal((ushort)42, puback.MessageId);
+            Assert.AreEqual((ushort)42, puback.MessageId);
         }
 
         [TestMethod]
@@ -109,16 +109,16 @@ namespace MessageUnitTests
             // Act
             MqttMsgPuback puback = MqttMsgPuback.Parse(64, MqttProtocolVersion.Version_5, mokChannel);
             // Assert
-            Assert.Equal((ushort)42, puback.MessageId);
-            Assert.Equal((byte)puback.ReasonCode, (byte)MqttReasonCode.QuotaExceeded);
-            Assert.Equal(puback.Reason, "You have exceed your quota");
-            Assert.Equal(puback.UserProperties.Count, 2);
+            Assert.AreEqual((ushort)42, puback.MessageId);
+            Assert.AreEqual((byte)puback.ReasonCode, (byte)MqttReasonCode.QuotaExceeded);
+            Assert.AreEqual(puback.Reason, "You have exceed your quota");
+            Assert.AreEqual(puback.UserProperties.Count, 2);
             var prop = new UserProperty("Prop", "1");
-            Assert.Equal(((UserProperty)puback.UserProperties[0]).Name, prop.Name);
-            Assert.Equal(((UserProperty)puback.UserProperties[0]).Value, prop.Value);
+            Assert.AreEqual(((UserProperty)puback.UserProperties[0]).Name, prop.Name);
+            Assert.AreEqual(((UserProperty)puback.UserProperties[0]).Value, prop.Value);
             prop = new UserProperty("Prop", "2");
-            Assert.Equal(((UserProperty)puback.UserProperties[1]).Name, prop.Name);
-            Assert.Equal(((UserProperty)puback.UserProperties[1]).Value, prop.Value);
+            Assert.AreEqual(((UserProperty)puback.UserProperties[1]).Name, prop.Name);
+            Assert.AreEqual(((UserProperty)puback.UserProperties[1]).Value, prop.Value);
         }
     }
 }

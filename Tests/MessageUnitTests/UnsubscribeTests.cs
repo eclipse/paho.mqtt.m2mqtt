@@ -20,7 +20,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = unsubscribe.GetBytes(MqttProtocolVersion.Version_3_1_1);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -33,7 +33,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = unsubscribe.GetBytes(MqttProtocolVersion.Version_5);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -50,7 +50,7 @@ namespace MessageUnitTests
             byte[] encoded = unsubscribe.GetBytes(MqttProtocolVersion.Version_5);
             Helpers.DumpBuffer(encoded);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -62,9 +62,9 @@ namespace MessageUnitTests
             // Act
             MqttMsgUnsubscribe unsubscribe = MqttMsgUnsubscribe.Parse(162, MqttProtocolVersion.Version_3_1_1, mokChannel);
             // Assert
-            Assert.Equal((ushort)42, unsubscribe.MessageId);
-            Assert.Equal(unsubscribe.Topics.Length, 2);
-            Assert.Equal(unsubscribe.Topics, new string[] { "tpoic1", "topic2" });
+            Assert.AreEqual((ushort)42, unsubscribe.MessageId);
+            Assert.AreEqual(unsubscribe.Topics.Length, 2);
+            CollectionAssert.AreEqual(unsubscribe.Topics, new string[] { "tpoic1", "topic2" });
         }
 
         [TestMethod]
@@ -76,9 +76,9 @@ namespace MessageUnitTests
             // Act
             MqttMsgUnsubscribe unsubscribe = MqttMsgUnsubscribe.Parse(162, MqttProtocolVersion.Version_5, mokChannel);
             // Assert
-            Assert.Equal((ushort)42, unsubscribe.MessageId);
-            Assert.Equal(unsubscribe.Topics.Length, 2);
-            Assert.Equal(unsubscribe.Topics, new string[] { "tpoic1", "topic2" });
+            Assert.AreEqual((ushort)42, unsubscribe.MessageId);
+            Assert.AreEqual(unsubscribe.Topics.Length, 2);
+            CollectionAssert.AreEqual(unsubscribe.Topics, new string[] { "tpoic1", "topic2" });
         }
 
         [TestMethod]
@@ -92,12 +92,12 @@ namespace MessageUnitTests
             // Act
             MqttMsgUnsubscribe unsubscribe = MqttMsgUnsubscribe.Parse(162, MqttProtocolVersion.Version_5, mokChannel);
             // Assert
-            Assert.Equal((ushort)42, unsubscribe.MessageId);
-            Assert.Equal(unsubscribe.Topics.Length, 2);
-            Assert.Equal(unsubscribe.Topics, new string[] { "tpoic1", "topic2" });
+            Assert.AreEqual((ushort)42, unsubscribe.MessageId);
+            Assert.AreEqual(unsubscribe.Topics.Length, 2);
+            CollectionAssert.AreEqual(unsubscribe.Topics, new string[] { "tpoic1", "topic2" });
             var prop = new UserProperty("Prop", "only one this time for fun");
-            Assert.Equal(((UserProperty)unsubscribe.UserProperties[0]).Name, prop.Name);
-            Assert.Equal(((UserProperty)unsubscribe.UserProperties[0]).Value, prop.Value);
+            Assert.AreEqual(((UserProperty)unsubscribe.UserProperties[0]).Name, prop.Name);
+            Assert.AreEqual(((UserProperty)unsubscribe.UserProperties[0]).Value, prop.Value);
         }
     }
 }

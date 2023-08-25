@@ -111,7 +111,7 @@ namespace TestAppv5._0
                 // For normal servers
                 // var number = mqtt.Publish("nanoTestDevice/publish", Encoding.UTF8.GetBytes($"{{\"Number\":{i}}}"), MqttQoSLevel.ExactlyOnce, false);
                 // For Azure IoT
-                var number = mqtt.Publish("$iothub/telemetry", Encoding.UTF8.GetBytes($"{{\"Number\":{i}}}"), MqttQoSLevel.AtLeastOnce, false);
+                var number = mqtt.Publish("$iothub/telemetry", Encoding.UTF8.GetBytes($"{{\"Number\":{i}}}"), null, null, MqttQoSLevel.AtLeastOnce, false);
                 Debug.WriteLine($"Posted message: {number}");
                 Thread.Sleep(10000);
             }

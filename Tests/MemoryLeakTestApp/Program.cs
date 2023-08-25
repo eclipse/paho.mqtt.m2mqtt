@@ -26,11 +26,11 @@ namespace MemoryLeakTestApp
             client.Connect(clientId);
 
             // Basic QoS tests
-            client.Publish("temp/test", Encoding.UTF8.GetBytes($"Message QoS 0"), MqttQoSLevel.AtMostOnce, false);
+            client.Publish("temp/test", Encoding.UTF8.GetBytes($"Message QoS 0"), null, null, MqttQoSLevel.AtMostOnce, false);
             Thread.Sleep(200);
-            client.Publish("temp/test", Encoding.UTF8.GetBytes($"Message QoS 1"), MqttQoSLevel.AtLeastOnce, false);
+            client.Publish("temp/test", Encoding.UTF8.GetBytes($"Message QoS 1"), null, null, MqttQoSLevel.AtLeastOnce, false);
             Thread.Sleep(200);
-            client.Publish("temp/test", Encoding.UTF8.GetBytes($"Message QoS 2"), MqttQoSLevel.ExactlyOnce, false);
+            client.Publish("temp/test", Encoding.UTF8.GetBytes($"Message QoS 2"), null, null, MqttQoSLevel.ExactlyOnce, false);
             Thread.Sleep(200);
 
             // Advance tests for different QoS
@@ -41,23 +41,23 @@ namespace MemoryLeakTestApp
             Publish(MqttQoSLevel.ExactlyOnce);
             Thread.Sleep(2000);
 
-            client.Publish("temp/test", Encoding.UTF8.GetBytes($"Memory left after all the test"), MqttQoSLevel.AtMostOnce, false);
+            client.Publish("temp/test", Encoding.UTF8.GetBytes($"Memory left after all the test"), null, null, MqttQoSLevel.AtMostOnce, false);
             freeRam = nanoFramework.Runtime.Native.GC.Run(true);
-            client.Publish("temp/free-ram", Encoding.UTF8.GetBytes(freeRam.ToString("F0")), MqttQoSLevel.AtMostOnce, false);
+            client.Publish("temp/free-ram", Encoding.UTF8.GetBytes(freeRam.ToString("F0")), null, null, MqttQoSLevel.AtMostOnce, false);
             // Wait a bit 
             Thread.Sleep(5_000);
-            client.Publish("temp/test", Encoding.UTF8.GetBytes($"Memory left after all the test: 5s"), MqttQoSLevel.AtMostOnce, false);
+            client.Publish("temp/test", Encoding.UTF8.GetBytes($"Memory left after all the tnull, null,est: 5s"), null, null, MqttQoSLevel.AtMostOnce, false);
             freeRam = nanoFramework.Runtime.Native.GC.Run(true);
-            client.Publish("temp/free-ram", Encoding.UTF8.GetBytes(freeRam.ToString("F0")), MqttQoSLevel.AtMostOnce, false);
+            client.Publish("temp/free-ram", Encoding.UTF8.GetBytes(freeRam.ToString("F0")), null, null, MqttQoSLevel.AtMostOnce, false);
             // Wait more
             Thread.Sleep(35_000);
-            client.Publish("temp/test", Encoding.UTF8.GetBytes($"Memory left after all the test: 35s"), MqttQoSLevel.AtMostOnce, false);
+            client.Publish("temp/test", Encoding.UTF8.GetBytes($"Memory left after all the test: 35s"), null, null, MqttQoSLevel.AtMostOnce, false);
             freeRam = nanoFramework.Runtime.Native.GC.Run(true);
-            client.Publish("temp/free-ram", Encoding.UTF8.GetBytes(freeRam.ToString("F0")), MqttQoSLevel.AtMostOnce, false);
+            client.Publish("temp/free-ram", Encoding.UTF8.GetBytes(freeRam.ToString("F0")), null, null, MqttQoSLevel.AtMostOnce, false);
             Thread.Sleep(120_000);
-            client.Publish("temp/test", Encoding.UTF8.GetBytes($"Memory left after all the test: 120s"), MqttQoSLevel.AtMostOnce, false);
+            client.Publish("temp/test", Encoding.UTF8.GetBytes($"Memory left after all the test: 120s"), null, null, MqttQoSLevel.AtMostOnce, false);
             freeRam = nanoFramework.Runtime.Native.GC.Run(true);
-            client.Publish("temp/free-ram", Encoding.UTF8.GetBytes(freeRam.ToString("F0")), MqttQoSLevel.AtMostOnce, false);
+            client.Publish("temp/free-ram", Encoding.UTF8.GetBytes(freeRam.ToString("F0")), null, null, MqttQoSLevel.AtMostOnce, false);
             Thread.Sleep(Timeout.Infinite);
 
             // Testing dispose
@@ -66,38 +66,38 @@ namespace MemoryLeakTestApp
 
         private static void Publish(MqttQoSLevel level)
         {
-            client.Publish("temp/test", Encoding.UTF8.GetBytes($"single message QoS {level}"), level, false);
+            client.Publish("temp/test", Encoding.UTF8.GetBytes($"single message QoS {level}"), null, null, level, false);
             for (int i = 0; i < NumberOfLoops; i++)
             {
                 freeRam = nanoFramework.Runtime.Native.GC.Run(true);
-                client.Publish("temp/free-ram", Encoding.UTF8.GetBytes($"{i}-{freeRam.ToString("F0")}"), level, false);
+                client.Publish("temp/free-ram", Encoding.UTF8.GetBytes($"{i}-{freeRam.ToString("F0")}"), null, null, level, false);
                 Thread.Sleep(1000);
             }
 
-            client.Publish("temp/test", Encoding.UTF8.GetBytes($"two messages without delays QoS {level}"), level, false);
+            client.Publish("temp/test", Encoding.UTF8.GetBytes($"two messages without delays QoS {level}"), null, null, level, false);
             for (int i = 0; i < NumberOfLoops; i++)
             {
                 freeRam = nanoFramework.Runtime.Native.GC.Run(true);
-                client.Publish("temp/free-ram", Encoding.UTF8.GetBytes($"0/{i}-{freeRam.ToString("F0")}"), level, false);
-                client.Publish("temp/free-ram", Encoding.UTF8.GetBytes($"1/{i}-{freeRam.ToString("F0")}"), level, false);
+                client.Publish("temp/free-ram", Encoding.UTF8.GetBytes($"0/{i}-{freeRam.ToString("F0")}"), null, null, level, false);
+                client.Publish("temp/free-ram", Encoding.UTF8.GetBytes($"1/{i}-{freeRam.ToString("F0")}"), null, null, level, false);
                 Thread.Sleep(1000);
             }
 
-            client.Publish("temp/test", Encoding.UTF8.GetBytes($"two messages with delay QoS {level}"), level, false);
+            client.Publish("temp/test", Encoding.UTF8.GetBytes($"two messages with delay QoS {level}"), null, null, level, false);
             for (int i = 0; i < NumberOfLoops; i++)
             {
                 freeRam = nanoFramework.Runtime.Native.GC.Run(true);
-                client.Publish("temp/free-ram", Encoding.UTF8.GetBytes($"0/{i}-{freeRam.ToString("F0")}"), level, false);
+                client.Publish("temp/free-ram", Encoding.UTF8.GetBytes($"0/{i}-{freeRam.ToString("F0")}"), null, null, level, false);
                 Thread.Sleep(50);
-                client.Publish("temp/free-ram", Encoding.UTF8.GetBytes($"1/{i}-{freeRam.ToString("F0")}"), level, false);
+                client.Publish("temp/free-ram", Encoding.UTF8.GetBytes($"1/{i}-{freeRam.ToString("F0")}"), null, null, level, false);
                 Thread.Sleep(1000);
             }
 
-            client.Publish("temp/test", Encoding.UTF8.GetBytes($"Stress test with no delay QoS {level}"), level, false);
+            client.Publish("temp/test", Encoding.UTF8.GetBytes($"Stress test with no delay QoS {level}"), null, null, level, false);
             for (int i = 0; i < NumberOfLoops; i++)
             {
                 freeRam = nanoFramework.Runtime.Native.GC.Run(true);
-                client.Publish("temp/free-ram", Encoding.UTF8.GetBytes($"{i}-{freeRam.ToString("F0")}"), level, false);
+                client.Publish("temp/free-ram", Encoding.UTF8.GetBytes($"{i}-{freeRam.ToString("F0")}"), null, null, level, false);
             }
         }
 

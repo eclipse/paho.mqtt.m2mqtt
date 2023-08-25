@@ -21,7 +21,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = suback.GetBytes(MqttProtocolVersion.Version_3_1_1);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -35,7 +35,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = suback.GetBytes(MqttProtocolVersion.Version_5);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -55,7 +55,7 @@ namespace MessageUnitTests
             // Act
             byte[] encoded = suback.GetBytes(MqttProtocolVersion.Version_5);
             // Assert
-            Assert.Equal(encodedCorrect, encoded);
+            CollectionAssert.AreEqual(encodedCorrect, encoded);
         }
 
         [TestMethod]
@@ -67,8 +67,8 @@ namespace MessageUnitTests
             // Act
             MqttMsgSuback suback = MqttMsgSuback.Parse(144, MqttProtocolVersion.Version_3_1_1, mokChannel);
             // Assert
-            Assert.Equal((ushort)42, suback.MessageId);
-            Assert.Equal(suback.GrantedQoSLevels, new MqttQoSLevel[] { MqttQoSLevel.AtLeastOnce, MqttQoSLevel.ExactlyOnce });
+            Assert.AreEqual((ushort)42, suback.MessageId);
+            CollectionAssert.AreEqual(suback.GrantedQoSLevels, new MqttQoSLevel[] { MqttQoSLevel.AtLeastOnce, MqttQoSLevel.ExactlyOnce });
         }
 
         [TestMethod]
@@ -80,11 +80,11 @@ namespace MessageUnitTests
             // Act
             MqttMsgSuback suback = MqttMsgSuback.Parse(144, MqttProtocolVersion.Version_5, mokChannel);
             // Assert
-            Assert.Equal((ushort)42, suback.MessageId);
-            Assert.Equal(suback.GrantedQoSLevels, new MqttQoSLevel[] { MqttQoSLevel.AtLeastOnce, MqttQoSLevel.ExactlyOnce });
-            Assert.Equal(suback.ReasonCodes, new MqttReasonCode[] { MqttReasonCode.GrantedQoS1, MqttReasonCode.GrantedQoS2 });
+            Assert.AreEqual((ushort)42, suback.MessageId);
+            CollectionAssert.AreEqual(suback.GrantedQoSLevels, new MqttQoSLevel[] { MqttQoSLevel.AtLeastOnce, MqttQoSLevel.ExactlyOnce });
+            CollectionAssert.AreEqual(suback.ReasonCodes, new MqttReasonCode[] { MqttReasonCode.GrantedQoS1, MqttReasonCode.GrantedQoS2 });
             // And this should work as well as it's value comparison
-            Assert.Equal(suback.GrantedQoSLevels, new MqttReasonCode[] { MqttReasonCode.GrantedQoS1, MqttReasonCode.GrantedQoS2 });
+            CollectionAssert.AreEqual(suback.GrantedQoSLevels, new MqttReasonCode[] { MqttReasonCode.GrantedQoS1, MqttReasonCode.GrantedQoS2 });
         }
 
         [TestMethod]
@@ -100,14 +100,14 @@ namespace MessageUnitTests
             // Act
             MqttMsgSuback suback = MqttMsgSuback.Parse(144, MqttProtocolVersion.Version_5, mokChannel);
             // Assert
-            Assert.Equal((ushort)42, suback.MessageId);
-            Assert.Equal(suback.GrantedQoSLevels, new MqttQoSLevel[] { MqttQoSLevel.AtLeastOnce, MqttQoSLevel.ExactlyOnce, (MqttQoSLevel)MqttReasonCode.NotAuthorized });
-            Assert.Equal(suback.ReasonCodes, new MqttReasonCode[] { MqttReasonCode.GrantedQoS1, MqttReasonCode.GrantedQoS2, MqttReasonCode.NotAuthorized });
+            Assert.AreEqual((ushort)42, suback.MessageId);
+            CollectionAssert.AreEqual(suback.GrantedQoSLevels, new MqttQoSLevel[] { MqttQoSLevel.AtLeastOnce, MqttQoSLevel.ExactlyOnce, (MqttQoSLevel)MqttReasonCode.NotAuthorized });
+            CollectionAssert.AreEqual(suback.ReasonCodes, new MqttReasonCode[] { MqttReasonCode.GrantedQoS1, MqttReasonCode.GrantedQoS2, MqttReasonCode.NotAuthorized });
             // And this should work as well as it's value comparison
-            Assert.Equal(suback.GrantedQoSLevels, new MqttReasonCode[] { MqttReasonCode.GrantedQoS1, MqttReasonCode.GrantedQoS2, MqttReasonCode.NotAuthorized });
+            CollectionAssert.AreEqual(suback.GrantedQoSLevels, new MqttReasonCode[] { MqttReasonCode.GrantedQoS1, MqttReasonCode.GrantedQoS2, MqttReasonCode.NotAuthorized });
             var prop = new UserProperty("Prop", "only one this time for fun");
-            Assert.Equal(((UserProperty)suback.UserProperties[0]).Name, prop.Name);
-            Assert.Equal(((UserProperty)suback.UserProperties[0]).Value, prop.Value);
+            Assert.AreEqual(((UserProperty)suback.UserProperties[0]).Name, prop.Name);
+            Assert.AreEqual(((UserProperty)suback.UserProperties[0]).Value, prop.Value);
         }
     }
 }
