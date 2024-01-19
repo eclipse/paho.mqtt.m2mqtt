@@ -12,7 +12,12 @@ MQTT, short for Message Queue Telemetry Transport, is a light weight messaging p
 
 MQTT protocol is based on publish/subscribe pattern so that a client can subscribe to one or more topics and receive messages that other clients publish on these topics.
 
-This sample is a library contains an MQTT client that you can use to connect to any MQTT broker. It is developed in C# language and works on all the following .Net platforms :
+This sample is a library contains an MQTT client that you can use to connect to any MQTT broker. It supports the following MQTT protocols:
+
+* 3.1
+* 3.1.1
+
+It is developed in C# language and works on all the following .Net platforms :
 
 * .Net Framework (up to 4.5)
 * .Net Compact Framework 3.5 & 3.9 (for Windows Embedded Compact 7 / 2013)
