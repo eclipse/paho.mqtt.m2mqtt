@@ -51,6 +51,7 @@ using System.Collections;
 // (it's ambiguos with uPLibrary.Networking.M2Mqtt.Utility.Trace)
 using MqttUtility = uPLibrary.Networking.M2Mqtt.Utility;
 using System.IO;
+using System.Net.Security;
 
 namespace uPLibrary.Networking.M2Mqtt
 {
