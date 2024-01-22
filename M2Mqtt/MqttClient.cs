@@ -475,8 +475,8 @@ namespace uPLibrary.Networking.M2Mqtt
         /// Connect to broker
         /// </summary>
         /// <param name="clientId">Client identifier</param>
-        /// <returns>Return code of CONNACK message from broker</returns>
-        public byte Connect(string clientId)
+        /// <returns>CONNACK message from broker</returns>
+        public MqttMsgConnack Connect(string clientId)
         {
             return this.Connect(clientId, null, null, false, MqttMsgConnect.QOS_LEVEL_AT_MOST_ONCE, false, null, null, true, MqttMsgConnect.KEEP_ALIVE_PERIOD_DEFAULT);
         }
@@ -486,8 +486,8 @@ namespace uPLibrary.Networking.M2Mqtt
         /// </summary>
         /// <param name="clientId">Client identifier</param>
         /// <param name="cleanSession">Clean sessione flag</param>
-        /// <returns>Return code of CONNACK message from broker</returns>
-        public byte Connect(string clientId,
+        /// <returns>CONNACK message from broker</returns>
+        public MqttMsgConnack Connect(string clientId,
             bool cleanSession)
         {
             return this.Connect(clientId, null, null, false, MqttMsgConnect.QOS_LEVEL_AT_MOST_ONCE, false, null, null, cleanSession, MqttMsgConnect.KEEP_ALIVE_PERIOD_DEFAULT);
@@ -499,8 +499,8 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="clientId">Client identifier</param>
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
-        /// <returns>Return code of CONNACK message from broker</returns>
-        public byte Connect(string clientId,
+        /// <returns>CONNACK message from broker</returns>
+        public MqttMsgConnack Connect(string clientId,
             string username,
             string password)
         {
@@ -515,8 +515,8 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="password">Password</param>
         /// <param name="cleanSession">Clean sessione flag</param>
         /// <param name="keepAlivePeriod">Keep alive period</param>
-        /// <returns>Return code of CONNACK message from broker</returns>
-        public byte Connect(string clientId,
+        /// <returns>CONNACK message from broker</returns>
+        public MqttMsgConnack Connect(string clientId,
             string username,
             string password,
             bool cleanSession,
@@ -538,8 +538,8 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="willMessage">Will message</param>
         /// <param name="cleanSession">Clean sessione flag</param>
         /// <param name="keepAlivePeriod">Keep alive period</param>
-        /// <returns>Return code of CONNACK message from broker</returns>
-        public byte Connect(string clientId,
+        /// <returns>CONNACK message from broker</returns>
+        public MqttMsgConnack Connect(string clientId,
             string username,
             string password,
             bool willRetain,
@@ -611,7 +611,7 @@ namespace uPLibrary.Networking.M2Mqtt
 
                 this.IsConnected = true;
             }
-            return connack.ReturnCode;
+            return connack;
         }
 
         /// <summary>
