@@ -1,6 +1,7 @@
+![.NET Core Build](https://github.com/mohaqeq/paho.mqtt.m2mqtt/workflows/.NET%20Core/badge.svg)
 # M2Mqtt
 
-![](images/M2Mqtt_Short_Logo.png)
+![](images/m2mqtt6.png)
 
 MQTT Client Library for .Net and WinRT
 
@@ -18,6 +19,7 @@ This sample is a library contains an MQTT client that you can use to connect to 
 * .Net Compact Framework 3.5 & 3.9 (for Windows Embedded Compact 7 / 2013)
 * .Net Micro Framework 4.2 & 4.3
 * Mono (for Linux O.S.)
+* .Net Core (.Net Core 3.1)
 
 There is also the support for WinRT platforms :
 
@@ -54,6 +56,18 @@ If you want to disable SSL/TLS feature, so that you can reduce memory occupation
 However, you can leave the default project configuration and set "secure" parameter to false and "cacert" to null for MqttClient constructor (these are already default if you don't specify any values).
 
 ATTENTION : .Net Micro Framework supports up to TLSV1
+
+*ALPN support*
+
+This library supports ALPN. You can connect to broker that provide ALPN connection like AWS IoT Core.
+If you connect to broker with ALPN, set a protocol name to "ALPNProtocols" paramerter. For example, you need to set "x-amzn-mqtt-ca" as a protocol name when you connect to AWS IoT Core with ALPN.
+
+note: ALPNProtocols parameter is list of string for protocol names.
+
+About ALPN: https://tools.ietf.org/html/rfc7301
+
+About AWS IoT Core ALPN:
+https://aws.amazon.com/jp/blogs/iot/mqtt-with-tls-client-authentication-on-port-443-why-it-is-useful-and-how-it-works/
 
 *Example*
 

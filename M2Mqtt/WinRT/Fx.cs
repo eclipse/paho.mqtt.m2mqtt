@@ -14,6 +14,7 @@ Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
 */
 
+#if !(NETSTANDARD1_6 || NETSTANDARD2_0  || NETCOREAPP3_1)
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,3 +35,4 @@ namespace uPLibrary.Networking.M2Mqtt
         public static void SleepThread(int millisecondsTimeout) { Task.Delay(millisecondsTimeout).RunSynchronously(); }
     }
 }
+#endif

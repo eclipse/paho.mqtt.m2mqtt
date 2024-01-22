@@ -14,6 +14,10 @@ Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
 */
 
+#if (NETSTANDARD1_6 || NETSTANDARD2_0 || NETCOREAPP3_1)
+#define SSL
+#endif
+
 #if SSL
 #if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3)
 using Microsoft.SPOT.Net.Security;
@@ -26,6 +30,8 @@ using System.Net.Sockets;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System;
+using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace uPLibrary.Networking.M2Mqtt
 {
@@ -78,6 +84,11 @@ namespace uPLibrary.Networking.M2Mqtt
         private SslStream sslStream;
 #if (!MF_FRAMEWORK_VERSION_V4_2 && !MF_FRAMEWORK_VERSION_V4_3)
         private NetworkStream netStream;
+
+        /// <summary>
+        /// List of Protocol for ALPN
+        /// </summary>
+        private List<string> alpnProtocols;
 #endif
 #endif
 
@@ -119,7 +130,7 @@ namespace uPLibrary.Networking.M2Mqtt
         {
 
         }
-        
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -175,7 +186,8 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="userCertificateValidationCallback">A LocalCertificateSelectionCallback delegate responsible for selecting the certificate used for authentication</param>
         public MqttNetworkChannel(string remoteHostName, int remotePort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol,
             RemoteCertificateValidationCallback userCertificateValidationCallback,
-            LocalCertificateSelectionCallback userCertificateSelectionCallback)
+            LocalCertificateSelectionCallback userCertificateSelectionCallback,
+            List<string> alpnProtocols = null)
 #else
         public MqttNetworkChannel(string remoteHostName, int remotePort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol)
 #endif
@@ -193,7 +205,11 @@ namespace uPLibrary.Networking.M2Mqtt
             // in this case the parameter remoteHostName isn't a valid IP address
             if (remoteIpAddress == null)
             {
+#if (NETSTANDARD1_6 || NETSTANDARD2_0 || NETCOREAPP3_1)
+                IPHostEntry hostEntry = Dns.GetHostEntryAsync(remoteHostName).Result;
+#else
                 IPHostEntry hostEntry = Dns.GetHostEntry(remoteHostName);
+#endif
                 if ((hostEntry != null) && (hostEntry.AddressList.Length > 0))
                 {
                     // check for the first address not null
@@ -218,6 +234,7 @@ namespace uPLibrary.Networking.M2Mqtt
 #if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK)
             this.userCertificateValidationCallback = userCertificateValidationCallback;
             this.userCertificateSelectionCallback = userCertificateSelectionCallback;
+            this.alpnProtocols = alpnProtocols;
 #endif
         }
 
@@ -228,7 +245,7 @@ namespace uPLibrary.Networking.M2Mqtt
         {
             this.socket = new Socket(this.remoteIpAddress.GetAddressFamily(), SocketType.Stream, ProtocolType.Tcp);
             // try connection to the broker
-            this.socket.Connect(new IPEndPoint(this.remoteIpAddress, this.remotePort));
+            this.socket.Connect(this.remoteHostName, this.remotePort);
 
 #if SSL
             // secure channel requested
@@ -254,12 +271,40 @@ namespace uPLibrary.Networking.M2Mqtt
                 // check if there is a client certificate to add to the collection, otherwise it's null (as empty)
                 if (this.clientCert != null)
                     clientCertificates = new X509CertificateCollection(new X509Certificate[] { this.clientCert });
+#if (NETSTANDARD1_6 || NETSTANDARD2_0 || NETCOREAPP3_1)
 
+                if ((this.alpnProtocols != null) && (0 < this.alpnProtocols.Count))
+                {
+                    this.sslStream = new SslStream(this.netStream, false);
+                    SslClientAuthenticationOptions authOptions = new SslClientAuthenticationOptions();
+                    List<SslApplicationProtocol> sslProtocolList = new List<SslApplicationProtocol>();
+                    foreach (string alpnProtocol in this.alpnProtocols)
+                    {
+                        sslProtocolList.Add(new SslApplicationProtocol(alpnProtocol));
+                    }
+                    authOptions.ApplicationProtocols = sslProtocolList;
+                    authOptions.EnabledSslProtocols = MqttSslUtility.ToSslPlatformEnum(this.sslProtocol);
+                    authOptions.TargetHost = remoteHostName;
+                    authOptions.AllowRenegotiation = false;
+                    authOptions.ClientCertificates = clientCertificates;
+                    authOptions.EncryptionPolicy = EncryptionPolicy.RequireEncryption;
+
+                    this.sslStream.AuthenticateAsClientAsync(authOptions).Wait();
+                }
+                else
+                {
+                    this.sslStream.AuthenticateAsClientAsync(this.remoteHostName,
+                        clientCertificates,
+                        MqttSslUtility.ToSslPlatformEnum(this.sslProtocol),
+                        false).Wait();
+                }
+#else
                 this.sslStream.AuthenticateAsClient(this.remoteHostName,
                     clientCertificates,
                     MqttSslUtility.ToSslPlatformEnum(this.sslProtocol),
                     false);
-                
+#endif
+
 #endif
             }
 #endif
@@ -368,11 +413,32 @@ namespace uPLibrary.Networking.M2Mqtt
             if (this.secure)
             {
 #if (!MF_FRAMEWORK_VERSION_V4_2 && !MF_FRAMEWORK_VERSION_V4_3)
+#if (NETSTANDARD1_6 || NETSTANDARD2_0 || NETCOREAPP3_1)
+                this.netStream.Flush();
+#else
                 this.netStream.Close();
 #endif
+#endif
+#if (NETSTANDARD1_6 || NETSTANDARD2_0 || NETCOREAPP3_1)
+                this.sslStream.Flush();
+#else
                 this.sslStream.Close();
+#endif
             }
+#if (NETSTANDARD1_6 || NETSTANDARD2_0 || NETCOREAPP3_1)
+            try
+            {
+                this.socket.Shutdown(SocketShutdown.Both);
+            }
+            catch
+            {
+                // An error occurred when attempting to access the socket or socket has been closed
+                // Refer to: https://msdn.microsoft.com/en-us/library/system.net.sockets.socket.shutdown(v=vs.110).aspx
+            }
+            this.socket.Dispose();
+#else
             this.socket.Close();
+#endif
 #else
             this.socket.Close();
 #endif
@@ -392,7 +458,11 @@ namespace uPLibrary.Networking.M2Mqtt
                 this.netStream = new NetworkStream(this.socket);
                 this.sslStream = new SslStream(this.netStream, false, this.userCertificateValidationCallback, this.userCertificateSelectionCallback);
 
+#if (NETSTANDARD1_6 || NETSTANDARD2_0 || NETCOREAPP3_1)
+                this.sslStream.AuthenticateAsServerAsync(this.serverCert, false, MqttSslUtility.ToSslPlatformEnum(this.sslProtocol), false).Wait();
+#else
                 this.sslStream.AuthenticateAsServer(this.serverCert, false, MqttSslUtility.ToSslPlatformEnum(this.sslProtocol), false);
+#endif
 #endif
             }
 
@@ -436,8 +506,9 @@ namespace uPLibrary.Networking.M2Mqtt
             {
                 case MqttSslProtocols.None:
                     return SslProtocols.None;
+                // CS0618: 'SslProtocols.Ssl3' is obsolete: 'This value has been deprecated.  It is no longer supported. https://go.microsoft.com/fwlink/?linkid=14202'
                 case MqttSslProtocols.SSLv3:
-                    return SslProtocols.Ssl3;
+                    throw new ArgumentException("Ssl3 is obsolete. It is no longer supported. https://go.microsoft.com/fwlink/?linkid=14202");
                 case MqttSslProtocols.TLSv1_0:
                     return SslProtocols.Tls;
                 case MqttSslProtocols.TLSv1_1:

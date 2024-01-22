@@ -14,6 +14,11 @@ Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
 */
 
+#if (NETSTANDARD1_6 || NETSTANDARD2_0 || NETCOREAPP3_1)
+#define SSL
+using System.Linq;
+#endif
+
 using System;
 using System.Net;
 #if !(WINDOWS_APP || WINDOWS_PHONE_APP)
@@ -362,11 +367,13 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="sslProtocol">SSL/TLS protocol version</param>
         /// <param name="userCertificateValidationCallback">A RemoteCertificateValidationCallback delegate responsible for validating the certificate supplied by the remote party</param>
         /// <param name="userCertificateSelectionCallback">A LocalCertificateSelectionCallback delegate responsible for selecting the certificate used for authentication</param>
+        /// <param name="alpnProtocols">list of protocols for ALPN</param>
         public MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol,
             RemoteCertificateValidationCallback userCertificateValidationCallback,
-            LocalCertificateSelectionCallback userCertificateSelectionCallback)
+            LocalCertificateSelectionCallback userCertificateSelectionCallback,
+            List<string> ALPNProtocols = null)
         {
-            this.Init(brokerHostName, brokerPort, secure, caCert, clientCert, sslProtocol, userCertificateValidationCallback, userCertificateSelectionCallback);
+            this.Init(brokerHostName, brokerPort, secure, caCert, clientCert, sslProtocol, userCertificateValidationCallback, userCertificateSelectionCallback, ALPNProtocols);
         }
 #endif
 
@@ -418,9 +425,12 @@ namespace uPLibrary.Networking.M2Mqtt
 #if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK || WINDOWS_APP || WINDOWS_PHONE_APP)
         /// <param name="userCertificateSelectionCallback">A RemoteCertificateValidationCallback delegate responsible for validating the certificate supplied by the remote party</param>
         /// <param name="userCertificateValidationCallback">A LocalCertificateSelectionCallback delegate responsible for selecting the certificate used for authentication</param>
+        /// <param name="alpnProtocols">list of protocols for ALPN</param>
+        /// 
         private void Init(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol,
             RemoteCertificateValidationCallback userCertificateValidationCallback,
-            LocalCertificateSelectionCallback userCertificateSelectionCallback)
+            LocalCertificateSelectionCallback userCertificateSelectionCallback,
+            List<string> alpnProtocols = null)
 #elif (WINDOWS_APP || WINDOWS_PHONE_APP)
         private void Init(string brokerHostName, int brokerPort, bool secure, MqttSslProtocols sslProtocol)
 #else
@@ -463,7 +473,7 @@ namespace uPLibrary.Networking.M2Mqtt
 
             // create network channel
 #if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK || WINDOWS_APP || WINDOWS_PHONE_APP)
-            this.channel = new MqttNetworkChannel(this.brokerHostName, this.brokerPort, secure, caCert, clientCert, sslProtocol, userCertificateValidationCallback, userCertificateSelectionCallback);
+            this.channel = new MqttNetworkChannel(this.brokerHostName, this.brokerPort, secure, caCert, clientCert, sslProtocol, userCertificateValidationCallback, userCertificateSelectionCallback, alpnProtocols);
 #elif (WINDOWS_APP || WINDOWS_PHONE_APP)
             this.channel = new MqttNetworkChannel(this.brokerHostName, this.brokerPort, secure, sslProtocol);
 #else
@@ -579,7 +589,17 @@ namespace uPLibrary.Networking.M2Mqtt
             // start thread for receiving messages from broker
             Fx.StartThread(this.ReceiveThread);
             
-            MqttMsgConnack connack = (MqttMsgConnack)this.SendReceive(connect);
+            MqttMsgConnack connack = null;
+            try
+            {
+                connack = (MqttMsgConnack)this.SendReceive(connect);
+            }
+            catch (MqttCommunicationException)
+            {
+                this.isRunning = false;
+                throw;
+            }
+		
             // if connection accepted, start keep alive timer and 
             if (connack.ReturnCode == MqttMsgConnack.CONN_ACCEPTED)
             {
@@ -1155,7 +1175,11 @@ namespace uPLibrary.Networking.M2Mqtt
                     // NOTE : I need to find on message id and flow because the broker could be publish/received
                     //        to/from client and message id could be the same (one tracked by broker and the other by client)
                     MqttMsgContextFinder msgCtxFinder = new MqttMsgContextFinder(msg.MessageId, MqttMsgFlow.ToAcknowledge);
+#if (NETSTANDARD1_6 || NETSTANDARD2_0  || NETCOREAPP3_1)
+                    MqttMsgContext msgCtx = (MqttMsgContext)this.inflightQueue.ToArray().FirstOrDefault(msgCtxFinder.Find);
+#else
                     MqttMsgContext msgCtx = (MqttMsgContext)this.inflightQueue.Get(msgCtxFinder.Find);
+#endif
 
                     // the PUBLISH message is alredy in the inflight queue, we don't need to re-enqueue but we need
                     // to change state to re-send PUBREC
