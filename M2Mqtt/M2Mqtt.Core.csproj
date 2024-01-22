@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <RootNamespace>uPLibrary.Networking.M2Mqtt</RootNamespace>
+    <RuntimeIdentifiers>win-x86</RuntimeIdentifiers>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <ApplicationIcon />
+    <StartupObject />
+    <DefineConstants>SSL</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>../bin/core/release</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>../bin/core/debug</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="WinRT\**" />
+    <EmbeddedResource Remove="WinRT\**" />
+    <None Remove="WinRT\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Spec\" />
+  </ItemGroup>
+</Project>

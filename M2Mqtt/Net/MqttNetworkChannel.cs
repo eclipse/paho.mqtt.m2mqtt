@@ -14,19 +14,17 @@ Contributors:
    Paolo Patierno - initial API and implementation and/or initial documentation
 */
 
-#if SSL
 #if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3)
 using Microsoft.SPOT.Net.Security;
-#else
-using System.Net.Security;
-using System.Security.Authentication;
 #endif
-#endif
+
 using System.Net.Sockets;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System;
-
+using System.Security.Authentication;
+using System.Net.Security;
+using System.Security.Authentication;
 namespace uPLibrary.Networking.M2Mqtt
 {
     /// <summary>
@@ -227,6 +225,7 @@ namespace uPLibrary.Networking.M2Mqtt
         public void Connect()
         {
             this.socket = new Socket(this.remoteIpAddress.GetAddressFamily(), SocketType.Stream, ProtocolType.Tcp);
+            
             // try connection to the broker
             this.socket.Connect(new IPEndPoint(this.remoteIpAddress, this.remotePort));
 
@@ -372,7 +371,13 @@ namespace uPLibrary.Networking.M2Mqtt
 #endif
                 this.sslStream.Close();
             }
+            try
+            {
+                this.socket.Disconnect(true);
+            }
+            catch { }
             this.socket.Close();
+            this.socket.Dispose();
 #else
             this.socket.Close();
 #endif
@@ -429,7 +434,7 @@ namespace uPLibrary.Networking.M2Mqtt
     /// </summary>
     public static class MqttSslUtility
     {
-#if (!MF_FRAMEWORK_VERSION_V4_2 && !MF_FRAMEWORK_VERSION_V4_3 && !COMPACT_FRAMEWORK)
+#if (!MF_FRAMEWORK_VERSION_V4_2 && !MF_FRAMEWORK_VERSION_V4_3 && !COMPACT_FRAMEWORK && !MONO)
         public static SslProtocols ToSslPlatformEnum(MqttSslProtocols mqttSslProtocol)
         {
             switch (mqttSslProtocol)
@@ -444,6 +449,21 @@ namespace uPLibrary.Networking.M2Mqtt
                     return SslProtocols.Tls11;
                 case MqttSslProtocols.TLSv1_2:
                     return SslProtocols.Tls12;
+                default:
+                    throw new ArgumentException("SSL/TLS protocol version not supported");
+            }
+        }
+#elif (!MF_FRAMEWORK_VERSION_V4_2 && !MF_FRAMEWORK_VERSION_V4_3 && !COMPACT_FRAMEWORK && MONO)
+        public static SslProtocols ToSslPlatformEnum(MqttSslProtocols mqttSslProtocol)
+        {
+            switch (mqttSslProtocol)
+            {
+                case MqttSslProtocols.None:
+                    return SslProtocols.None;
+                case MqttSslProtocols.SSLv3:
+                    return SslProtocols.Ssl3;
+                case MqttSslProtocols.TLSv1_0:
+                    return SslProtocols.Tls;
                 default:
                     throw new ArgumentException("SSL/TLS protocol version not supported");
             }

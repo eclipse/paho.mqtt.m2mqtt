@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>M2Mqtt</id>
-        <version>4.3.0.0</version>
+        <version>4.4.0.0</version>
         <title>M2Mqtt - MQTT Client Library for .Net and WinRT</title>
         <authors>Paolo Patierno</authors>
         <owners>Paolo Patierno</owners>
@@ -17,15 +17,7 @@
         <tags>m2m mqtt queue messaging internetofthings iot cloud netmf embedded micro netduino micro-framework hardware winrt windows8 windows8.1 windowsphone windowsphone8.1 gadgeteer</tags>
     </metadata>
     <files>
-		<file src="bin\Release\M2Mqtt.Net\*.*" target="lib\net45" />
-		<file src="bin\Release\M2Mqtt.NetCf39\*.*" target="lib\net39-cf" />
-		<file src="bin\Release\M2Mqtt.NetMf42\*.*" target="lib\netmf42" />
-		<file src="bin\Release\M2Mqtt.NetMf42\le\*.p*" target="lib\netmf42\le" />
-		<file src="bin\Release\M2Mqtt.NetMf42\be\*.p*" target="lib\netmf42\be" />
-		<file src="bin\Release\M2Mqtt.NetMf43\*.*" target="lib\netmf43" />
-		<file src="bin\Release\M2Mqtt.NetMf43\le\*.p*" target="lib\netmf43\le" />
-		<file src="bin\Release\M2Mqtt.NetMf43\be\*.p*" target="lib\netmf43\be" />
-		<file src="bin\Release\M2Mqtt.WinRT\*.*" target="lib\win81" />
-        <file src="bin\Release\M2Mqtt.WinRT\*.*" target="lib\wpa81" />
+		<file src="bin\core\release\netcoreapp2.1\*.*" target="lib\netcoreapp2.1" />
+        <file src="bin\net462\release\*.*" target="lib\net462" />
 	</files>
 </package>

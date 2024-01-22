@@ -16,6 +16,7 @@ Contributors:
 
 using System;
 using System.Net;
+using System.Net.Security;
 #if !(WINDOWS_APP || WINDOWS_PHONE_APP)
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
@@ -46,11 +47,15 @@ using Windows.Networking.Sockets;
 #endif
 
 using System.Collections;
+using System.Linq;
 
 // alias needed due to Microsoft.SPOT.Trace in .Net Micro Framework
 // (it's ambiguos with uPLibrary.Networking.M2Mqtt.Utility.Trace)
 using MqttUtility = uPLibrary.Networking.M2Mqtt.Utility;
 using System.IO;
+using uPLibrary.Networking.M2Mqtt.Topic;
+using System.Dynamic;
+using System.Text;
 
 namespace uPLibrary.Networking.M2Mqtt
 {
@@ -118,6 +123,15 @@ namespace uPLibrary.Networking.M2Mqtt
         /// </summary>
         public delegate void ConnectionClosedEventHandler(object sender, EventArgs e);
 
+        /// <summary>
+        /// Delagate that defines event handler for unsubscribed topic
+        /// </summary>
+        public delegate void ReconnectedEventHandler(object sender, EventArgs e);
+
+        public delegate void ConnectedEventHandler(object sender, EventArgs e);
+        public delegate void DisconnectedEventHandler(object sender, EventArgs e);
+        public delegate void GenericEventHandler(object sender, GenericEventArgs e);
+
         // broker hostname (or ip address) and port
         private string brokerHostName;
         private int brokerPort;
@@ -167,7 +181,12 @@ namespace uPLibrary.Networking.M2Mqtt
 
         // event for peer/client disconnection
         public event ConnectionClosedEventHandler ConnectionClosed;
-        
+
+        public event ReconnectedEventHandler Reconnected;
+        public event ConnectedEventHandler Connected;
+        public event DisconnectedEventHandler Disconnected;
+        public event GenericEventHandler Event;
+
         // channel to communicate over the network
         private IMqttNetworkChannel channel;
 
@@ -228,6 +247,19 @@ namespace uPLibrary.Networking.M2Mqtt
         /// MQTT protocol version
         /// </summary>
         public MqttProtocolVersion ProtocolVersion { get; set; }
+
+        private List<Topic.Topic> Topics;
+        public Boolean shouldReconnect = true;
+        /// <summary>
+        /// Time in milliseconds before reconnection attempt
+        /// </summary>
+        public int reconnectInterval = 1000;
+        /// <summary>
+        /// Should not have multiple reconnecting threads
+        /// this is to guard against this situation
+        /// </summary>
+        public Boolean isReconnecting = false;
+        public Boolean isDisconnecting = false;
 
 #if BROKER
         /// <summary>
@@ -302,7 +334,7 @@ namespace uPLibrary.Networking.M2Mqtt
 #if !(WINDOWS_APP || WINDOWS_PHONE_APP)
         /// <param name="caCert">CA certificate for secure connection</param>
         /// <param name="clientCert">Client certificate</param>
-        public MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol)            
+        public MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol)
 #else
         public MqttClient(string brokerHostName, int brokerPort, bool secure, MqttSslProtocols sslProtocol)            
 #endif
@@ -344,8 +376,8 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="sslProtocol">SSL/TLS protocol version</param>
         /// <param name="userCertificateValidationCallback">A RemoteCertificateValidationCallback delegate responsible for validating the certificate supplied by the remote party</param>
         /// <param name="userCertificateSelectionCallback">A LocalCertificateSelectionCallback delegate responsible for selecting the certificate used for authentication</param>
-        public MqttClient(string brokerHostName, int brokerPort, bool secure, MqttSslProtocols sslProtocol, 
-            RemoteCertificateValidationCallback userCertificateValidationCallback, 
+        public MqttClient(string brokerHostName, int brokerPort, bool secure, MqttSslProtocols sslProtocol,
+            RemoteCertificateValidationCallback userCertificateValidationCallback,
             LocalCertificateSelectionCallback userCertificateSelectionCallback)
             : this(brokerHostName, brokerPort, secure, null, null, sslProtocol, userCertificateValidationCallback, userCertificateSelectionCallback)
         {
@@ -461,6 +493,8 @@ namespace uPLibrary.Networking.M2Mqtt
             // session
             this.session = null;
 
+            this.Topics = new List<Topic.Topic>();
+
             // create network channel
 #if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK || WINDOWS_APP || WINDOWS_PHONE_APP)
             this.channel = new MqttNetworkChannel(this.brokerHostName, this.brokerPort, secure, caCert, clientCert, sslProtocol, userCertificateValidationCallback, userCertificateSelectionCallback);
@@ -469,6 +503,17 @@ namespace uPLibrary.Networking.M2Mqtt
 #else
             this.channel = new MqttNetworkChannel(this.brokerHostName, this.brokerPort, secure, caCert, clientCert, sslProtocol);
 #endif
+        }
+
+        /// <summary>
+        /// Connect to broker
+        /// </summary>
+        /// <param name="clientId">Client identifier</param>
+        /// <returns>Return code of CONNACK message from broker</returns>
+        public byte Connect()
+        {
+            var clientId = Guid.NewGuid().ToString();
+            return this.Connect(clientId, null, null, false, MqttMsgConnect.QOS_LEVEL_AT_MOST_ONCE, false, null, null, true, MqttMsgConnect.KEEP_ALIVE_PERIOD_DEFAULT);
         }
 
         /// <summary>
@@ -567,51 +612,107 @@ namespace uPLibrary.Networking.M2Mqtt
             {
                 // connect to the broker
                 this.channel.Connect();
+                if (this.isReconnecting)
+                {
+                    this.OnReconnected();
+                }
+                else {
+                    this.OnConnected();
+                }
+                this.isReconnecting = false;
             }
             catch (Exception ex)
             {
-                throw new MqttConnectionException("Exception connecting to the broker", ex);
-            }
-
-            this.lastCommTime = 0;
-            this.isRunning = true;
-            this.isConnectionClosing = false;
-            // start thread for receiving messages from broker
-            Fx.StartThread(this.ReceiveThread);
-            
-            MqttMsgConnack connack = (MqttMsgConnack)this.SendReceive(connect);
-            // if connection accepted, start keep alive timer and 
-            if (connack.ReturnCode == MqttMsgConnack.CONN_ACCEPTED)
-            {
-                // set all client properties
-                this.ClientId = clientId;
-                this.CleanSession = cleanSession;
-                this.WillFlag = willFlag;
-                this.WillTopic = willTopic;
-                this.WillMessage = willMessage;
-                this.WillQosLevel = willQosLevel;
-
-                this.keepAlivePeriod = keepAlivePeriod * 1000; // convert in ms
-
-                // restore previous session
-                this.RestoreSession();
-
-                // keep alive period equals zero means turning off keep alive mechanism
-                if (this.keepAlivePeriod != 0)
+                this.channel.Close(); //Dispose of the channel so we do not consume all of the remote ports
+                if (!this.shouldReconnect)
                 {
-                    // start thread for sending keep alive message to the broker
-                    Fx.StartThread(this.KeepAliveThread);
+                    throw new MqttConnectionException("Exception connecting to the broker", ex);
                 }
-
-                // start thread for raising received message event from broker
-                Fx.StartThread(this.DispatchEventThread);
-                
-                // start thread for handling inflight messages queue to broker asynchronously (publish and acknowledge)
-                Fx.StartThread(this.ProcessInflightThread);
-
-                this.IsConnected = true;
+                else
+                {
+                    BeginReconnect();
+                }
             }
-            return connack.ReturnCode;
+            if (!this.isReconnecting)
+            {
+                this.lastCommTime = 0;
+                this.isRunning = true;
+                this.isConnectionClosing = false;
+                // start thread for receiving messages from broker
+                Fx.StartThread(this.ReceiveThread);
+
+                MqttMsgConnack connack = (MqttMsgConnack)this.SendReceive(connect);
+                // if connection accepted, start keep alive timer and 
+                if (connack.ReturnCode == MqttMsgConnack.CONN_ACCEPTED)
+                {
+                    // set all client properties
+                    this.ClientId = clientId;
+                    this.CleanSession = cleanSession;
+                    this.WillFlag = willFlag;
+                    this.WillTopic = willTopic;
+                    this.WillMessage = willMessage;
+                    this.WillQosLevel = willQosLevel;
+
+                    this.keepAlivePeriod = keepAlivePeriod * 1000; // convert in ms
+
+                    // restore previous session
+                    this.RestoreSession();
+
+                    // keep alive period equals zero means turning off keep alive mechanism
+                    if (this.keepAlivePeriod != 0)
+                    {
+                        // start thread for sending keep alive message to the broker
+                        Fx.StartThread(this.KeepAliveThread);
+                    }
+
+                    // start thread for raising received message event from broker
+                    Fx.StartThread(this.DispatchEventThread);
+
+                    // start thread for handling inflight messages queue to broker asynchronously (publish and acknowledge)
+                    Fx.StartThread(this.ProcessInflightThread);
+                    this.IsConnected = true;
+                    this.SubscribeAll();
+                }
+                return connack.ReturnCode;
+            }
+            else
+            {
+                return 0x00;
+            }
+        }
+
+        public List<Topic.Topic> GetTopics() {
+            return this.Topics;
+        }
+
+        public List<Topic.Topic> AddTopic(Topic.Topic t) {
+            var matched_topics = this.Topics.Where((x) => x == t).ToList();
+            // check the topic exists, if it's already there don't add it again
+            if (!matched_topics.Any())
+            {
+                this.Topics.Add(t);
+                if (this.IsConnected)
+                {
+                    this.Subscribe(t);
+                }
+            }
+            
+            return this.Topics;
+        }
+
+        public List<Topic.Topic> RemoveTopic(string topic_str) {
+            var matched_topics = this.Topics.Where((x) => x.topic == topic_str).ToList();
+            this.Topics = this.Topics.Where((x) => x.topic != topic_str).ToList();
+
+            if (matched_topics.Any())
+            {
+                if (this.IsConnected)
+                {
+                    this.Unsubscribe(new string[] { topic_str });
+                }
+            }
+
+            return this.Topics;
         }
 
         /// <summary>
@@ -619,6 +720,7 @@ namespace uPLibrary.Networking.M2Mqtt
         /// </summary>
         public void Disconnect()
         {
+            this.isReconnecting = true;
             MqttMsgDisconnect disconnect = new MqttMsgDisconnect();
             this.Send(disconnect);
 
@@ -683,8 +785,8 @@ namespace uPLibrary.Networking.M2Mqtt
 
             // close network channel
             this.channel.Close();
-
             this.IsConnected = false;
+            this.OnDisconnected();
         }
 
         /// <summary>
@@ -794,16 +896,46 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="topics">List of topics to subscribe</param>
         /// <param name="qosLevels">QOS levels related to topics</param>
         /// <returns>Message Id related to SUBSCRIBE message</returns>
-        public ushort Subscribe(string[] topics, byte[] qosLevels)
-        {
-            MqttMsgSubscribe subscribe =
-                new MqttMsgSubscribe(topics, qosLevels);
-            subscribe.MessageId = this.GetMessageId();
 
-            // enqueue subscribe request into the inflight queue
+        public ushort Subscribe(string[] topics, byte[] qosLevels) {           
+            var subscribe = new MqttMsgSubscribe(topics, qosLevels)
+            {
+                MessageId = this.GetMessageId()
+            };
             this.EnqueueInflight(subscribe, MqttMsgFlow.ToPublish);
 
             return subscribe.MessageId;
+        }
+
+        public ushort Subscribe(Topic.Topic t)
+        {
+            var subscribe = new MqttMsgSubscribe(new string[] { t.topic }, new byte[] { t.qos.GetByte() })
+            {
+                MessageId = this.GetMessageId()
+            };
+            this.EnqueueInflight(subscribe, MqttMsgFlow.ToPublish);
+            return subscribe.MessageId;
+        }
+
+        public ushort SubscribeAll()
+        {
+            if (this.Topics.Any())
+            {
+                var topics = this.Topics.Select((x) => x.topic).ToArray();
+                var qosLevels = this.Topics.Select((x) => x.qos.GetByte()).ToArray();
+                var subscribe = new MqttMsgSubscribe(topics, qosLevels)
+                {
+                    MessageId = this.GetMessageId()
+                };
+
+                // enqueue subscribe request into the inflight queue
+                this.EnqueueInflight(subscribe, MqttMsgFlow.ToPublish);
+
+                return subscribe.MessageId;
+            }
+            else {
+                return 0;
+            }
         }
 
         /// <summary>
@@ -893,8 +1025,9 @@ namespace uPLibrary.Networking.M2Mqtt
         {
             if (this.MqttMsgPublishReceived != null)
             {
-                this.MqttMsgPublishReceived(this,
-                    new MqttMsgPublishEventArgs(publish.Topic, publish.Message, publish.DupFlag, publish.QosLevel, publish.Retain));
+                var Ea = new MqttMsgPublishEventArgs(publish.Topic, publish.Message, publish.DupFlag, publish.QosLevel, publish.Retain);
+                this.MqttMsgPublishReceived(this, Ea);
+                this.OnEvent(this, Ea, Events.Events.Options.publish_received);
             }
         }
 
@@ -907,8 +1040,9 @@ namespace uPLibrary.Networking.M2Mqtt
         {
             if (this.MqttMsgPublished != null)
             {
-                this.MqttMsgPublished(this,
-                    new MqttMsgPublishedEventArgs(messageId, isPublished));
+                var Ea = new MqttMsgPublishedEventArgs(messageId, isPublished);
+                this.MqttMsgPublished(this, Ea);
+                this.OnEvent(this, Ea, Events.Events.Options.message_published);
             }
         }
 
@@ -920,8 +1054,9 @@ namespace uPLibrary.Networking.M2Mqtt
         {
             if (this.MqttMsgSubscribed != null)
             {
-                this.MqttMsgSubscribed(this,
-                    new MqttMsgSubscribedEventArgs(suback.MessageId, suback.GrantedQoSLevels));
+                var Ea = new MqttMsgSubscribedEventArgs(suback.MessageId, suback.GrantedQoSLevels);
+                this.MqttMsgSubscribed(this, Ea);
+                this.OnEvent(this, Ea, Events.Events.Options.message_subscribed);
             }
         }
 
@@ -933,8 +1068,9 @@ namespace uPLibrary.Networking.M2Mqtt
         {
             if (this.MqttMsgUnsubscribed != null)
             {
-                this.MqttMsgUnsubscribed(this,
-                    new MqttMsgUnsubscribedEventArgs(messageId));
+                var Ea = new MqttMsgUnsubscribedEventArgs(messageId);
+                this.MqttMsgUnsubscribed(this, Ea);
+                this.OnEvent(this, Ea, Events.Events.Options.message_unsubscribed);
             }
         }
 
@@ -1000,6 +1136,44 @@ namespace uPLibrary.Networking.M2Mqtt
             if (this.ConnectionClosed != null)
             {
                 this.ConnectionClosed(this, EventArgs.Empty);
+                this.OnEvent(this, EventArgs.Empty, Events.Events.Options.connection_closed);
+            }
+        }
+
+        private void OnReconnected()
+        {
+            if (this.Reconnected != null)
+            {
+                this.Reconnected(this, EventArgs.Empty);
+                this.OnEvent(this, EventArgs.Empty, Events.Events.Options.reconnected);
+            }
+        }
+
+        private void OnConnected()
+        {
+            if (this.Connected != null)
+            {
+                this.Connected(this, EventArgs.Empty);
+                this.OnEvent(this, EventArgs.Empty, Events.Events.Options.connected);
+            }
+        }
+
+        private void OnDisconnected()
+        {
+            if (this.Disconnected != null)
+            {
+                this.Disconnected(this, EventArgs.Empty);
+                this.OnEvent(this, EventArgs.Empty, Events.Events.Options.disconnected);
+            }
+        }
+
+        private void OnEvent(Object Sender, EventArgs Ea, Events.Events.Options EventType)
+        {
+            if (this.Disconnected != null)
+            {
+
+                var args = new GenericEventArgs(EventType, Ea);
+                this.Event(Sender,  args);
             }
         }
 
@@ -1354,11 +1528,11 @@ namespace uPLibrary.Networking.M2Mqtt
             byte[] fixedHeaderFirstByte = new byte[1];
             byte msgType;
 
-            while (this.isRunning)
+            while (this.isRunning &! this.isReconnecting &! this.isDisconnecting)
             {
                 try
                 {
-                    // read first byte (fixed header)
+                    /// BLOCKING ///
                     readBytes = this.channel.Receive(fixedHeaderFirstByte);
 
                     if (readBytes > 0)
@@ -1388,7 +1562,7 @@ namespace uPLibrary.Networking.M2Mqtt
 #else
                                 throw new MqttClientException(MqttClientErrorCode.WrongBrokerMessage);
 #endif
-                                
+
                             // CONNACK message received
                             case MqttMsgBase.MQTT_MSG_CONNACK_TYPE:
 
@@ -1523,7 +1697,7 @@ namespace uPLibrary.Networking.M2Mqtt
                                 this.EnqueueInternal(pubrel);
 
                                 break;
-                                
+
                             // PUBCOMP message received
                             case MqttMsgBase.MQTT_MSG_PUBCOMP_TYPE:
 
@@ -1601,8 +1775,12 @@ namespace uPLibrary.Networking.M2Mqtt
                     else
                     {
                         // wake up thread that will notify connection is closing
-                        this.OnConnectionClosing();
+                        var e = new Exception("Server has disconnected");
+                        BeginReconnect(e);
                     }
+                }
+                catch (SocketException se) {
+                    BeginReconnect(se);
                 }
                 catch (Exception e)
                 {
@@ -1616,7 +1794,7 @@ namespace uPLibrary.Networking.M2Mqtt
                     {
                         // [v3.1.1] scenarios the receiver MUST close the network connection
                         MqttClientException ex = e as MqttClientException;
-                        close = ((ex.ErrorCode == MqttClientErrorCode.InvalidFlagBits) || 
+                        close = ((ex.ErrorCode == MqttClientErrorCode.InvalidFlagBits) ||
                                 (ex.ErrorCode == MqttClientErrorCode.InvalidProtocolName) ||
                                 (ex.ErrorCode == MqttClientErrorCode.InvalidConnectFlags));
                     }
@@ -1627,13 +1805,42 @@ namespace uPLibrary.Networking.M2Mqtt
                         close = true;
                     }
 #endif
-                    
+
                     if (close)
                     {
                         // wake up thread that will notify connection is closing
                         this.OnConnectionClosing();
                     }
+                    throw new Exception("Unexpected Exception", e);
                 }
+            }
+        }
+
+        private void BeginReconnect(Exception e) {
+            if (!this.shouldReconnect)
+            {
+                throw e;
+            }
+            else {
+                BeginReconnect();
+            }
+
+        }
+
+        private void BeginReconnect() {
+            if (!this.shouldReconnect) return;
+            if (this.isReconnecting) return;
+            this.isReconnecting = true;
+            this.Close();
+            if (this.shouldReconnect &! this.IsConnected &! this.isDisconnecting){
+                Fx.StartThread(this.ReconnectThread);
+            }
+        }
+
+        private void ReconnectThread() {
+            while (this.isReconnecting &! this.IsConnected &! this.isDisconnecting) {
+                this.Connect();
+                Thread.Sleep(this.reconnectInterval);
             }
         }
 
@@ -1644,7 +1851,6 @@ namespace uPLibrary.Networking.M2Mqtt
         {
             int delta = 0;
             int wait = this.keepAlivePeriod;
-            
             // create event to signal that current thread is end
             this.keepAliveEventEnd = new AutoResetEvent(false);
 
@@ -1812,6 +2018,7 @@ namespace uPLibrary.Networking.M2Mqtt
 
 #if BROKER
                                     MqttMsgUnsubscribe unsubscribe = (MqttMsgUnsubscribe)msg;
+         
                                     // raise unsubscribe topic event (UNSUBSCRIBE message received)
                                     this.OnMqttMsgUnsubscribeReceived(unsubscribe.MessageId, unsubscribe.Topics);
                                     break;
@@ -1852,7 +2059,6 @@ namespace uPLibrary.Networking.M2Mqtt
                 }
             }
         }
-
         /// <summary>
         /// Process inflight messages queue
         /// </summary>
