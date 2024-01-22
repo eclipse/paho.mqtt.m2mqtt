@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Text;
 using uPLibrary.Networking.M2Mqtt.Exceptions;
+using uPLibrary.Networking.M2Mqtt.Topic;
 
 namespace uPLibrary.Networking.M2Mqtt.Messages
 {
@@ -64,7 +65,7 @@ namespace uPLibrary.Networking.M2Mqtt.Messages
         {
             this.type = MQTT_MSG_SUBSCRIBE_TYPE;
         }
-        
+
         /// <summary>
         /// Constructor
         /// </summary>

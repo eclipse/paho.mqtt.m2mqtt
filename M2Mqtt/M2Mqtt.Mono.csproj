@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -15,7 +15,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\bin\Debug\M2Mqtt.Mono</OutputPath>
-    <DefineConstants>DEBUG;SSL</DefineConstants>
+    <DefineConstants>DEBUG;SSL;MONO</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -41,29 +41,9 @@
     <Compile Include="Internal\InternalEvent.cs" />
     <Compile Include="Internal\MsgInternalEvent.cs" />
     <Compile Include="Internal\MsgPublishedInternalEvent.cs" />
-    <Compile Include="Messages\MqttMsgBase.cs" />
-    <Compile Include="Messages\MqttMsgConnack.cs" />
-    <Compile Include="Messages\MqttMsgConnect.cs" />
-    <Compile Include="Messages\MqttMsgConnectEventArgs.cs" />
-    <Compile Include="Messages\MqttMsgContext.cs" />
-    <Compile Include="Messages\MqttMsgDisconnect.cs" />
-    <Compile Include="Messages\MqttMsgPingReq.cs" />
-    <Compile Include="Messages\MqttMsgPingResp.cs" />
-    <Compile Include="Messages\MqttMsgPuback.cs" />
-    <Compile Include="Messages\MqttMsgPubcomp.cs" />
-    <Compile Include="Messages\MqttMsgPublish.cs" />
-    <Compile Include="Messages\MqttMsgPublishedEventArgs.cs" />
-    <Compile Include="Messages\MqttMsgPublishEventArgs.cs" />
-    <Compile Include="Messages\MqttMsgPubrec.cs" />
-    <Compile Include="Messages\MqttMsgPubrel.cs" />
-    <Compile Include="Messages\MqttMsgSuback.cs" />
-    <Compile Include="Messages\MqttMsgSubscribe.cs" />
-    <Compile Include="Messages\MqttMsgSubscribedEventArgs.cs" />
-    <Compile Include="Messages\MqttMsgSubscribeEventArgs.cs" />
-    <Compile Include="Messages\MqttMsgUnsuback.cs" />
-    <Compile Include="Messages\MqttMsgUnsubscribe.cs" />
-    <Compile Include="Messages\MqttMsgUnsubscribedEventArgs.cs" />
-    <Compile Include="Messages\MqttMsgUnsubscribeEventArgs.cs" />
+    <Compile Include="Messages\*.cs" />
+    <Compile Include="Topic\*.cs" />
+    <Compile Include="Events\*.cs" />
     <Compile Include="MqttClient.cs" />
     <Compile Include="MqttSecurity.cs" />
     <Compile Include="Net\Fx.cs" />
