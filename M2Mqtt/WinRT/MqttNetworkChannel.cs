@@ -24,6 +24,8 @@ using Windows.Networking.Sockets;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Storage.Streams;
 using System.Threading;
+using Windows.Security.Cryptography.Certificates;
+using System.Diagnostics;
 
 namespace uPLibrary.Networking.M2Mqtt
 {
@@ -130,6 +132,14 @@ namespace uPLibrary.Networking.M2Mqtt
             return (int)this.socket.OutputStream.WriteAsync(buffer.AsBuffer()).AsTask().Result;
         }
 
+#if WINDOWS_UWP
+        public async Task<int> SendAsync(byte[] buffer)
+        {
+            var result = await this.socket.OutputStream.WriteAsync(buffer.AsBuffer());
+            return (int)result;
+        }
+#endif
+
         public void Close()
         {
             this.socket.Dispose();
@@ -143,6 +153,51 @@ namespace uPLibrary.Networking.M2Mqtt
             this.socket.ConnectAsync(this.remoteHostName,
                 this.remotePort.ToString(),
                 MqttSslUtility.ToSslPlatformEnum(this.sslProtocol)).AsTask().Wait();
+        }
+
+        public async Task ConnectAsync()
+        {
+            this.socket = new StreamSocket();
+            int retryTime = 2;
+            while (retryTime > 0)
+            {
+                try
+                {
+                    await socket.ConnectAsync(this.remoteHostName, this.remotePort.ToString(), MqttSslUtility.ToSslPlatformEnum(this.sslProtocol));
+                    break;
+                }
+                catch (Exception exception)
+                {
+                    // If this is an unknown status it means that the error is fatal and retry will likely fail.
+                    if (SocketError.GetStatus(exception.HResult) == SocketErrorStatus.Unknown)
+                    {
+                        throw;
+                    }
+
+                    // If the exception was caused by an SSL error that is ignorable we are going to prompt the user
+                    // with an enumeration of the errors and ask for permission to ignore.
+                    if (socket.Information.ServerCertificateErrorSeverity != SocketSslErrorSeverity.Ignorable)
+                    {
+                        Debug.WriteLine("Connect failed with error: " + exception.Message);
+                        throw;
+                    }
+#if DEBUG
+                    // -----------------------------------------------------------------------------------------------
+                    // WARNING: Only test applications should ignore SSL errors.
+                    // In real applications, ignoring server certificate errors can lead to Man-In-The-Middle attacks.
+                    // -----------------------------------------------------------------------------------------------
+
+                    socket.Control.IgnorableServerCertificateErrors.Clear();
+
+                    foreach (var ignorableError in socket.Information.ServerCertificateErrors)
+                    {
+                        socket.Control.IgnorableServerCertificateErrors.Add(ignorableError);
+                    }
+#endif
+                }
+
+                retryTime -= 1;
+            }
         }
 
         public void Accept()

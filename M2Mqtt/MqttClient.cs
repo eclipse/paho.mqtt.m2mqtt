@@ -167,7 +167,7 @@ namespace uPLibrary.Networking.M2Mqtt
 
         // event for peer/client disconnection
         public event ConnectionClosedEventHandler ConnectionClosed;
-        
+
         // channel to communicate over the network
         private IMqttNetworkChannel channel;
 
@@ -304,7 +304,7 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="clientCert">Client certificate</param>
         public MqttClient(string brokerHostName, int brokerPort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol)            
 #else
-        public MqttClient(string brokerHostName, int brokerPort, bool secure, MqttSslProtocols sslProtocol)            
+        public MqttClient(string brokerHostName, int brokerPort, bool secure, MqttSslProtocols sslProtocol)
 #endif
         {
 #if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK || WINDOWS_APP || WINDOWS_PHONE_APP)
@@ -476,9 +476,16 @@ namespace uPLibrary.Networking.M2Mqtt
         /// </summary>
         /// <param name="clientId">Client identifier</param>
         /// <returns>Return code of CONNACK message from broker</returns>
+#if WINDOWS_UWP
+        public async System.Threading.Tasks.Task<byte> ConnectAsync(string clientId)
+        {
+
+            return await this.ConnectAsync(clientId, null, null, false, MqttMsgConnect.QOS_LEVEL_AT_MOST_ONCE, false, null, null, true, MqttMsgConnect.KEEP_ALIVE_PERIOD_DEFAULT);
+#else
         public byte Connect(string clientId)
         {
             return this.Connect(clientId, null, null, false, MqttMsgConnect.QOS_LEVEL_AT_MOST_ONCE, false, null, null, true, MqttMsgConnect.KEEP_ALIVE_PERIOD_DEFAULT);
+#endif
         }
 
 	/// <summary>
@@ -500,11 +507,15 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <returns>Return code of CONNACK message from broker</returns>
-        public byte Connect(string clientId,
-            string username,
-            string password)
+#if WINDOWS_UWP
+        public async System.Threading.Tasks.Task<byte> ConnectAsync(string clientId, string username, string password)
+        {
+            return await this.ConnectAsync(clientId, username, password, false, MqttMsgConnect.QOS_LEVEL_AT_MOST_ONCE, false, null, null, true, MqttMsgConnect.KEEP_ALIVE_PERIOD_DEFAULT);
+#else
+        public byte Connect(string clientId, string username, string password)
         {
             return this.Connect(clientId, username, password, false, MqttMsgConnect.QOS_LEVEL_AT_MOST_ONCE, false, null, null, true, MqttMsgConnect.KEEP_ALIVE_PERIOD_DEFAULT);
+#endif
         }
 
         /// <summary>
@@ -516,13 +527,15 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="cleanSession">Clean sessione flag</param>
         /// <param name="keepAlivePeriod">Keep alive period</param>
         /// <returns>Return code of CONNACK message from broker</returns>
-        public byte Connect(string clientId,
-            string username,
-            string password,
-            bool cleanSession,
-            ushort keepAlivePeriod)
+#if WINDOWS_UWP
+        public async System.Threading.Tasks.Task<byte> ConnectAsync(string clientId, string username, string password, bool cleanSession, ushort keepAlivePeriod)
+        {
+            return await this.ConnectAsync(clientId, username, password, false, MqttMsgConnect.QOS_LEVEL_AT_MOST_ONCE, false, null, null, cleanSession, keepAlivePeriod);
+#else
+        public byte Connect(string clientId, string username, string password, bool cleanSession, ushort keepAlivePeriod)
         {
             return this.Connect(clientId, username, password, false, MqttMsgConnect.QOS_LEVEL_AT_MOST_ONCE, false, null, null, cleanSession, keepAlivePeriod);
+#endif
         }
 
         /// <summary>
@@ -539,16 +552,11 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <param name="cleanSession">Clean sessione flag</param>
         /// <param name="keepAlivePeriod">Keep alive period</param>
         /// <returns>Return code of CONNACK message from broker</returns>
-        public byte Connect(string clientId,
-            string username,
-            string password,
-            bool willRetain,
-            byte willQosLevel,
-            bool willFlag,
-            string willTopic,
-            string willMessage,
-            bool cleanSession,
-            ushort keepAlivePeriod)
+#if WINDOWS_UWP
+        public async System.Threading.Tasks.Task<byte> ConnectAsync(string clientId, string username, string password, bool willRetain, byte willQosLevel, bool willFlag, string willTopic, string willMessage, bool cleanSession, ushort keepAlivePeriod)
+#else
+        public byte Connect(string clientId, string username, string password, bool willRetain, byte willQosLevel, bool willFlag, string willTopic, string willMessage, bool cleanSession, ushort keepAlivePeriod)
+#endif
         {
             // create CONNECT message
             MqttMsgConnect connect = new MqttMsgConnect(clientId,
@@ -565,8 +573,12 @@ namespace uPLibrary.Networking.M2Mqtt
 
             try
             {
+#if WINDOWS_UWP
+                await this.channel.ConnectAsync();
+#else
                 // connect to the broker
                 this.channel.Connect();
+#endif
             }
             catch (Exception ex)
             {
@@ -578,7 +590,7 @@ namespace uPLibrary.Networking.M2Mqtt
             this.isConnectionClosing = false;
             // start thread for receiving messages from broker
             Fx.StartThread(this.ReceiveThread);
-            
+
             MqttMsgConnack connack = (MqttMsgConnack)this.SendReceive(connect);
             // if connection accepted, start keep alive timer and 
             if (connack.ReturnCode == MqttMsgConnack.CONN_ACCEPTED)
@@ -605,7 +617,7 @@ namespace uPLibrary.Networking.M2Mqtt
 
                 // start thread for raising received message event from broker
                 Fx.StartThread(this.DispatchEventThread);
-                
+
                 // start thread for handling inflight messages queue to broker asynchronously (publish and acknowledge)
                 Fx.StartThread(this.ProcessInflightThread);
 
@@ -1012,7 +1024,12 @@ namespace uPLibrary.Networking.M2Mqtt
             try
             {
                 // send message
+#if WINDOWS_UWP
+                var task = this.channel.SendAsync(msgBytes);
+                task.GetAwaiter().GetResult();
+#else
                 this.channel.Send(msgBytes);
+#endif                
 
 #if !BROKER
                 // update last message sent ticks
@@ -1064,7 +1081,12 @@ namespace uPLibrary.Networking.M2Mqtt
             try
             {
                 // send message
+#if WINDOWS_UWP
+                var task = this.channel.SendAsync(msgBytes);
+                task.GetAwaiter().GetResult();
+#else
                 this.channel.Send(msgBytes);
+#endif
 
                 // update last message sent ticks
                 this.lastCommTime = Environment.TickCount;
