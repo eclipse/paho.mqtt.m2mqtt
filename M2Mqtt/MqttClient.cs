@@ -579,7 +579,17 @@ namespace uPLibrary.Networking.M2Mqtt
             // start thread for receiving messages from broker
             Fx.StartThread(this.ReceiveThread);
             
-            MqttMsgConnack connack = (MqttMsgConnack)this.SendReceive(connect);
+            MqttMsgConnack connack = null;
+            try
+
+            {
+                connack = (MqttMsgConnack)this.SendReceive(connect);
+            }
+            catch (MqttCommunicationException)
+            {
+                this.isRunning = false;
+                throw;
+            }
             // if connection accepted, start keep alive timer and 
             if (connack.ReturnCode == MqttMsgConnack.CONN_ACCEPTED)
             {
@@ -610,6 +620,10 @@ namespace uPLibrary.Networking.M2Mqtt
                 Fx.StartThread(this.ProcessInflightThread);
 
                 this.IsConnected = true;
+            }
+            else
+            {
+                this.isRunning = false;
             }
             return connack.ReturnCode;
         }
