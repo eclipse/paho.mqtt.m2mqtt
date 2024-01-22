@@ -18,8 +18,12 @@ Contributors:
 #if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3)
 using Microsoft.SPOT.Net.Security;
 #else
+#if  COMPACT_FRAMEWORK
+
+#else
 using System.Net.Security;
 using System.Security.Authentication;
+#endif
 #endif
 #endif
 using System.Net.Sockets;
@@ -235,7 +239,7 @@ namespace uPLibrary.Networking.M2Mqtt
             if (secure)
             {
                 // create SSL stream
-#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3)
+#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK)
                 this.sslStream = new SslStream(this.socket);
 #else
                 this.netStream = new NetworkStream(this.socket);
@@ -243,12 +247,15 @@ namespace uPLibrary.Networking.M2Mqtt
 #endif
 
                 // server authentication (SSL/TLS handshake)
-#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3)
+#if (MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 )
                 this.sslStream.AuthenticateAsClient(this.remoteHostName,
                     this.clientCert,
                     new X509Certificate[] { this.caCert },
                     SslVerification.CertificateRequired,
                     MqttSslUtility.ToSslPlatformEnum(this.sslProtocol));
+#else
+#if (COMPACT_FRAMEWORK)
+
 #else
                 X509CertificateCollection clientCertificates = null;
                 // check if there is a client certificate to add to the collection, otherwise it's null (as empty)
@@ -260,6 +267,7 @@ namespace uPLibrary.Networking.M2Mqtt
                     MqttSslUtility.ToSslPlatformEnum(this.sslProtocol),
                     false);
                 
+#endif
 #endif
             }
 #endif
@@ -302,7 +310,7 @@ namespace uPLibrary.Networking.M2Mqtt
                 {
                     // fixed scenario with socket closed gracefully by peer/broker and
                     // Read return 0. Avoid infinite loop.
-                    read = this.sslStream.Read(buffer, idx, buffer.Length - idx);
+                    read = this.sslStream.Read(ref buffer, idx, buffer.Length - idx);
                     if (read == 0)
                         return 0;
                     idx += read;
@@ -387,7 +395,8 @@ namespace uPLibrary.Networking.M2Mqtt
             // secure channel requested
             if (secure)
             {
-#if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3)
+
+#if !(MF_FRAMEWORK_VERSION_V4_2 || MF_FRAMEWORK_VERSION_V4_3 || COMPACT_FRAMEWORK)
 
                 this.netStream = new NetworkStream(this.socket);
                 this.sslStream = new SslStream(this.netStream, false, this.userCertificateValidationCallback, this.userCertificateSelectionCallback);

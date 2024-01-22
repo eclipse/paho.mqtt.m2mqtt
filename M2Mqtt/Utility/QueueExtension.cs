@@ -16,6 +16,12 @@ Contributors:
 
 using System;
 using System.Collections;
+using System.Runtime.CompilerServices;
+
+namespace System.Runtime.CompilerServices
+{
+    public class ExtensionAttribute : Attribute { }
+}
 
 namespace uPLibrary.Networking.M2Mqtt.Utility
 {
