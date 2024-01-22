@@ -40,7 +40,6 @@ namespace uPLibrary.Networking.M2Mqtt
 #endif
         // remote host information
         private string remoteHostName;
-        private IPAddress remoteIpAddress;
         private int remotePort;
 
         // socket for communication
@@ -66,7 +65,41 @@ namespace uPLibrary.Networking.M2Mqtt
         /// <summary>
         /// Remote IP address
         /// </summary>
-        public IPAddress RemoteIpAddress { get { return this.remoteIpAddress; } }
+        public IPAddress RemoteIpAddress
+        {
+            get
+            {
+                try
+                {
+                    // Check if remoteHostName is a valid IP address and get it
+                    return IPAddress.Parse(remoteHostName);
+                }
+                catch
+                {
+                }
+
+                // In this case the parameter remoteHostName isn't a valid IP address
+                IPHostEntry hostEntry;
+                try
+                {
+                    hostEntry = Dns.GetHostEntry(remoteHostName);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception("Failed to resolve the remote host name", e);
+                }
+
+                // check for the first address not null
+                // it seems that with .Net Micro Framework, the IPV6 addresses aren't supported and return "null"
+                foreach (IPAddress address in hostEntry.AddressList)
+                {
+                    if (address != null)
+                        return address;
+                }
+
+                throw new Exception("No address found for the remote host name");
+            }
+        }
 
         /// <summary>
         /// Remote port
@@ -180,36 +213,7 @@ namespace uPLibrary.Networking.M2Mqtt
         public MqttNetworkChannel(string remoteHostName, int remotePort, bool secure, X509Certificate caCert, X509Certificate clientCert, MqttSslProtocols sslProtocol)
 #endif
         {
-            IPAddress remoteIpAddress = null;
-            try
-            {
-                // check if remoteHostName is a valid IP address and get it
-                remoteIpAddress = IPAddress.Parse(remoteHostName);
-            }
-            catch
-            {
-            }
-
-            // in this case the parameter remoteHostName isn't a valid IP address
-            if (remoteIpAddress == null)
-            {
-                IPHostEntry hostEntry = Dns.GetHostEntry(remoteHostName);
-                if ((hostEntry != null) && (hostEntry.AddressList.Length > 0))
-                {
-                    // check for the first address not null
-                    // it seems that with .Net Micro Framework, the IPV6 addresses aren't supported and return "null"
-                    int i = 0;
-                    while (hostEntry.AddressList[i] == null) i++;
-                    remoteIpAddress = hostEntry.AddressList[i];
-                }
-                else
-                {
-                    throw new Exception("No address found for the remote host name");
-                }
-            }
-
             this.remoteHostName = remoteHostName;
-            this.remoteIpAddress = remoteIpAddress;
             this.remotePort = remotePort;
             this.secure = secure;
             this.caCert = caCert;
@@ -226,9 +230,9 @@ namespace uPLibrary.Networking.M2Mqtt
         /// </summary>
         public void Connect()
         {
-            this.socket = new Socket(this.remoteIpAddress.GetAddressFamily(), SocketType.Stream, ProtocolType.Tcp);
+            this.socket = new Socket(this.RemoteIpAddress.GetAddressFamily(), SocketType.Stream, ProtocolType.Tcp);
             // try connection to the broker
-            this.socket.Connect(new IPEndPoint(this.remoteIpAddress, this.remotePort));
+            this.socket.Connect(new IPEndPoint(this.RemoteIpAddress, this.remotePort));
 
 #if SSL
             // secure channel requested
